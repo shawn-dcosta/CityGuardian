@@ -16,7 +16,8 @@ import { useGeolocation } from './hooks/useGeolocation';
 import { useTheme } from './hooks/useTheme';
 
 // REPLACE WITH YOUR ACTUAL GOOGLE CLIENT ID
-const GOOGLE_CLIENT_ID = "YOUR_GOOGLE_CLIENT_ID_HERE";
+// REPLACE WITH YOUR ACTUAL GOOGLE CLIENT ID
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || "YOUR_GOOGLE_CLIENT_ID_HERE";
 
 interface HomePageProps {
   isDarkMode: boolean;
