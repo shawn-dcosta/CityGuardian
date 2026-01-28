@@ -45,6 +45,7 @@ OFFICERS = [
     {"name": "Sewage Dept", "email": "shivamkillarikar22@gmail.com", "keywords": ["sewage", "drain", "gutter", "overflow"]},
     {"name": "Roads Dept", "email": "aishanidolan@gmail.com", "keywords": ["road", "pothole", "traffic", "pavement"]},
     {"name": "Electric Dept", "email": "adityakillarikar@gmail.com", "keywords": ["light", "wire", "pole", "shock", "power"]},
+    {"name": "Emergency Dept", "email": "dcostashawn@gmail.com", "keywords": ["assistance", "doctor", "ambulance", "medical", "accident"]},
 ]
 
 DEFAULT_EMAIL = "dcostashawn@gmail.com"
@@ -218,6 +219,7 @@ async def send_report(
     except Exception as e: print(f"Duplicate check log: {e}")
 
     # 3. CLASSIFICATION & ROUTING
+    report_id = str(uuid.uuid4())[:8]
     cl = classification_agent(complaint)
     cat = cl.get('category', 'Roads')
     urg = cl.get('urgency', 'medium')
@@ -228,8 +230,20 @@ async def send_report(
     if not dept: 
         dept = next((d for d in OFFICERS if d['name'].split()[0].lower() in cat.lower()), OFFICERS[0])
 
+    if urg == 'high' or urg == 'medium' or cat == 'Electric':
+        try:
+            n8n_agent_3_url = "https://sranger.app.n8n.cloud/webhook/emergency-dispatcher"
+            requests.post(n8n_agent_3_url, json={
+                "report_id": report_id,
+                "category": cat,
+                "latitude": latitude,
+                "longitude": longitude,
+                "issue": complaint,
+                "name": name
+            }, timeout=3)
+        except Exception as e: print(f"Agent 3 Trigger Failed: {e}")
+
     # 4. DATA SYNC (n8n & Email)
-    report_id = str(uuid.uuid4())[:8]
     loc_display = address if address else f"{latitude}, {longitude}"
     full_loc_info = f"{loc_display}\nMaps: https://www.google.com/maps?q={latitude},{longitude}"
 
