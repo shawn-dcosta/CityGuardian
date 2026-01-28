@@ -14,12 +14,14 @@ import DepartmentBarChart from '../components/DepartmentBarChart';
 import HeatMap from '../components/HeatMap';
 import UrgencyTrendsChart from '../components/UrgencyTrendsChart';
 import { fetchReportsData, calculateStats } from '../services/dataService';
+import { useAuth } from '../context/AuthContext';
 
 interface DashboardProps {
   isDarkMode: boolean;
 }
 
 const Dashboard: React.FC<DashboardProps> = ({ isDarkMode }) => {
+  const { user } = useAuth();
   const [data, setData] = useState<any[]>([]);
   const [stats, setStats] = useState<any>({
     total: 0,
@@ -37,7 +39,14 @@ const Dashboard: React.FC<DashboardProps> = ({ isDarkMode }) => {
   const loadData = async () => {
     try {
       setLoading(true);
-      const reports = await fetchReportsData();
+      let reports = await fetchReportsData();
+
+      // Filter reports for public users
+      if (user && user.role !== 'admin') {
+        const userReportIds = user.reportIds || [];
+        reports = reports.filter((r: any) => userReportIds.includes(r.ID));
+      }
+
       setData(reports as any[]);
 
       const calculatedStats = calculateStats(reports as any[]);
@@ -54,7 +63,7 @@ const Dashboard: React.FC<DashboardProps> = ({ isDarkMode }) => {
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, [user]);
 
   // Auto-refresh every 30 seconds
   useEffect(() => {

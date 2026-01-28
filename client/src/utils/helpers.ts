@@ -34,8 +34,9 @@ export const generatePDF = (name: string, complaint: string, department: string,
   doc.save(`CityGuardian_Receipt_${Date.now()}.pdf`);
 };
 
-export const saveToHistory = (reportData: any) => {
-  const history = JSON.parse(localStorage.getItem('cg_history') || '[]');
+export const saveToHistory = (reportData: any, userId: string = 'public') => {
+  const key = `cg_history_${userId}`;
+  const history = JSON.parse(localStorage.getItem(key) || '[]');
 
   const newReport = {
     id: Date.now(),
@@ -44,15 +45,17 @@ export const saveToHistory = (reportData: any) => {
   };
 
   history.unshift(newReport);
-  localStorage.setItem('cg_history', JSON.stringify(history.slice(0, 5)));
+  localStorage.setItem(key, JSON.stringify(history.slice(0, 5)));
 
   return history.slice(0, 5);
 };
 
-export const getHistory = () => {
-  return JSON.parse(localStorage.getItem('cg_history') || '[]');
+export const getHistory = (userId: string = 'public') => {
+  const key = `cg_history_${userId}`;
+  return JSON.parse(localStorage.getItem(key) || '[]');
 };
 
-export const clearHistory = () => {
-  localStorage.removeItem('cg_history');
+export const clearHistory = (userId: string = 'public') => {
+  const key = `cg_history_${userId}`;
+  localStorage.removeItem(key);
 };

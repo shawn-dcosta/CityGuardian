@@ -9,23 +9,27 @@ export const useGeolocation = () => {
     error: string | null;
   }
 
-  const [location, setLocation] = useState<LocationState>({
-    latitude: null,
-    longitude: null,
-    address: 'Fetching location...',
-    loading: true,
-    error: null
+  const [location, setLocation] = useState<LocationState>(() => {
+    if (!navigator.geolocation) {
+      return {
+        latitude: null,
+        longitude: null,
+        address: '',
+        loading: false,
+        error: 'Geolocation is not supported by your browser'
+      };
+    }
+    return {
+      latitude: null,
+      longitude: null,
+      address: 'Fetching location...',
+      loading: true,
+      error: null
+    };
   });
 
   useEffect(() => {
-    if (!navigator.geolocation) {
-      setLocation(prev => ({
-        ...prev,
-        loading: false,
-        error: 'Geolocation is not supported by your browser'
-      }));
-      return;
-    }
+    if (!navigator.geolocation) return;
 
     navigator.geolocation.getCurrentPosition(
       async (position) => {

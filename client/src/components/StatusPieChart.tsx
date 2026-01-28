@@ -9,28 +9,30 @@ interface StatusPieChartProps {
   };
 }
 
+const CustomTooltip = ({ active, payload, total }: any) => {
+  if (active && payload && payload.length) {
+    const percentage = total > 0 ? ((payload[0].value / total) * 100).toFixed(1) : 0;
+    return (
+      <div className="glass-card p-3 rounded-lg shadow-lg">
+        <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+          {payload[0].name}
+        </p>
+        <p className="text-sm text-gray-600 dark:text-gray-400">
+          {payload[0].value} reports ({percentage}%)
+        </p>
+      </div>
+    );
+  }
+  return null;
+};
+
 const StatusPieChart: React.FC<StatusPieChartProps> = ({ data }) => {
   const chartData = [
     { name: 'Pending', value: data.pending, color: '#ef4444' },
     { name: 'Resolved', value: data.resolved, color: '#10b981' }
   ];
 
-  const CustomTooltip = ({ active, payload }: any) => {
-    if (active && payload && payload.length) {
-      const percentage = ((payload[0].value / data.total) * 100).toFixed(1);
-      return (
-        <div className="glass-card p-3 rounded-lg shadow-lg">
-          <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">
-            {payload[0].name}
-          </p>
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            {payload[0].value} reports ({percentage}%)
-          </p>
-        </div>
-      );
-    }
-    return null;
-  };
+
 
   return (
     <motion.div
@@ -58,7 +60,7 @@ const StatusPieChart: React.FC<StatusPieChartProps> = ({ data }) => {
                 <Cell key={`cell-${index}`} fill={entry.color} />
               ))}
             </Pie>
-            <Tooltip content={<CustomTooltip />} />
+            <Tooltip content={<CustomTooltip total={data.total} />} />
             <Legend
               verticalAlign="bottom"
               height={36}

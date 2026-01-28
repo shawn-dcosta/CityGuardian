@@ -300,7 +300,8 @@ async def get_reports():
         df.columns = [c.strip() for c in df.columns]
         
         # Handle NaN values (replace with None for valid JSON)
-        df = df.where(pd.notnull(df), None)
+        # Cast to object first so None isn't converted back to NaN
+        df = df.astype(object).where(pd.notnull(df), None)
         
         # Convert to dictionary
         data = df.to_dict(orient='records')

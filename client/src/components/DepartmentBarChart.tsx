@@ -22,27 +22,7 @@ const DepartmentBarChart: React.FC<DepartmentBarChartProps> = ({ data }) => {
     };
   });
 
-  const CustomTooltip = ({ active, payload, label }: any) => {
-    if (active && payload && payload.length) {
-      const total = payload.reduce((sum: number, p: any) => sum + p.value, 0);
-      return (
-        <div className="glass-card p-3 rounded-lg shadow-lg">
-          <p className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-2">
-            {label}
-          </p>
-          {payload.map((entry: any, index: number) => (
-            <p key={index} className="text-sm" style={{ color: entry.color }}>
-              {entry.name}: {entry.value}
-            </p>
-          ))}
-          <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mt-1 pt-1 border-t border-gray-200 dark:border-gray-600">
-            Total: {total}
-          </p>
-        </div>
-      );
-    }
-    return null;
-  };
+
 
   return (
     <motion.div
@@ -86,6 +66,28 @@ const DepartmentBarChart: React.FC<DepartmentBarChartProps> = ({ data }) => {
       )}
     </motion.div>
   );
+};
+
+const CustomTooltip = ({ active, payload, label }: any) => {
+  if (active && payload && payload.length) {
+    const total = payload.reduce((sum: number, p: any) => sum + p.value, 0);
+    return (
+      <div className="glass-card p-3 rounded-lg shadow-lg">
+        <p className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-2">
+          {label}
+        </p>
+        {payload.map((entry: any, index: number) => (
+          <p key={index} className="text-sm" style={{ color: entry.color }}>
+            {entry.name}: {entry.value}
+          </p>
+        ))}
+        <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mt-1 pt-1 border-t border-gray-200 dark:border-gray-600">
+          Total: {total}
+        </p>
+      </div>
+    );
+  }
+  return null;
 };
 
 export default DepartmentBarChart;

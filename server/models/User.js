@@ -33,6 +33,10 @@ const UserSchema = new mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now
+    },
+    reportIds: {
+        type: [String],
+        default: []
     }
 });
 

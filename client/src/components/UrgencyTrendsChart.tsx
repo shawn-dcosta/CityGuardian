@@ -9,6 +9,70 @@ interface UrgencyTrendsChartProps {
   };
 }
 
+const CustomContent = (props: any) => {
+  const { x, y, width, height, name, size, color } = props;
+
+  if (width < 30 || height < 20) return null;
+
+  return (
+    <g>
+      <rect
+        x={x}
+        y={y}
+        width={width}
+        height={height}
+        style={{
+          fill: color || '#3b82f6',
+          stroke: '#fff',
+          strokeWidth: 2,
+          opacity: 0.9
+        }}
+      />
+      {width > 60 && height > 40 && (
+        <>
+          <text
+            x={x + width / 2}
+            y={y + height / 2 - 8}
+            textAnchor="middle"
+            fill="#fff"
+            fontSize={12}
+            fontWeight="bold"
+          >
+            {name}
+          </text>
+          <text
+            x={x + width / 2}
+            y={y + height / 2 + 8}
+            textAnchor="middle"
+            fill="#fff"
+            fontSize={14}
+            fontWeight="bold"
+          >
+            {size}
+          </text>
+        </>
+      )}
+    </g>
+  );
+};
+
+const CustomTooltip = ({ active, payload }: any) => {
+  if (active && payload && payload.length) {
+    const data = payload[0].payload;
+    return (
+      <div className="glass-card p-3 rounded-lg shadow-lg">
+        <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+          {data.name}
+        </p>
+        <p className="text-sm text-gray-600 dark:text-gray-400">
+          Reports: {data.size || 0}
+        </p>
+      </div>
+    );
+  }
+  return null;
+};
+
 const UrgencyTrendsChart: React.FC<UrgencyTrendsChartProps> = ({ data }) => {
   // Transform data for treemap
   const transformData = () => {
@@ -35,69 +99,7 @@ const UrgencyTrendsChart: React.FC<UrgencyTrendsChartProps> = ({ data }) => {
     return [{ name: 'Root', children }];
   };
 
-  const CustomContent = (props: any) => {
-    const { x, y, width, height, name, size, color } = props;
 
-    if (width < 30 || height < 20) return null;
-
-    return (
-      <g>
-        <rect
-          x={x}
-          y={y}
-          width={width}
-          height={height}
-          style={{
-            fill: color || '#3b82f6',
-            stroke: '#fff',
-            strokeWidth: 2,
-            opacity: 0.9
-          }}
-        />
-        {width > 60 && height > 40 && (
-          <>
-            <text
-              x={x + width / 2}
-              y={y + height / 2 - 8}
-              textAnchor="middle"
-              fill="#fff"
-              fontSize={12}
-              fontWeight="bold"
-            >
-              {name}
-            </text>
-            <text
-              x={x + width / 2}
-              y={y + height / 2 + 8}
-              textAnchor="middle"
-              fill="#fff"
-              fontSize={14}
-              fontWeight="bold"
-            >
-              {size}
-            </text>
-          </>
-        )}
-      </g>
-    );
-  };
-
-  const CustomTooltip = ({ active, payload }: any) => {
-    if (active && payload && payload.length) {
-      const data = payload[0].payload;
-      return (
-        <div className="glass-card p-3 rounded-lg shadow-lg">
-          <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">
-            {data.name}
-          </p>
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            Reports: {data.size || 0}
-          </p>
-        </div>
-      );
-    }
-    return null;
-  };
 
   const chartData = transformData();
 

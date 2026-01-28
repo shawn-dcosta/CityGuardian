@@ -3,7 +3,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Mic, Upload, Send, Loader, Image as ImageIcon } from 'lucide-react';
 import { useSpeechRecognition } from '../hooks/useSpeechRecognition';
 import axios from 'axios';
-import { generatePDF, saveToHistory } from '../utils/helpers';
+import { generatePDF } from '../utils/helpers';
+import { useAuth } from '../context/AuthContext';
+import { AUTH_API_URL } from '../config';
 
 interface ReportingFormProps {
   location: {
@@ -18,6 +20,7 @@ interface ReportingFormProps {
 }
 
 const ReportingForm: React.FC<ReportingFormProps> = ({ location, addToast, onReportSubmitted }) => {
+  const { isAuthenticated, user, token, refreshUser } = useAuth();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -104,18 +107,28 @@ const ReportingForm: React.FC<ReportingFormProps> = ({ location, addToast, onRep
       const data = response.data;
 
       if (data.status === 'success') {
+        // Link report to user if authenticated
+
+        // Logic for linking:
+        if (isAuthenticated && user && token && data.id) {
+          try {
+            await axios.put(`${AUTH_API_URL}/auth/add-report`, { reportId: data.id }, {
+              headers: { 'x-auth-token': token }
+            });
+            // Critical: Refresh user profile to get the new reportId in local state
+            await refreshUser();
+          } catch (error) {
+            console.error("Failed to link report to user:", error);
+          }
+        }
+
         const finalDescription = formData.complaint.trim() || data.ai_description || 'Image-based report';
 
         addToast('Success! Downloading Receipt...', 'success');
 
         // Save to history
-        const historyData = {
-          complaint: finalDescription,
-          department: data.department,
-          urgency: data.urgency
-        };
-        saveToHistory(historyData);
-        onReportSubmitted(historyData);
+        // onReportSubmitted will trigger a re-fetch in ImpactHistory via the refreshTrigger prop in parent
+        onReportSubmitted(null);
 
         // Generate PDF
         generatePDF(

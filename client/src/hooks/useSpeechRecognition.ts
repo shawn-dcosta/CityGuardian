@@ -1,10 +1,10 @@
-import { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 export const useSpeechRecognition = () => {
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState('');
   const [isSupported, setIsSupported] = useState(false);
-  const [recognition, setRecognition] = useState<any>(null);
+  const recognitionRef = React.useRef<any>(null);
 
   useEffect(() => {
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
@@ -34,7 +34,7 @@ export const useSpeechRecognition = () => {
         setIsListening(false);
       };
 
-      setRecognition(recognitionInstance);
+      recognitionRef.current = recognitionInstance;
       setIsSupported(true);
     } else {
       setIsSupported(false);
@@ -42,21 +42,21 @@ export const useSpeechRecognition = () => {
   }, []);
 
   const startListening = useCallback(() => {
-    if (recognition && !isListening) {
+    if (recognitionRef.current && !isListening) {
       try {
         setTranscript('');
-        recognition.start();
+        recognitionRef.current.start();
       } catch (error) {
         console.error('Error starting recognition:', error);
       }
     }
-  }, [recognition, isListening]);
+  }, [isListening]);
 
   const stopListening = useCallback(() => {
-    if (recognition && isListening) {
-      recognition.stop();
+    if (recognitionRef.current && isListening) {
+      recognitionRef.current.stop();
     }
-  }, [recognition, isListening]);
+  }, [isListening]);
 
   return {
     isListening,

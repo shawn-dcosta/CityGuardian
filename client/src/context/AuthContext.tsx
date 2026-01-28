@@ -7,6 +7,7 @@ interface User {
     name: string;
     email: string;
     role: 'public' | 'admin';
+    reportIds?: string[];
 }
 
 interface AuthContextType {
@@ -15,6 +16,7 @@ interface AuthContextType {
     loading: boolean;
     login: (token: string, user: User) => void;
     logout: () => void;
+    refreshUser: () => Promise<void>;
     isAuthenticated: boolean;
 }
 
@@ -61,6 +63,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         delete axios.defaults.headers.common['x-auth-token'];
     };
 
+    const refreshUser = async () => {
+        if (token) {
+            try {
+                const res = await axios.get(`${AUTH_API_URL}/auth/me`);
+                setUser(res.data);
+            } catch (error) {
+                console.error('Refresh User Error:', error);
+            }
+        }
+    };
+
     return (
         <AuthContext.Provider value={{
             user,
@@ -68,6 +81,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             loading,
             login,
             logout,
+            refreshUser,
             isAuthenticated: !!user
         }}>
             {children}

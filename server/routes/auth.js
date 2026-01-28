@@ -19,7 +19,7 @@ router.post('/register', async (req, res) => {
             name,
             email,
             password,
-            role: role || 'public',
+            role: ['public', 'admin'].includes(role) ? role : 'public',
             authProvider: 'local'
         });
 
@@ -104,6 +104,9 @@ router.post('/google', async (req, res) => {
         if (user) {
             // Update googleId if not present (migration case)
             if (!user.googleId) {
+                if (!['public', 'admin'].includes(user.role)) {
+                    user.role = 'public';
+                }
                 user.googleId = googleId;
                 user.authProvider = 'google'; // or hybrid
                 await user.save();
@@ -128,6 +131,37 @@ router.post('/google', async (req, res) => {
     } catch (err) {
         console.error('Google Auth Error:', err.message);
         res.status(500).send('Server Error');
+    }
+});
+
+// Add Report to User
+router.put('/add-report', async (req, res) => {
+    const token = req.header('x-auth-token');
+    if (!token) return res.status(401).json({ msg: 'No token, authorization denied' });
+
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const { reportId } = req.body;
+
+        if (!reportId) {
+            return res.status(400).json({ msg: 'Report ID is required' });
+        }
+
+        const user = await User.findById(decoded.user.id);
+        if (!user) {
+            return res.status(404).json({ msg: 'User not found' });
+        }
+
+        // Add to reportIds if not already present
+        if (!user.reportIds.includes(reportId)) {
+            user.reportIds.push(reportId);
+            await user.save();
+        }
+
+        res.json(user.reportIds);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server error');
     }
 });
 
