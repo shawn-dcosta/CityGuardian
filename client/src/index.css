@@ -1,0 +1,74 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  @apply w-2;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-100 dark:bg-deep-charcoal-800;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-400 dark:bg-deep-charcoal-600 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-500 dark:bg-deep-charcoal-500;
+}
+
+/* Glassmorphic Base */
+.glass-card {
+  @apply backdrop-blur-xl bg-white/80 dark:bg-deep-charcoal-800/80 border border-gray-200/50 dark:border-gray-700/50 shadow-2xl;
+}
+
+.glass-input {
+  @apply backdrop-blur-md bg-white/50 dark:bg-deep-charcoal-700/50 border border-gray-300/50 dark:border-gray-600/50;
+  @apply focus:ring-2 focus:ring-electric-blue-500 focus:border-transparent;
+  @apply transition-all duration-300;
+}
+
+/* Skeleton Loading */
+.skeleton {
+  @apply animate-shimmer;
+  background: linear-gradient(
+    90deg,
+    #e0e0e0 25%,
+    #f5f5f5 37%,
+    #e0e0e0 63%
+  );
+  background-size: 200% 100%;
+}
+
+.dark .skeleton {
+  background: linear-gradient(
+    90deg,
+    #2a2a2a 25%,
+    #3a3a3a 37%,
+    #2a2a2a 63%
+  );
+  background-size: 200% 100%;
+}
+
+/* Leaflet Map Dark Mode */
+.dark .leaflet-container {
+  @apply bg-deep-charcoal-800;
+}
+
+/* Body Transitions */
+body {
+  @apply transition-colors duration-300;
+}
+
+/* Smooth Animations */
+* {
+  @apply transition-colors duration-200;
+}
+
+/* Custom Focus Rings */
+.focus-ring {
+  @apply focus:outline-none focus:ring-2 focus:ring-electric-blue-500 focus:ring-offset-2;
+  @apply dark:focus:ring-offset-deep-charcoal-900;
+}
