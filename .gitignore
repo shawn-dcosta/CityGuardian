@@ -30,4 +30,6 @@ __pycache__/
 .venv/
 venv/
 env/
-.pytest_cache/
+
+# Documentation
+feature_suggestions.md
