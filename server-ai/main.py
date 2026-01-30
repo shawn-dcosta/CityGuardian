@@ -285,6 +285,35 @@ async def send_report(
         "ai_description": complaint if image else None 
     }
 
+# --- ANALYSIS ENDPOINT (New) ---
+@app.post("/analyze-image")
+async def analyze_image(image: UploadFile = File(...)):
+    try:
+        image_bytes = await image.read()
+        
+        # 1. Verify if it's a civic issue
+        v_check = vision_verifier(image_bytes)
+        if not v_check.get("valid"):
+             return {"valid": False, "suggestion": "Not a civic issue detected."}
+
+        # 2. Generate Description
+        description = vision_description_agent(image_bytes)
+        if not description:
+            return {"valid": False, "suggestion": "Could not identify issue."}
+
+        # 3. Classify to get a short category name (e.g. "Pothole", "Street Light")
+        cl = classification_agent(description)
+        category = cl.get('category', 'General Issue')
+        
+        return {
+            "valid": True,
+            "suggestion": f"{category} Detected",
+            "description": description
+        }
+    except Exception as e:
+        print(f"Analysis Error: {e}")
+        raise HTTPException(status_code=500, detail="AI Analysis failed")
+
 # --- REPORTS ENDPOINT (Proxy for Dashboard) ---
 @app.get("/reports")
 async def get_reports():

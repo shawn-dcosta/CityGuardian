@@ -29,6 +29,8 @@ const ReportingForm: React.FC<ReportingFormProps> = ({ location, addToast, onRep
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [aiSuggestion, setAiSuggestion] = useState<string | null>(null);
 
   const { isListening, transcript, isSupported, startListening } = useSpeechRecognition();
 
@@ -50,8 +52,43 @@ const ReportingForm: React.FC<ReportingFormProps> = ({ location, addToast, onRep
     if (file) {
       setImageFile(file);
       const reader = new FileReader();
-      reader.onloadend = () => {
+      reader.onloadend = async () => {
         setImagePreview(reader.result as string);
+
+        // Real AI Analysis
+        setIsAnalyzing(true);
+        setAiSuggestion(null);
+
+        const analysisPayload = new FormData();
+        analysisPayload.append('image', file);
+
+        try {
+          const response = await axios.post('http://127.0.0.1:8000/analyze-image', analysisPayload, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+          });
+
+          const data = response.data;
+          if (data.valid) {
+            setAiSuggestion(data.suggestion);
+            addToast(`✔️ AI Analysis: ${data.suggestion}`, 'success');
+
+            // Auto-fill description if empty (using functional update to access latest state if needed, or just assume current state is fresh enough)
+            setFormData(prev => {
+              if (!prev.complaint.trim()) {
+                return { ...prev, complaint: data.description };
+              }
+              return prev;
+            });
+          } else {
+            setAiSuggestion('⚠️ Issue Unclear');
+            addToast(data.suggestion || 'Issue not clearly visible', 'warning');
+          }
+        } catch (error) {
+          console.error("AI Analysis failed", error);
+          setAiSuggestion('Analysis Failed');
+        } finally {
+          setIsAnalyzing(false);
+        }
       };
       reader.readAsDataURL(file);
     }
@@ -321,11 +358,33 @@ const ReportingForm: React.FC<ReportingFormProps> = ({ location, addToast, onRep
                 alt="Preview"
                 className="w-full max-h-48 object-cover"
               />
+
+              {/* AI Scanning Overlay */}
+              {isAnalyzing && (
+                <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center">
+                  <div className="relative w-full h-1 bg-blue-500/50 absolute top-0 animate-[scan_2s_ease-in-out_infinite]" />
+                  <Loader className="w-8 h-8 text-electric-blue-400 animate-spin mb-2" />
+                  <p className="text-white font-bold text-sm tracking-wider animate-pulse">AI ANALYZING...</p>
+                </div>
+              )}
+
+              {/* AI Suggestion Badge */}
+              {!isAnalyzing && aiSuggestion && (
+                <motion.div
+                  initial={{ y: -20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  className="absolute top-2 left-2 bg-electric-blue-600/90 backdrop-blur-sm text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg border border-white/20"
+                >
+                  🤖 {aiSuggestion}
+                </motion.div>
+              )}
+
               <motion.button
                 type="button"
                 onClick={() => {
                   setImageFile(null);
                   setImagePreview(null);
+                  setAiSuggestion(null);
                 }}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}

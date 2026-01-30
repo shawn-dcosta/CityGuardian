@@ -44,11 +44,11 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleTheme }) => {
           <div className="flex items-center gap-4">
             {/* Navigation Links */}
             <div className="hidden md:flex items-center gap-2">
-              <Link to="/">
+              <Link to="/report">
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className={`px-4 py-2 rounded-lg font-medium transition-all flex items-center gap-2 ${!isDashboard
+                  className={`px-4 py-2 rounded-lg font-medium transition-all flex items-center gap-2 ${location.pathname === '/report'
                     ? 'bg-electric-blue-500 text-white'
                     : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
                     }`}
@@ -59,17 +59,33 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleTheme }) => {
               </Link>
 
               {isAuthenticated && user?.role === 'admin' && (
-                <Link to="/dashboard">
+                <Link to="/admin">
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className={`px-4 py-2 rounded-lg font-medium transition-all flex items-center gap-2 ${isDashboard
+                    className={`px-4 py-2 rounded-lg font-medium transition-all flex items-center gap-2 ${location.pathname === '/admin'
                       ? 'bg-electric-blue-500 text-white'
                       : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
                       }`}
                   >
                     <LayoutDashboard className="w-4 h-4" />
-                    Dashboard
+                    Admin Console
+                  </motion.button>
+                </Link>
+              )}
+
+              {isAuthenticated && (
+                <Link to="/dashboard">
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className={`px-4 py-2 rounded-lg font-medium transition-all flex items-center gap-2 ${isDashboard && location.pathname !== '/admin'
+                      ? 'bg-electric-blue-500 text-white'
+                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                      }`}
+                  >
+                    <User className="w-4 h-4" />
+                    My Dashboard
                   </motion.button>
                 </Link>
               )}
@@ -124,7 +140,7 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleTheme }) => {
         {/* Mobile Navigation */}
         <div className="md:hidden flex flex-col gap-2 mt-4">
           <div className="flex gap-2">
-            <Link to="/" className="flex-1">
+            <Link to="/report" className="flex-1">
               <motion.button
                 whileTap={{ scale: 0.95 }}
                 className="w-full px-4 py-2 rounded-lg font-medium bg-electric-blue-500 text-white flex items-center justify-center gap-2"
@@ -135,13 +151,13 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleTheme }) => {
             </Link>
 
             {isAuthenticated && user?.role === 'admin' && (
-              <Link to="/dashboard" className="flex-1">
+              <Link to="/admin" className="flex-1">
                 <motion.button
                   whileTap={{ scale: 0.95 }}
                   className="w-full px-4 py-2 rounded-lg font-medium bg-gray-100 dark:bg-deep-charcoal-800 text-gray-700 dark:text-gray-300 flex items-center justify-center gap-2"
                 >
                   <LayoutDashboard className="w-4 h-4" />
-                  Dashboard
+                  Admin
                 </motion.button>
               </Link>
             )}
