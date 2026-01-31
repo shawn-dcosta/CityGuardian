@@ -23,7 +23,7 @@ app = FastAPI(title="CityGuardian Pro – Agentic Backend (Gemini Edition)")
 # --- CORS ---
 origins = [
     "http://127.0.0.1:5500",
-    "https://city-guardian-yybm.vercel.app",
+    # "https://city-guardian-yybm.vercel.app",
     "https://city-guardian-n8n-integration.vercel.app",
     "https://cityguardian-react.vercel.app",
     "http://localhost:5173",
@@ -43,7 +43,7 @@ app.add_middleware(
 OFFICERS = [
     {"name": "Water Dept", "email": "shivamkillarikar007@gmail.com", "keywords": ["water", "leak", "pipe", "burst"]},
     {"name": "Sewage Dept", "email": "shivamkillarikar22@gmail.com", "keywords": ["sewage", "drain", "gutter", "overflow"]},
-    {"name": "Roads Dept", "email": "aishanidolan@gmail.com", "keywords": ["road", "pothole", "traffic", "pavement"]},
+    {"name": "Roads Dept", "email": "aishanidolan@gmail.com", "keywords": ["road", "pothole", "pavement"]},
     {"name": "Electric Dept", "email": "adityakillarikar@gmail.com", "keywords": ["light", "wire", "pole", "shock", "power"]},
     {"name": "Emergency Dept", "email": "dcostashawn@gmail.com", "keywords": ["assistance", "doctor", "ambulance", "medical", "accident"]},
 ]
@@ -90,9 +90,9 @@ def fetch_google_sheet_data(sheet_id):
 def vision_verifier(image_data: bytes):
     """Verifies if the image shows a legitimate civic issue."""
     try:
-        prompt = "Is this a civic issue (garbage, pothole, leak, broken light)? Respond ONLY in JSON: {'valid': true/false}"
+        prompt = "Analyze if this image shows ANY civic issue or emergency (e.g., road damage, waste, electrical hazard, water/sewage problem, public infrastructure damage, accidents, medical emergencies, fire, crime). If yes, return {'valid': true}. If it is a non-civic/non-emergency image (e.g., selfie, pet, indoor room, random object), return {'valid': false}. Respond ONLY in JSON."
         response = client.models.generate_content(
-            model='gemini-2.0-flash',
+            model='gemini-2.5-flash-lite',
             contents=[
                 prompt,
                 types.Part.from_bytes(data=image_data, mime_type="image/jpeg")
@@ -106,9 +106,9 @@ def vision_verifier(image_data: bytes):
 def vision_description_agent(image_data: bytes):
     """Generates a text description from an image for zero-click reporting."""
     try:
-        prompt = "Describe the civic issue in this photo in one clear, formal sentence. If none found, say 'None'."
+        prompt = "Describe the civic issue or emergency in this photo in one clear, formal sentence. If none found, say 'None'."
         response = client.models.generate_content(
-            model='gemini-2.0-flash',
+            model='gemini-2.5-flash-lite',
             contents=[
                 prompt,
                 types.Part.from_bytes(data=image_data, mime_type="image/jpeg")
@@ -121,13 +121,15 @@ def vision_description_agent(image_data: bytes):
 def classification_agent(complaint: str):
     """Categorizes the issue and sets urgency."""
     try:
-        prompt = f"Classify this civic complaint. Categories: Water, Sewage, Roads, Electric. Respond ONLY in JSON: {{'category': '...', 'urgency': 'low|medium|high'}}\n\nComplaint: {complaint}"
+        prompt = f"Classify this civic complaint into one of these exact categories: Water, Sewage, Roads, Electric, Emergency. \n- Use 'Emergency' for accidents, medical issues, fire, crime, or immediate danger.\n- Use 'Roads' for potholes, pavement issues, traffic.\n- Use 'Water' for leaks, pipes.\n- Use 'Sewage' for drainage, gutters.\n- Use 'Electric' for poles, wires, lights.\n\nRespond ONLY in JSON: {{'category': '...', 'urgency': 'low|medium|high'}}\n\nComplaint: {complaint}"
         response = client.models.generate_content(
-            model='gemini-2.0-flash',
+            model='gemini-2.5-flash-lite',
             contents=prompt
         )
         return json.loads(clean_gemini_json(response.text))
-    except: return {"category": "Roads", "urgency": "medium"}
+    except Exception as e:
+        print(f"Classification Error: {e}")
+        return {"category": "Uncategorized", "urgency": "medium"}
 
 def drafting_agent(name, email, complaint, location, category, urgency):
     """Drafts a formal municipal email body."""
@@ -154,7 +156,7 @@ Thank you,
 Reported Location: {location}
 """
         response = client.models.generate_content(
-            model='gemini-2.0-flash',
+            model='gemini-2.5-flash-lite',
             contents=prompt
         )
         return response.text
