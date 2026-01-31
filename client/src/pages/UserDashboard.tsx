@@ -16,9 +16,9 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ isDarkMode }) => {
     const [stats, setStats] = useState({
         total: 0,
         fixed: 0,
-        pending: 0,
-        points: 0 // Gamification points
+        pending: 0
     });
+    const [selectedReport, setSelectedReport] = useState<any>(null); // For Modal
 
     useEffect(() => {
         const loadUserReports = async () => {
@@ -39,14 +39,10 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ isDarkMode }) => {
                 const fixed = myReports.filter((r: any) => r.Status === 'Resolved').length;
                 const pending = myReports.filter((r: any) => r.Status !== 'Resolved').length;
 
-                // Simple Gamification: 50 points per report, 100 bonus for resolved
-                const points = (myReports.length * 50) + (fixed * 100);
-
                 setStats({
                     total: myReports.length,
                     fixed,
-                    pending,
-                    points
+                    pending
                 });
 
             } catch (err) {
@@ -82,10 +78,6 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ isDarkMode }) => {
                 </div>
 
                 <div className="flex items-center gap-4">
-                    <div className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-4 py-2 rounded-xl flex items-center gap-2 shadow-lg">
-                        <Award className="w-5 h-5" />
-                        <span className="font-bold">{stats.points} Impact Points</span>
-                    </div>
                     <Link
                         to="/report"
                         className="bg-electric-blue-600 hover:bg-electric-blue-700 text-white px-6 py-2 rounded-xl font-bold flex items-center gap-2 shadow-lg shadow-blue-500/30 transition-all hover:-translate-y-1"
@@ -181,14 +173,14 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ isDarkMode }) => {
                                         <div>
                                             <div className="flex items-center gap-3 mb-1">
                                                 <span className={`px-2 py-1 rounded-md text-xs font-bold uppercase tracking-wider ${report.Urgency === 'high' ? 'bg-red-100 text-red-600' :
-                                                        report.Urgency === 'medium' ? 'bg-yellow-100 text-yellow-600' : 'bg-blue-100 text-blue-600'
+                                                    report.Urgency === 'medium' ? 'bg-yellow-100 text-yellow-600' : 'bg-blue-100 text-blue-600'
                                                     }`}>
                                                     {report.Urgency} Priority
                                                 </span>
                                                 <span className="text-gray-400 text-sm">#{report.ID}</span>
                                             </div>
                                             <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-1">
-                                                {report.Category || 'General Issue'} - <span className="text-gray-500 dark:text-gray-400 font-normal">{report.issue || 'No description provided'}</span>
+                                                {report.Category || 'General Issue'} - <span className="text-gray-500 dark:text-gray-400 font-normal">{report.issue || report.Issue || 'No description provided'}</span>
                                             </h3>
                                             <p className="text-sm text-gray-400">{report.Date}</p>
                                         </div>
@@ -214,8 +206,8 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ isDarkMode }) => {
                                                 return (
                                                     <div key={step} className="flex flex-col items-center">
                                                         <div className={`w-8 h-8 rounded-full flex items-center justify-center border-2 transition-all duration-300 ${isActive
-                                                                ? 'bg-green-500 border-green-500 text-white'
-                                                                : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-400'
+                                                            ? 'bg-green-500 border-green-500 text-white'
+                                                            : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-400'
                                                             }`}>
                                                             {isCompleted ? <CheckCircle className="w-5 h-5" /> : <span className="text-xs font-bold">{stepNum}</span>}
                                                         </div>
@@ -233,7 +225,10 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ isDarkMode }) => {
                                     <span className="text-gray-500 dark:text-gray-400">
                                         Last update: {report.lastUpdated || 'Just now'}
                                     </span>
-                                    <button className="text-electric-blue-600 hover:text-electric-blue-700 font-medium">
+                                    <button
+                                        onClick={() => setSelectedReport(report)}
+                                        className="text-electric-blue-600 hover:text-electric-blue-700 font-medium"
+                                    >
                                         View Details &rarr;
                                     </button>
                                 </div>
@@ -242,6 +237,88 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ isDarkMode }) => {
                     })
                 )}
             </div>
+            {/* Report Details Modal */}
+            {selectedReport && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={() => setSelectedReport(null)}>
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="bg-white dark:bg-gray-800 w-full max-w-lg rounded-2xl shadow-2xl p-6 relative overflow-hidden"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <button
+                            onClick={() => setSelectedReport(null)}
+                            className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+                        >
+                            <Plus className="w-6 h-6 rotate-45" />
+                        </button>
+
+                        <div className="mb-6">
+                            <span className={`inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-3 ${selectedReport.Urgency === 'high' ? 'bg-red-100 text-red-600' :
+                                    selectedReport.Urgency === 'medium' ? 'bg-yellow-100 text-yellow-600' : 'bg-blue-100 text-blue-600'
+                                }`}>
+                                {selectedReport.Urgency} Priority
+                            </span>
+                            <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-2">
+                                {selectedReport.Category || 'Issue Request'}
+                            </h2>
+                            <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
+                                {selectedReport.issue || selectedReport.Issue || 'No description provided.'}
+                            </p>
+                        </div>
+
+                        <div className="space-y-4 bg-gray-50 dark:bg-gray-700/30 p-4 rounded-xl mb-6">
+                            <div className="flex items-start gap-3">
+                                <Clock className="w-5 h-5 text-electric-blue-500 mt-0.5" />
+                                <div>
+                                    <h4 className="font-bold text-gray-800 dark:text-white text-sm">Estimated Resolution</h4>
+                                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                                        {selectedReport.Urgency === 'high' ? 'Within 24 Hours' :
+                                            selectedReport.Urgency === 'medium' ? '3 - 5 Business Days' : '7 - 10 Business Days'}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="flex items-start gap-3">
+                                <Award className="w-5 h-5 text-purple-500 mt-0.5" />
+                                <div>
+                                    <h4 className="font-bold text-gray-800 dark:text-white text-sm">Assigned Department</h4>
+                                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                                        {selectedReport.Category === 'Water' ? 'Water Supply Dept.' :
+                                            selectedReport.Category === 'Electric' ? 'Electricity Board' :
+                                                selectedReport.Category === 'Roads' ? 'Public Works Dept.' :
+                                                    selectedReport.Category === 'Emergency' ? 'Emergency Response Team' : 'City Municipal Corp.'}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="flex items-start gap-3">
+                                <MapPin className="w-5 h-5 text-red-500 mt-0.5" />
+                                <div>
+                                    <h4 className="font-bold text-gray-800 dark:text-white text-sm">Location</h4>
+                                    <a
+                                        href={`https://www.google.com/maps?q=${selectedReport.Location}`}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        className="text-sm text-electric-blue-600 hover:underline"
+                                    >
+                                        View on Google Maps
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="flex justify-end">
+                            <button
+                                onClick={() => setSelectedReport(null)}
+                                className="px-5 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-800 dark:text-white rounded-xl font-medium transition-colors"
+                            >
+                                Close Values
+                            </button>
+                        </div>
+                    </motion.div>
+                </div>
+            )}
         </div>
     );
 };
