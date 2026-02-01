@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Plus, Award, Activity, CheckCircle, Clock, MapPin, AlertTriangle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { fetchReportsData } from '../services/dataService';
@@ -20,6 +20,8 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ isDarkMode }) => {
     });
     const [selectedReport, setSelectedReport] = useState<any>(null); // For Modal
 
+    const location = useLocation();
+
     useEffect(() => {
         const loadUserReports = async () => {
             if (!user) return;
@@ -29,6 +31,24 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ isDarkMode }) => {
                 // Filter for current user's reports based on stored IDs
                 const userReportIds = user.reportIds || [];
                 const myReports = allReports.filter((r: any) => userReportIds.includes(r.ID));
+
+                // Optimistic UI: Check for new report passed via navigation
+                const newReport = (location.state as any)?.newReport;
+                if (newReport && !myReports.find((r: any) => r.ID === newReport.id)) {
+                    // Normalize new report to match existing structure
+                    const optimisticReport = {
+                        ID: newReport.id,
+                        Status: 'Pending',
+                        Category: newReport.category,
+                        Urgency: newReport.urgency,
+                        Issue: newReport.issue,
+                        Date: newReport.date,
+                        Location: newReport.location,
+                        lat: 0, // Placeholder
+                        lon: 0  // Placeholder 
+                    };
+                    myReports.unshift(optimisticReport);
+                }
 
                 // Sort by date descending (assuming generic ID/date field, might need adjustment based on real data)
                 myReports.sort((a: any, b: any) => parseInt(b.ID) - parseInt(a.ID));
@@ -53,7 +73,7 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ isDarkMode }) => {
         };
 
         loadUserReports();
-    }, [user]);
+    }, [user, location.state]);
 
     const getStatusStep = (status: string) => {
         switch (status.toLowerCase()) {
@@ -255,7 +275,7 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ isDarkMode }) => {
 
                         <div className="mb-6">
                             <span className={`inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-3 ${selectedReport.Urgency === 'high' ? 'bg-red-100 text-red-600' :
-                                    selectedReport.Urgency === 'medium' ? 'bg-yellow-100 text-yellow-600' : 'bg-blue-100 text-blue-600'
+                                selectedReport.Urgency === 'medium' ? 'bg-yellow-100 text-yellow-600' : 'bg-blue-100 text-blue-600'
                                 }`}>
                                 {selectedReport.Urgency} Priority
                             </span>

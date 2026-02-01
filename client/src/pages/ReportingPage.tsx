@@ -17,10 +17,10 @@ const ReportingPage: React.FC<ReportingPageProps> = ({ isDarkMode, addToast }) =
     const navigate = useNavigate();
     const location = useGeolocation();
 
-    const handleReportSubmitted = () => {
+    const handleReportSubmitted = (data: any) => {
         // Redirect to dashboard after successful submission
         setTimeout(() => {
-            navigate('/dashboard');
+            navigate('/dashboard', { state: { newReport: data } });
         }, 1500);
     };
 

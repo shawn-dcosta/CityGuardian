@@ -165,7 +165,7 @@ const ReportingForm: React.FC<ReportingFormProps> = ({ location, addToast, onRep
 
         // Save to history
         // onReportSubmitted will trigger a re-fetch in ImpactHistory via the refreshTrigger prop in parent
-        onReportSubmitted(null);
+        onReportSubmitted(data);
 
         // Generate PDF
         generatePDF(
