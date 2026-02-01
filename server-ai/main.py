@@ -5,6 +5,7 @@ import pandas as pd
 import uuid
 import re 
 import base64
+from datetime import datetime
 
 # Import Agents and Utils (Simplified)
 from agents import (
@@ -14,7 +15,8 @@ from agents import (
     vision_verifier, 
     vision_description_agent, 
     classification_agent,
-    process_report_background
+    dispatch_notifications,
+    sync_report_data
 )
 
 # 1. INITIALIZATION
@@ -122,9 +124,19 @@ async def send_report(
     if not dept: 
         dept = next((d for d in OFFICERS if d['name'].split()[0].lower() in cat.lower()), OFFICERS[0])
 
-    # 4. BACKGROUND PROCESSING (Agent 0 Orchestration)
+    # 4. DATA SYNC (Synchronous - Critical Path)
+    # We await this to ensure data is saved before confirming success to user.
+    try:
+        await sync_report_data(report_id, name, email, complaint, cat, urg, latitude, longitude)
+    except Exception as e:
+        logger.error(f"Critical Data Sync Failed: {e}")
+        # If persistence fails, deciding whether to fail the request or return partial success.
+        # "Right way" = Fail request so user knows to retry.
+        raise HTTPException(status_code=500, detail="Failed to save report to database. Please try again.")
+
+    # 5. SIDE EFFECTS (Background - Notifications)
     background_tasks.add_task(
-        process_report_background,
+        dispatch_notifications,
         report_id, name, email, complaint, latitude, longitude, address, cat, urg, dept, img_b64
     )
 

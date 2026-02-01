@@ -1,5 +1,5 @@
 from .utils import logger, calculate_distance
-from .agent_0_city_brain import process_report_background
+from .agent_0_city_brain import dispatch_notifications
 from .agent_1_citizen_engagement import (
     vision_verifier, 
     vision_description_agent, 
