@@ -50,4 +50,12 @@ server-ai/list_models.py
 server-ai/test_models.py
 server-ai/test_availability.py
 server-ai/verify_imports.py
+server-ai/test_duplicate_flow.py
+server-ai/debug_sheet.py
 
+# Consolidated Client Ignores
+dist-ssr
+*.local
+pnpm-debug.log*
+lerna-debug.log*
+logs

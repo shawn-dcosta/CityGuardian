@@ -7,4 +7,9 @@ from .agent_1_citizen_engagement import (
     drafting_agent
 )
 from .agent_3_emergency_response import trigger_emergency_dispatch
-from .agent_4_data_insights import fetch_google_sheet_data, sync_report_data
+from .agent_4_data_insights import (
+    fetch_google_sheet_data, 
+    sync_report_data,
+    check_semantic_duplicate,
+    send_upvote_event
+)

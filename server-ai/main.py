@@ -16,8 +16,14 @@ from agents import (
     vision_description_agent, 
     classification_agent,
     dispatch_notifications,
-    sync_report_data
+    classification_agent,
+    dispatch_notifications,
+    sync_report_data,
+    check_semantic_duplicate,
+    send_upvote_event
 )
+from fastapi.responses import JSONResponse
+from pydantic import BaseModel
 
 # 1. INITIALIZATION
 load_dotenv(override=True)
@@ -88,27 +94,54 @@ async def send_report(
     if not complaint:
         raise HTTPException(status_code=400, detail="No complaint text or image provided.")
 
-    # 2. DUPLICATE CHECK (Geospatial + Keyword)
+    # 2. DUPLICATE CHECK (Geospatial + Semantic)
     try:
         df = await fetch_google_sheet_data(SHEET_ID)
+        duplicate_id = None
+        original_issue_text = ""
+        
         if df is not None:
-             df.columns = [c.strip() for c in df.columns]
+             # Normalize columns to lowercase for consistent access
+             df.columns = [c.strip().lower() for c in df.columns]
 
-        if df is not None and {"Status", "Location", "issue"}.issubset(df.columns):
-            pending = df[df["Status"].astype(str).str.lower().str.strip() == "pending"]
-            keywords = {"pothole", "drainage", "leak", "garbage", "light", "sewage", "wire"}
-            current_keywords = {k for k in keywords if k in complaint.lower()}
+        # Check for required columns (lowercase)
+        if df is not None and {"status", "location", "issue", "id"}.issubset(df.columns):
+            # Filter for Pending status (case-insensitive value check)
+            pending = df[df["status"].astype(str).str.lower().str.strip() == "pending"]
+            potential_candidates = []
 
             for _, row in pending.iterrows():
-                loc_str = str(row["Location"]).replace(" ", "")
+                loc_str = str(row["location"]).replace(" ", "")
                 if ',' in loc_str:
                     try:
                         ex_lat, ex_lon = map(float, loc_str.split(','))
                         if calculate_distance(latitude, longitude, ex_lat, ex_lon) < 50:
-                            existing_issue = str(row.get("issue", "")).lower()
-                            if any(k in existing_issue for k in current_keywords):
-                                raise HTTPException(status_code=409, detail="A similar report is already active in this area.")
+                             potential_candidates.append({
+                                 "id": str(row.get("id")),
+                                 "issue": str(row.get("issue", ""))
+                             })
                     except ValueError: continue
+            
+            # Semantic Check
+            if potential_candidates:
+                duplicate_id = await check_semantic_duplicate(complaint, potential_candidates)
+                if duplicate_id:
+                     # Find the original issue text for context
+                     original = next((p for p in potential_candidates if p["id"] == duplicate_id), None)
+                     original_issue_text = original["issue"] if original else "Similar Report"
+
+        if duplicate_id:
+            # Return specific 409 Conflict with Data
+            return JSONResponse(
+                status_code=409, 
+                content={
+                    "status": "duplicate_found",
+                    "message": "A similar issue was reported here recently.",
+                    "original_report_id": duplicate_id,
+                    "original_issue": original_issue_text
+                }
+            )
+
     except HTTPException: raise
     except Exception as e: logger.error(f"Duplicate check log: {e}")
 
@@ -180,6 +213,19 @@ async def analyze_image(image: UploadFile = File(...)):
     except Exception as e:
         logger.error(f"Analysis Error: {e}")
         raise HTTPException(status_code=500, detail="AI Analysis failed")
+
+# --- UPVOTE ENDPOINT ---
+class UpvoteRequest(BaseModel):
+    report_id: str
+    user_email: str
+
+@app.post("/upvote-report")
+async def upvote_report(request: UpvoteRequest):
+    success = await send_upvote_event(request.report_id, request.user_email)
+    if success:
+        return {"status": "success", "message": "Report upvoted and subscribed."}
+    else:
+        raise HTTPException(status_code=500, detail="Failed to process upvote.")
 
 # --- REPORTS ENDPOINT ---
 @app.get("/reports")
