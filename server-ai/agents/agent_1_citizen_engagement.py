@@ -102,9 +102,13 @@ async def analyze_civic_image(image_data: bytes):
     if response:
         try:
             return json.loads(clean_gemini_json(response.text))
-        except: pass
+        except Exception as e:
+            print(f"!!! JSON PARSE ERROR: {e}")
+            print(f"!!! RAW RESPONSE: {response.text}")
+            pass
             
     # Fallback default
+    print("!!! FALLBACK TRIGGERED: Returning General Issue")
     return {
         "valid": True, 
         "description": "Issue detected from image.", 

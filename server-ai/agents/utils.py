@@ -44,4 +44,5 @@ async def generate_content_async(contents, model=GEMINI_MODEL):
         return response
     except Exception as e:
         logger.error(f"Gemini API Error: {e}")
+        print(f"!!! GEMINI API ERROR: {e}") # Explicit print for user visibility
         return None
