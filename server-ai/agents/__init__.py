@@ -4,7 +4,8 @@ from .agent_1_citizen_engagement import (
     vision_verifier, 
     vision_description_agent, 
     classification_agent, 
-    drafting_agent
+    drafting_agent,
+    analyze_civic_image
 )
 from .agent_3_emergency_response import trigger_emergency_dispatch
 from .agent_4_data_insights import (

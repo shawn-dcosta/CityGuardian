@@ -20,7 +20,9 @@ from agents import (
     dispatch_notifications,
     sync_report_data,
     check_semantic_duplicate,
-    send_upvote_event
+    check_semantic_duplicate,
+    send_upvote_event,
+    analyze_civic_image
 )
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
@@ -75,21 +77,27 @@ async def send_report(
     img_b64 = None
     image_bytes = None
     
+    # Defaults
+    cat = 'Roads'
+    urg = 'medium'
+    
     if image:
         image_bytes = await image.read()
-        # Keep base64 for Maileroo/email attachment
         img_b64 = base64.b64encode(image_bytes).decode()
         
-        # Vision validation
-        v_check = await vision_verifier(image_bytes)
-        if not v_check.get("valid"):
+        # MASTER AGENT CALL (1 Call)
+        analysis = await analyze_civic_image(image_bytes)
+        
+        if not analysis.get("valid"):
             raise HTTPException(status_code=400, detail="Image rejected: Not a civic issue.")
 
-        # Zero-Click Logic
+        # Auto-fill description if missing
         if not complaint or complaint.strip() == "" or complaint.lower() == "undefined":
-            complaint = await vision_description_agent(image_bytes)
-            if not complaint:
-                raise HTTPException(status_code=400, detail="Could not identify issue from image.")
+            complaint = analysis.get("description", "Issue detected.")
+
+        # Use AI classification
+        cat = analysis.get("category", "General")
+        urg = analysis.get("urgency", "medium")
 
     if not complaint:
         raise HTTPException(status_code=400, detail="No complaint text or image provided.")
@@ -122,7 +130,7 @@ async def send_report(
                              })
                     except ValueError: continue
             
-            # Semantic Check
+            # Semantic Check (1 Call - Conditional)
             if potential_candidates:
                 duplicate_id = await check_semantic_duplicate(complaint, potential_candidates)
                 if duplicate_id:
@@ -145,11 +153,14 @@ async def send_report(
     except HTTPException: raise
     except Exception as e: logger.error(f"Duplicate check log: {e}")
 
-    # 3. CLASSIFICATION & ROUTING (Agent 1)
+    # 3. CLASSIFICATION & ROUTING
+    # If we didn't use Image agent (text only), classify now
+    if not image:
+        cl = await classification_agent(complaint)
+        cat = cl.get('category', 'Roads')
+        urg = cl.get('urgency', 'medium')
+    
     report_id = str(uuid.uuid4())[:8]
-    cl = await classification_agent(complaint)
-    cat = cl.get('category', 'Roads')
-    urg = cl.get('urgency', 'medium')
 
     tokens = set(re.findall(r"\b[a-z]+\b", complaint.lower()))
     dept = next((d for d in OFFICERS if any(k in tokens for k in d['keywords'])), None)
@@ -191,24 +202,16 @@ async def analyze_image(image: UploadFile = File(...)):
     try:
         image_bytes = await image.read()
         
-        # 1. Verify
-        v_check = await vision_verifier(image_bytes)
-        if not v_check.get("valid"):
+        # MASTER VISUAL AGENT (1 Call)
+        analysis = await analyze_civic_image(image_bytes)
+        
+        if not analysis.get("valid"):
              return {"valid": False, "suggestion": "Not a civic issue detected."}
 
-        # 2. Description
-        description = await vision_description_agent(image_bytes)
-        if not description:
-            return {"valid": False, "suggestion": "Could not identify issue."}
-
-        # 3. Classify
-        cl = await classification_agent(description)
-        category = cl.get('category', 'General Issue')
-        
         return {
             "valid": True,
-            "suggestion": f"{category} Detected",
-            "description": description
+            "suggestion": f"{analysis.get('category', 'Issue')} Detected",
+            "description": analysis.get("description", "Issue detected.")
         }
     except Exception as e:
         logger.error(f"Analysis Error: {e}")

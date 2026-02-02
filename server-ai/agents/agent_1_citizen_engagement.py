@@ -72,3 +72,43 @@ Reported Location: {location}
 """
     response = await generate_content_async(contents=prompt)
     return response.text if response else f"Formal report for {category} issue at {location}. Details: {complaint}."
+
+async def analyze_civic_image(image_data: bytes):
+    """
+    Master Agent: Performs Verification, Description, and Classification in ONE call.
+    Reduces API usage by 3x.
+    """
+    prompt = """
+    Analyze this image for civic issues or emergencies.
+    1. Verify: Is this a valid civic issue (pothole, waste, electric, water, accident)? (bool)
+    2. Describe: Write ONE clear, formal sentence describing the issue.
+    3. Classify: Choose EXACTLY one: Water, Sewage, Roads, Electric, Emergency.
+    4. Urgency: Choose one: low, medium, high.
+
+    Respond ONLY in JSON:
+    {
+        "valid": boolean,
+        "description": "string",
+        "category": "string",
+        "urgency": "string",
+        "reason": "short reason for validity"
+    }
+    """
+    
+    response = await generate_content_async(
+        contents=[prompt, types.Part.from_bytes(data=image_data, mime_type="image/jpeg")]
+    )
+    
+    if response:
+        try:
+            return json.loads(clean_gemini_json(response.text))
+        except: pass
+            
+    # Fallback default
+    return {
+        "valid": True, 
+        "description": "Issue detected from image.", 
+        "category": "General", 
+        "urgency": "medium",
+        "reason": "Fallback"
+    }
