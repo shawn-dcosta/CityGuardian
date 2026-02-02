@@ -6,6 +6,7 @@ import axios from 'axios';
 import { generatePDF } from '../utils/helpers';
 import { useAuth } from '../context/AuthContext';
 import { AUTH_API_URL } from '../config';
+import DuplicateModal from './DuplicateModal';
 
 interface ReportingFormProps {
   location: {
@@ -32,7 +33,13 @@ const ReportingForm: React.FC<ReportingFormProps> = ({ location, addToast, onRep
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [aiSuggestion, setAiSuggestion] = useState<string | null>(null);
 
+  // Duplicate Handling
+  const [duplicateModalOpen, setDuplicateModalOpen] = useState(false);
+  const [duplicateData, setDuplicateData] = useState<{ id: string, issue: string, status: string, location: string } | null>(null);
+
   const { isListening, transcript, isSupported, startListening } = useSpeechRecognition();
+
+  // ... (existing useEffect and handlers)
 
   // Update complaint field when speech recognition completes
   useEffect(() => {
@@ -72,7 +79,7 @@ const ReportingForm: React.FC<ReportingFormProps> = ({ location, addToast, onRep
             setAiSuggestion(data.suggestion);
             addToast(`✔️ AI Analysis: ${data.suggestion}`, 'success');
 
-            // Auto-fill description if empty (using functional update to access latest state if needed, or just assume current state is fresh enough)
+            // Auto-fill description if empty
             setFormData(prev => {
               if (!prev.complaint.trim()) {
                 return { ...prev, complaint: data.description };
@@ -101,6 +108,32 @@ const ReportingForm: React.FC<ReportingFormProps> = ({ location, addToast, onRep
     }
     startListening();
     addToast('Listening... Please speak clearly', 'info');
+  };
+
+  const handleUpvote = async () => {
+    if (!duplicateData?.id) return;
+
+    const userEmail = user?.email || formData.email;
+    if (!userEmail) {
+      addToast("Please provide an email to upvote", "warning");
+      return;
+    }
+
+    try {
+      await axios.post('http://127.0.0.1:8000/upvote-report', {
+        report_id: duplicateData.id,
+        user_email: userEmail
+      });
+      addToast("Report upvoted & subscribed for updates!", "success");
+      setDuplicateModalOpen(false);
+      // Optional: Clear form or reset
+      setFormData({ name: '', email: '', complaint: '' });
+      setImageFile(null);
+      setImagePreview(null);
+    } catch (error) {
+      console.error("Upvote failed", error);
+      addToast("Failed to upvote report", "error");
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -145,14 +178,11 @@ const ReportingForm: React.FC<ReportingFormProps> = ({ location, addToast, onRep
 
       if (data.status === 'success') {
         // Link report to user if authenticated
-
-        // Logic for linking:
         if (isAuthenticated && user && token && data.id) {
           try {
             await axios.put(`${AUTH_API_URL}/auth/add-report`, { reportId: data.id }, {
               headers: { 'x-auth-token': token }
             });
-            // Critical: Refresh user profile to get the new reportId in local state
             await refreshUser();
           } catch (error) {
             console.error("Failed to link report to user:", error);
@@ -160,14 +190,8 @@ const ReportingForm: React.FC<ReportingFormProps> = ({ location, addToast, onRep
         }
 
         const finalDescription = formData.complaint.trim() || data.ai_description || 'Image-based report';
-
         addToast('Success! Downloading Receipt...', 'success');
-
-        // Save to history
-        // onReportSubmitted will trigger a re-fetch in ImpactHistory via the refreshTrigger prop in parent
         onReportSubmitted(data);
-
-        // Generate PDF
         generatePDF(
           formData.name || 'Anonymous',
           finalDescription,
@@ -175,7 +199,6 @@ const ReportingForm: React.FC<ReportingFormProps> = ({ location, addToast, onRep
           location.address
         );
 
-        // Reset form
         setFormData({ name: '', email: '', complaint: '' });
         setImageFile(null);
         setImagePreview(null);
@@ -187,7 +210,6 @@ const ReportingForm: React.FC<ReportingFormProps> = ({ location, addToast, onRep
     } catch (error: any) {
       console.error('Submission error:', error);
 
-      // Handle different error types with specific messages
       if (error.response) {
         const status = error.response.status;
         const detail = error.response.data?.detail || '';
@@ -195,38 +217,37 @@ const ReportingForm: React.FC<ReportingFormProps> = ({ location, addToast, onRep
 
         switch (status) {
           case 400:
-            // Bad Request - usually image validation failure
-            if (detail.toLowerCase().includes('not a civic issue') ||
-              detail.toLowerCase().includes('image rejected')) {
-              addToast('❌ Image Rejected: The uploaded image does not appear to show a civic issue. Please upload a photo of a pothole, broken light, leak, or similar problem.', 'error');
-            } else if (detail.toLowerCase().includes('description') ||
-              detail.toLowerCase().includes('photo')) {
-              addToast(detail, 'warning');
+            if (detail.toLowerCase().includes('not a civic issue') || detail.toLowerCase().includes('image rejected')) {
+              addToast('❌ Image Rejected: Not a civic issue.', 'error');
             } else {
-              addToast(detail || message || 'Invalid submission. Please check your inputs.', 'error');
+              addToast(detail || message || 'Invalid submission.', 'error');
             }
             break;
 
           case 409:
-            // Duplicate report
-            addToast('📍 Duplicate: This issue is already being handled in your area', 'warning');
+            // Capture Duplicate Data and Show Modal
+            const dupData = error.response.data;
+            setDuplicateData({
+              id: dupData.original_report_id,
+              issue: dupData.original_issue,
+              status: 'Pending', // Default/Inferred
+              location: location.address
+            });
+            setDuplicateModalOpen(true);
+            addToast('📍 Duplicate Found: Similar report exists nearby', 'info');
             break;
 
           case 500:
-            // Server error
-            addToast('🔧 Server Error: Something went wrong on our end. Please try again in a few moments.', 'error');
+            addToast('🔧 Server Error. Please try again.', 'error');
             break;
 
           default:
-            // Generic error with backend message
-            addToast(detail || message || `Error ${status}: Unable to submit report. Please try again.`, 'error');
+            addToast(`Error ${status}: Unable to submit report.`, 'error');
         }
       } else if (error.request) {
-        // Request made but no response (network error)
-        addToast('🌐 Connection Error: Unable to reach the server. Please check your internet connection and try again.', 'error');
+        addToast('🌐 Connection Error.', 'error');
       } else {
-        // Something else happened
-        addToast('⚠️ Unexpected Error: ' + error.message, 'error');
+        addToast('⚠️ Unexpected Error', 'error');
       }
     } finally {
       setIsSubmitting(false);
@@ -234,198 +255,207 @@ const ReportingForm: React.FC<ReportingFormProps> = ({ location, addToast, onRep
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="glass-card rounded-2xl p-6 shadow-2xl"
-    >
-      <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-100">
-        Report a Civic Issue
-      </h2>
+    <>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="glass-card rounded-2xl p-6 shadow-2xl"
+      >
+        <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-100">
+          Report a Civic Issue
+        </h2>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Name Input */}
-        <motion.div
-          initial={{ x: -20, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ delay: 0.1 }}
-        >
-          <input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleInputChange}
-            placeholder="Your Name"
-            required
-            className="w-full px-4 py-3 glass-input rounded-xl text-gray-800 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus-ring"
-          />
-        </motion.div>
-
-        {/* Email Input */}
-        <motion.div
-          initial={{ x: -20, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ delay: 0.2 }}
-        >
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleInputChange}
-            placeholder="Your Email"
-            required
-            className="w-full px-4 py-3 glass-input rounded-xl text-gray-800 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus-ring"
-          />
-        </motion.div>
-
-        {/* Complaint Textarea */}
-        <motion.div
-          initial={{ x: -20, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ delay: 0.3 }}
-        >
-          <textarea
-            name="complaint"
-            value={formData.complaint}
-            onChange={handleInputChange}
-            rows={4}
-            placeholder="Describe the issue (e.g., Pothole, broken light...)"
-            className="w-full px-4 py-3 glass-input rounded-xl text-gray-800 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus-ring resize-none"
-          />
-        </motion.div>
-
-        {/* Voice & Image Inputs */}
-        <motion.div
-          initial={{ x: -20, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ delay: 0.4 }}
-          className="grid grid-cols-2 gap-3"
-        >
-          <motion.button
-            type="button"
-            onClick={handleVoiceInput}
-            disabled={!isSupported || isListening}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            className={`flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-medium transition-all focus-ring ${isListening
-              ? 'bg-red-500 text-white'
-              : 'glass-input text-gray-700 dark:text-gray-300 hover:bg-gray-200/50 dark:hover:bg-gray-700/50'
-              } ${!isSupported ? 'opacity-50 cursor-not-allowed' : ''}`}
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Name Input */}
+          <motion.div
+            initial={{ x: -20, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ delay: 0.1 }}
           >
-            <Mic className={`w-5 h-5 ${isListening ? 'animate-pulse' : ''}`} />
-            {isListening ? 'Recording...' : isSupported ? 'Voice Input' : 'Not Supported'}
-          </motion.button>
-
-          <label className="relative cursor-pointer">
             <input
-              type="file"
-              accept="image/*"
-              onChange={handleImageChange}
-              className="hidden"
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleInputChange}
+              placeholder="Your Name"
+              required
+              className="w-full px-4 py-3 glass-input rounded-xl text-gray-800 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus-ring"
             />
-            <motion.div
+          </motion.div>
+
+          {/* Email Input */}
+          <motion.div
+            initial={{ x: -20, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ delay: 0.2 }}
+          >
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleInputChange}
+              placeholder="Your Email"
+              required
+              className="w-full px-4 py-3 glass-input rounded-xl text-gray-800 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus-ring"
+            />
+          </motion.div>
+
+          {/* Complaint Textarea */}
+          <motion.div
+            initial={{ x: -20, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ delay: 0.3 }}
+          >
+            <textarea
+              name="complaint"
+              value={formData.complaint}
+              onChange={handleInputChange}
+              rows={4}
+              placeholder="Describe the issue (e.g., Pothole, broken light...)"
+              className="w-full px-4 py-3 glass-input rounded-xl text-gray-800 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus-ring resize-none"
+            />
+          </motion.div>
+
+          {/* Voice & Image Inputs */}
+          <motion.div
+            initial={{ x: -20, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ delay: 0.4 }}
+            className="grid grid-cols-2 gap-3"
+          >
+            <motion.button
+              type="button"
+              onClick={handleVoiceInput}
+              disabled={!isSupported || isListening}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="flex items-center justify-center gap-2 px-4 py-3 glass-input rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-200/50 dark:hover:bg-gray-700/50 transition-all focus-ring h-full"
+              className={`flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-medium transition-all focus-ring ${isListening
+                ? 'bg-red-500 text-white'
+                : 'glass-input text-gray-700 dark:text-gray-300 hover:bg-gray-200/50 dark:hover:bg-gray-700/50'
+                } ${!isSupported ? 'opacity-50 cursor-not-allowed' : ''}`}
             >
-              <Upload className="w-5 h-5" />
-              <span className="font-medium">Upload Image</span>
-            </motion.div>
-          </label>
-        </motion.div>
+              <Mic className={`w-5 h-5 ${isListening ? 'animate-pulse' : ''}`} />
+              {isListening ? 'Recording...' : isSupported ? 'Voice Input' : 'Not Supported'}
+            </motion.button>
 
-        {/* Image upload hint */}
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
-          className="text-xs text-gray-500 dark:text-gray-400 -mt-2"
-        >
-          💡 Upload photos of: potholes, broken lights, water leaks, garbage, damaged roads, etc.
-        </motion.p>
-
-        {/* Image Preview */}
-        <AnimatePresence>
-          {imagePreview && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              className="relative rounded-xl overflow-hidden shadow-lg"
-            >
-              <img
-                src={imagePreview}
-                alt="Preview"
-                className="w-full max-h-48 object-cover"
+            <label className="relative cursor-pointer">
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                className="hidden"
               />
-
-              {/* AI Scanning Overlay */}
-              {isAnalyzing && (
-                <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center">
-                  <div className="relative w-full h-1 bg-blue-500/50 absolute top-0 animate-[scan_2s_ease-in-out_infinite]" />
-                  <Loader className="w-8 h-8 text-electric-blue-400 animate-spin mb-2" />
-                  <p className="text-white font-bold text-sm tracking-wider animate-pulse">AI ANALYZING...</p>
-                </div>
-              )}
-
-              {/* AI Suggestion Badge */}
-              {!isAnalyzing && aiSuggestion && (
-                <motion.div
-                  initial={{ y: -20, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  className="absolute top-2 left-2 bg-electric-blue-600/90 backdrop-blur-sm text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg border border-white/20"
-                >
-                  🤖 {aiSuggestion}
-                </motion.div>
-              )}
-
-              <motion.button
-                type="button"
-                onClick={() => {
-                  setImageFile(null);
-                  setImagePreview(null);
-                  setAiSuggestion(null);
-                }}
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-2 shadow-lg hover:bg-red-600 transition-colors"
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="flex items-center justify-center gap-2 px-4 py-3 glass-input rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-200/50 dark:hover:bg-gray-700/50 transition-all focus-ring h-full"
               >
-                <ImageIcon className="w-4 h-4" />
-              </motion.button>
-            </motion.div>
-          )}
-        </AnimatePresence>
+                <Upload className="w-5 h-5" />
+                <span className="font-medium">Upload Image</span>
+              </motion.div>
+            </label>
+          </motion.div>
 
-        {/* Submit Button */}
-        <motion.button
-          type="submit"
-          disabled={isSubmitting}
-          whileHover={{ scale: isSubmitting ? 1 : 1.02 }}
-          whileTap={{ scale: isSubmitting ? 1 : 0.98 }}
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.5 }}
-          className={`w-full py-4 rounded-xl font-bold text-white transition-all shadow-lg focus-ring ${isSubmitting
-            ? 'bg-gray-400 cursor-not-allowed'
-            : 'bg-gradient-to-r from-electric-blue-500 to-electric-blue-700 hover:from-electric-blue-600 hover:to-electric-blue-800'
-            }`}
-        >
-          <span className="flex items-center justify-center gap-2">
-            {isSubmitting ? (
-              <>
-                <Loader className="w-5 h-5 animate-spin" />
-                Processing...
-              </>
-            ) : (
-              <>
-                <Send className="w-5 h-5" />
-                Submit Report
-              </>
+          {/* Image upload hint */}
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5 }}
+            className="text-xs text-gray-500 dark:text-gray-400 -mt-2"
+          >
+            💡 Upload photos of: potholes, broken lights, water leaks, garbage, damaged roads, etc.
+          </motion.p>
+
+          {/* Image Preview */}
+          <AnimatePresence>
+            {imagePreview && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                className="relative rounded-xl overflow-hidden shadow-lg"
+              >
+                <img
+                  src={imagePreview}
+                  alt="Preview"
+                  className="w-full max-h-48 object-cover"
+                />
+
+                {/* AI Scanning Overlay */}
+                {isAnalyzing && (
+                  <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center">
+                    <div className="relative w-full h-1 bg-blue-500/50 absolute top-0 animate-[scan_2s_ease-in-out_infinite]" />
+                    <Loader className="w-8 h-8 text-electric-blue-400 animate-spin mb-2" />
+                    <p className="text-white font-bold text-sm tracking-wider animate-pulse">AI ANALYZING...</p>
+                  </div>
+                )}
+
+                {/* AI Suggestion Badge */}
+                {!isAnalyzing && aiSuggestion && (
+                  <motion.div
+                    initial={{ y: -20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    className="absolute top-2 left-2 bg-electric-blue-600/90 backdrop-blur-sm text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg border border-white/20"
+                  >
+                    🤖 {aiSuggestion}
+                  </motion.div>
+                )}
+
+                <motion.button
+                  type="button"
+                  onClick={() => {
+                    setImageFile(null);
+                    setImagePreview(null);
+                    setAiSuggestion(null);
+                  }}
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-2 shadow-lg hover:bg-red-600 transition-colors"
+                >
+                  <ImageIcon className="w-4 h-4" />
+                </motion.button>
+              </motion.div>
             )}
-          </span>
-        </motion.button>
-      </form>
-    </motion.div>
+          </AnimatePresence>
+
+          {/* Submit Button */}
+          <motion.button
+            type="submit"
+            disabled={isSubmitting}
+            whileHover={{ scale: isSubmitting ? 1 : 1.02 }}
+            whileTap={{ scale: isSubmitting ? 1 : 0.98 }}
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.5 }}
+            className={`w-full py-4 rounded-xl font-bold text-white transition-all shadow-lg focus-ring ${isSubmitting
+              ? 'bg-gray-400 cursor-not-allowed'
+              : 'bg-gradient-to-r from-electric-blue-500 to-electric-blue-700 hover:from-electric-blue-600 hover:to-electric-blue-800'
+              }`}
+          >
+            <span className="flex items-center justify-center gap-2">
+              {isSubmitting ? (
+                <>
+                  <Loader className="w-5 h-5 animate-spin" />
+                  Processing...
+                </>
+              ) : (
+                <>
+                  <Send className="w-5 h-5" />
+                  Submit Report
+                </>
+              )}
+            </span>
+          </motion.button>
+        </form>
+      </motion.div>
+
+      <DuplicateModal
+        isOpen={duplicateModalOpen}
+        onClose={() => setDuplicateModalOpen(false)}
+        originalReport={duplicateData}
+        onUpvote={handleUpvote}
+      />
+    </>
   );
 };
 
