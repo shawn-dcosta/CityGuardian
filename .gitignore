@@ -52,6 +52,7 @@ server-ai/test_availability.py
 server-ai/verify_imports.py
 server-ai/test_duplicate_flow.py
 server-ai/debug_sheet.py
+server-ai/debug_sheet_ids.py
 
 # Consolidated Client Ignores
 dist-ssr
