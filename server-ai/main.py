@@ -43,6 +43,7 @@ origins = [
     "http://localhost:5174",
     "http://127.0.0.1:5173",
     "http://127.0.0.1:5174",
+    "https://city-guardian.vercel.app",
 ]
 app.add_middleware(
     CORSMiddleware,
@@ -53,7 +54,8 @@ app.add_middleware(
 )
 
 # --- CONFIG & DATA ---
-SHEET_ID = '1-K1ChjL9UyGu8J187MGUYGU5qH3FhUuMFgEl-3CEwW0'
+# Defaulting to the hardcoded ID if not found in ENV (for local dev convenience)
+SHEET_ID = os.getenv('SHEET_ID', '1-K1ChjL9UyGu8J187MGUYGU5qH3FhUuMFgEl-3CEwW0')
 
 OFFICERS = [
     {"name": "Water Dept", "email": "shivamkillarikar007@gmail.com", "keywords": ["water", "leak", "pipe", "burst"]},
