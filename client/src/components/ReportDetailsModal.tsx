@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, MapPin, Calendar, Clock, AlertTriangle, CheckCircle, Tag, User, Download } from 'lucide-react';
-import jsPDF from 'jspdf';
+import { X, MapPin, Calendar, Clock, CheckCircle, Tag, User, Download } from 'lucide-react';
+
 import { generatePDF } from '../utils/helpers';
 
 interface ReportDetailsModalProps {

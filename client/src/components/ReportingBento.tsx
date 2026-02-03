@@ -1,6 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Camera, Upload, X, Loader2, CheckCircle, MapPin, AlertTriangle, Mic, Image as ImageIcon } from 'lucide-react';
+import { Camera, Upload, Loader2, CheckCircle, AlertTriangle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 import LocationMap from './LocationMap';

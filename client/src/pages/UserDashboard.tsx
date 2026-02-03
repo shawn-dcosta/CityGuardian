@@ -9,7 +9,7 @@ interface UserDashboardProps {
     isDarkMode: boolean;
 }
 
-const UserDashboard: React.FC<UserDashboardProps> = ({ isDarkMode }) => {
+const UserDashboard: React.FC<UserDashboardProps> = () => {
     const { user } = useAuth();
     const [reports, setReports] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);

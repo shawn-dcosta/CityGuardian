@@ -32,11 +32,7 @@ load_dotenv(override=True)
 
 app = FastAPI(title="CityGuardian Pro – Agentic Backend (Gemini Edition)")
 
-# Ensure uploads directory exists
-os.makedirs("uploads", exist_ok=True)
 
-# Mount Static Files for Image Access
-app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
 # --- CORS ---
 origins = [
@@ -190,17 +186,7 @@ async def send_report(
     # 4. DATA SYNC (Synchronous - Critical Path)
     # Save Image Locally if present (CRITICAL FIX)
     img_path = None
-    if image_bytes:
-        try:
-             import os
-             os.makedirs("uploads", exist_ok=True)
-             img_filename = f"uploads/{report_id}.jpg"
-             with open(img_filename, "wb") as f:
-                 f.write(image_bytes)
-             img_path = img_filename
-             logger.info(f"Image saved locally: {img_path}")
-        except Exception as e:
-            logger.error(f"Failed to save local image: {e}")
+
 
     # We await this to ensure data is saved before confirming success to user.
     try:
@@ -417,27 +403,7 @@ async def generate_report_pdf(report_id: str):
                          pdf.image(img_data, x=20, y=y+5, w=100)
                     else:
                         print(f"DEBUG: Failed to fetch remote image. Status: {resp.status_code}")
-            else:
-                 # Assume Local File Path (e.g. "uploads/xyz.jpg")
-                 import os
-                 cwd = os.getcwd()
-                 print(f"DEBUG: CWD is {cwd}")
-                 
-                 # Attempt to construct absolute path if it is relative
-                 if not os.path.isabs(img_url):
-                     abs_path = os.path.join(cwd, img_url)
-                 else:
-                     abs_path = img_url
-                 
-                 print(f"DEBUG: Checking local path: '{abs_path}'")
-                 
-                 if os.path.exists(abs_path):
-                      print(f"DEBUG: Image found locally.")
-                      pdf.text(20, y, "Evidence:")
-                      pdf.image(abs_path, x=20, y=y+5, w=100)
-                 else:
-                      print(f"DEBUG: Image NOT found at '{abs_path}'")
-                      logger.warning(f"Local image file not found: {img_url}")
+
 
         except Exception as e:
             print(f"DEBUG: Exception during image embedding: {e}")

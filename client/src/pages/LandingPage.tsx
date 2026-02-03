@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { Camera, MapPin, CheckCircle, ArrowRight, Shield, Zap, Users } from 'lucide-react';
+import { Camera, MapPin, CheckCircle, ArrowRight } from 'lucide-react';
 
 const LandingPage: React.FC = () => {
     const navigate = useNavigate();
