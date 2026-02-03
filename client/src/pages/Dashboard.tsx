@@ -6,9 +6,12 @@ import {
   Clock,
   TrendingUp,
   RefreshCw,
-  Activity
+  Activity,
+  ArrowRight
 } from 'lucide-react';
 import StatCard from '../components/StatCard';
+import ReportCard from '../components/ReportCard';
+import ReportDetailsModal from '../components/ReportDetailsModal';
 import StatusPieChart from '../components/StatusPieChart';
 import DepartmentBarChart from '../components/DepartmentBarChart';
 import HeatMap from '../components/HeatMap';
@@ -35,6 +38,10 @@ const Dashboard: React.FC<DashboardProps> = ({ isDarkMode }) => {
   const [loading, setLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState(new Date());
   const [autoRefresh] = useState(true);
+
+  // New State for Interactions
+  const [selectedReport, setSelectedReport] = useState<any>(null);
+  const [viewAll, setViewAll] = useState(false);
 
   const loadData = async () => {
     try {
@@ -180,99 +187,55 @@ const Dashboard: React.FC<DashboardProps> = ({ isDarkMode }) => {
           </div>
         </div>
 
-        {/* Recent Activity Table */}
+        {/* Recent Activity Grid (Bento Style) */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="glass-card rounded-2xl p-6"
+          className="mb-8"
         >
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100 flex items-center gap-2">
-              <Activity className="w-5 h-5" />
-              Recent Reports
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100 flex items-center gap-2">
+              <Activity className="w-5 h-5 text-electric-blue-500" />
+              {viewAll ? 'All Reports' : 'Live Reports Feed'}
             </h3>
-            <span className="text-sm text-gray-500 dark:text-gray-400">
-              Showing latest {Math.min(10, data.length)} reports
-            </span>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setViewAll(!viewAll)}
+                className="text-sm font-medium text-electric-blue-600 hover:text-electric-blue-700 dark:text-electric-blue-400 flex items-center gap-1 transition-colors"
+              >
+                {viewAll ? 'Show Less' : 'View All'}
+                <ArrowRight className={`w-4 h-4 transition-transform ${viewAll ? 'rotate-90' : ''}`} />
+              </button>
+            </div>
           </div>
 
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-gray-200 dark:border-gray-700">
-                  <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700 dark:text-gray-300">
-                    ID
-                  </th>
-                  <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700 dark:text-gray-300">
-                    Category
-                  </th>
-                  <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700 dark:text-gray-300">
-                    Issue
-                  </th>
-                  <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700 dark:text-gray-300">
-                    Urgency
-                  </th>
-                  <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700 dark:text-gray-300">
-                    Status
-                  </th>
-                  <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700 dark:text-gray-300">
-                    Date
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {data.slice(0, 10).map((report, index) => (
-                  <motion.tr
-                    key={report.ID || index}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.05 }}
-                    className="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
-                  >
-                    <td className="py-3 px-4 text-sm text-gray-600 dark:text-gray-400">
-                      #{report.ID || 'N/A'}
-                    </td>
-                    <td className="py-3 px-4 text-sm font-medium text-gray-800 dark:text-gray-200">
-                      {report.Category || 'Unknown'}
-                    </td>
-                    <td className="py-3 px-4 text-sm text-gray-600 dark:text-gray-400 max-w-xs truncate">
-                      {report.issue || report.Issue || 'No description'}
-                    </td>
-                    <td className="py-3 px-4">
-                      <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium capitalize ${report.Urgency === 'high'
-                        ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
-                        : report.Urgency === 'medium'
-                          ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400'
-                          : 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
-                        }`}>
-                        {report.Urgency || 'medium'}
-                      </span>
-                    </td>
-                    <td className="py-3 px-4">
-                      <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${report.Status === 'Resolved'
-                        ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
-                        : 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400'
-                        }`}>
-                        {report.Status || 'Pending'}
-                      </span>
-                    </td>
-                    <td className="py-3 px-4 text-sm text-gray-600 dark:text-gray-400">
-                      {report.Date || 'N/A'}
-                    </td>
-                  </motion.tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          {data.length === 0 && (
-            <div className="text-center py-12">
-              <p className="text-gray-500 dark:text-gray-400">No reports available yet</p>
+          {data.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {(viewAll ? data : data.slice(0, 8)).map((report, index) => (
+                <ReportCard
+                  key={report.ID || index}
+                  report={report}
+                  index={index}
+                  onClick={(r) => setSelectedReport(r)}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12 glass-card rounded-2xl">
+              <p className="text-gray-500 dark:text-gray-400">No reports available yet.</p>
             </div>
           )}
         </motion.div>
+
+
       </div>
-    </div>
+      {/* Report Details Modal */}
+      <ReportDetailsModal
+        isOpen={!!selectedReport}
+        report={selectedReport}
+        onClose={() => setSelectedReport(null)}
+      />
+    </div >
   );
 };
 
