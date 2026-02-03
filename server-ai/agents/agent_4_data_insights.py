@@ -98,18 +98,22 @@ async def fetch_google_sheet_data(sheet_id):
         logger.error(f"Error fetching sheet: {e}")
         return None
 
-async def sync_report_data(report_id, name, email, complaint, category, urgency, latitude, longitude):
+async def sync_report_data(report_id, name, email, complaint, category, urgency, latitude, longitude, image_path=None):
     """Syncs report data to the City Report Intake webhook."""
     async with httpx.AsyncClient() as http_client:
         try:
+            payload = {
+                "ID": report_id, "Date": datetime.now().strftime("%Y-%m-%d %H:%M"),
+                "name": name, "email": email, "issue": complaint,
+                "category": category, "urgency": urgency,
+                "location": f"{latitude},{longitude}", "Status": "Pending"
+            }
+            if image_path:
+                payload["image"] = image_path
+
             await http_client.post(
                 "https://sranger.app.n8n.cloud/webhook/city-report-intake",
-                json={
-                    "ID": report_id, "Date": datetime.now().strftime("%Y-%m-%d %H:%M"),
-                    "name": name, "email": email, "issue": complaint,
-                    "category": category, "urgency": urgency,
-                    "location": f"{latitude},{longitude}", "Status": "Pending"
-                },
+                json=payload,
                 timeout=5
             )
         except Exception as e: 

@@ -1,6 +1,6 @@
 import { jsPDF } from 'jspdf';
 
-export const generatePDF = (name: string, complaint: string, department: string, address: string) => {
+export const generatePDF = async (name: string, complaint: string, department: string, address: string, imageSource?: File | string | null) => {
   const doc = new jsPDF();
 
   // Header
@@ -25,6 +25,27 @@ export const generatePDF = (name: string, complaint: string, department: string,
   const splitText = doc.splitTextToSize(complaint, 160);
   doc.text(splitText, 20, 95);
 
+  let yPos = 95 + (splitText.length * 5) + 10;
+
+  // Add Image if present
+  if (imageSource) {
+    try {
+      let base64Img = '';
+      if (imageSource instanceof File) {
+        base64Img = await fileToBase64(imageSource);
+      } else if (typeof imageSource === 'string') {
+        base64Img = await urlToBase64(imageSource);
+      }
+
+      if (base64Img) {
+        doc.text('Attached Evidence:', 20, yPos);
+        doc.addImage(base64Img, 'JPEG', 20, yPos + 5, 100, 75); // Aspect ratio might vary, fixed for now
+      }
+    } catch (e) {
+      console.error("Failed to add image to PDF", e);
+    }
+  }
+
   // Footer
   doc.setFontSize(8);
   doc.setTextColor(128, 128, 128);
@@ -32,6 +53,44 @@ export const generatePDF = (name: string, complaint: string, department: string,
 
   // Download
   doc.save(`CityGuardian_Receipt_${Date.now()}.pdf`);
+};
+
+// Helper utilities for image conversion
+const fileToBase64 = (file: File): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = error => reject(error);
+  });
+};
+
+const urlToBase64 = (url: string): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    console.log("DEBUG: urlToBase64 called for:", url);
+    const img = new Image();
+    img.crossOrigin = 'Anonymous';
+    img.src = url;
+    img.onload = () => {
+      console.log("DEBUG: Image loaded successfully");
+      const canvas = document.createElement('canvas');
+      canvas.width = img.width;
+      canvas.height = img.height;
+      const ctx = canvas.getContext('2d');
+      ctx?.drawImage(img, 0, 0);
+      try {
+        const dataURL = canvas.toDataURL('image/jpeg');
+        resolve(dataURL);
+      } catch (e) {
+        console.error("DEBUG: Canvas toDataURL failed (CORS?):", e);
+        reject(e);
+      }
+    };
+    img.onerror = error => {
+      console.error("DEBUG: Image loading failed:", error);
+      reject(error);
+    };
+  });
 };
 
 export const saveToHistory = (reportData: any, userId: string = 'public') => {

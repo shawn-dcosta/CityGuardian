@@ -135,11 +135,12 @@ const ReportingBento: React.FC<ReportingBentoProps> = ({ isDarkMode, location, a
                 if (onReportSubmitted) onReportSubmitted(response.data);
 
                 // Generate Receipt
-                generatePDF(
+                await generatePDF(
                     user?.name || 'Anonymous',
                     description,
                     response.data.department || 'General',
-                    location.address
+                    location.address,
+                    image
                 );
             }
         } catch (error: any) {

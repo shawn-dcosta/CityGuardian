@@ -1,10 +1,12 @@
 from fastapi import FastAPI, UploadFile, File, Form, HTTPException, BackgroundTasks
+from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 import pandas as pd
 import uuid
 import re 
 import base64
+import os
 from datetime import datetime
 
 # Import Agents and Utils (Simplified)
@@ -16,21 +18,25 @@ from agents import (
     vision_description_agent, 
     classification_agent,
     dispatch_notifications,
-    classification_agent,
-    dispatch_notifications,
     sync_report_data,
-    check_semantic_duplicate,
     check_semantic_duplicate,
     send_upvote_event,
     analyze_civic_image
 )
 from fastapi.responses import JSONResponse
+import starlette.responses
 from pydantic import BaseModel
 
 # 1. INITIALIZATION
 load_dotenv(override=True)
 
 app = FastAPI(title="CityGuardian Pro – Agentic Backend (Gemini Edition)")
+
+# Ensure uploads directory exists
+os.makedirs("uploads", exist_ok=True)
+
+# Mount Static Files for Image Access
+app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
 # --- CORS ---
 origins = [
@@ -114,8 +120,6 @@ async def send_report(
         # Final safety check
         complaint = "No description provided."
 
-    # ... (Rest of function) ...
-
     # 2. DUPLICATE CHECK (Geospatial + Semantic)
     try:
         df = await fetch_google_sheet_data(SHEET_ID)
@@ -182,12 +186,26 @@ async def send_report(
     
     if not dept: 
         dept = next((d for d in OFFICERS if d['name'].split()[0].lower() in cat.lower()), OFFICERS[0])
-
+    
     # 4. DATA SYNC (Synchronous - Critical Path)
+    # Save Image Locally if present (CRITICAL FIX)
+    img_path = None
+    if image_bytes:
+        try:
+             import os
+             os.makedirs("uploads", exist_ok=True)
+             img_filename = f"uploads/{report_id}.jpg"
+             with open(img_filename, "wb") as f:
+                 f.write(image_bytes)
+             img_path = img_filename
+             logger.info(f"Image saved locally: {img_path}")
+        except Exception as e:
+            logger.error(f"Failed to save local image: {e}")
+
     # We await this to ensure data is saved before confirming success to user.
     try:
         print(f"DEBUG: Syncing report {report_id} | Cat: {cat} | Urg: {urg}")
-        data_synced = await sync_report_data(report_id, name, email, complaint, cat, urg, latitude, longitude)
+        data_synced = await sync_report_data(report_id, name, email, complaint, cat, urg, latitude, longitude, img_path)
         
         if not data_synced:
              print("DEBUG: Sync returned False")
@@ -274,6 +292,172 @@ async def get_reports():
 @app.get("/")
 def health(): return {"status": "active"}
 
+# --- IMAGE PROXY (For PDF Generation) ---
+import httpx
+@app.get("/proxy-image")
+async def proxy_image(url: str):
+    """
+    Proxies external image URLs to bypass CORS for client-side PDF generation.
+    """
+    try:
+        async with httpx.AsyncClient() as client:
+            resp = await client.get(url, follow_redirects=True)
+            resp.raise_for_status()
+            content_type = resp.headers.get("content-type", "image/jpeg")
+            return starlette.responses.Response(content=resp.content, media_type=content_type)
+    except Exception as e:
+        logger.error(f"Proxy failed for {url}: {e}")
+        raise HTTPException(status_code=400, detail="Failed to fetch image")
+
+# --- BACKEND PDF GENERATION ---
+from fpdf import FPDF
+import io
+from fastapi.responses import StreamingResponse
+
+@app.get("/report-pdf/{report_id}")
+async def generate_report_pdf(report_id: str):
+    """
+    Generates the PDF report server-side to avoid CORS issues with images.
+    """
+    # 1. Fetch Data
+    df = await fetch_google_sheet_data(SHEET_ID)
+    if df is None:
+        raise HTTPException(status_code=404, detail="Report data not found")
+    
+    # Normalize and Find Report
+    df.columns = [c.strip().lower() for c in df.columns]
+    report = None
+    # Convert ID to string for comparison
+    df['id'] = df['id'].astype(str)
+    
+    matches = df[df['id'] == str(report_id)]
+    if matches.empty:
+        raise HTTPException(status_code=404, detail="Report not found")
+    
+    row = matches.iloc[0]
+    
+    # 2. Setup PDF
+    pdf = FPDF()
+    pdf.add_page()
+    
+    # Header Blue Bar
+    pdf.set_fill_color(37, 99, 235) # Blue
+    pdf.rect(0, 0, 210, 40, 'F')
+    
+    # Title
+    pdf.set_text_color(255, 255, 255)
+    pdf.set_font("helvetica", "B", 22)
+    pdf.text(20, 25, "CityGuardian Report")
+    
+    # ID
+    pdf.set_font("helvetica", "", 10)
+    pdf.text(150, 25, f"ID: #{report_id}")
+    
+    # Reset Color
+    pdf.set_text_color(33, 33, 33)
+    
+    # Category (Title)
+    pdf.set_font("helvetica", "B", 16)
+    category = str(row.get('category', 'Issue Report'))
+    pdf.text(20, 60, category)
+    
+    # Status & Urgency Badges (Simulated with text/rect)
+    status = str(row.get('status', 'Pending'))
+    urgency = str(row.get('urgency', 'Medium')).capitalize()
+    
+    pdf.set_draw_color(37, 99, 235)
+    pdf.set_fill_color(239, 246, 255) # Light Blue
+    pdf.rect(20, 65, 40, 10, 'FD')
+    pdf.set_font("helvetica", "", 10)
+    pdf.set_text_color(37, 99, 235)
+    pdf.text(25, 71, status)
+    
+    # Content
+    pdf.set_text_color(60, 60, 60)
+    pdf.set_font("helvetica", "", 12)
+    pdf.text(20, 90, "Description:")
+    
+    pdf.set_font("helvetica", "I", 12)
+    issue_desc = str(row.get('issue', 'No description.'))
+    pdf.set_xy(20, 95)
+    pdf.multi_cell(170, 7, issue_desc)
+    
+    y = pdf.get_y() + 10
+    
+    # Metadata
+    pdf.set_font("helvetica", "B", 12)
+    pdf.text(20, y, "Location:")
+    pdf.set_font("helvetica", "", 12)
+    loc = str(row.get('location', 'Unknown'))
+    pdf.text(60, y, loc)
+    
+    y += 10
+    pdf.set_font("helvetica", "B", 12)
+    pdf.text(20, y, "Date:")
+    pdf.set_font("helvetica", "", 12)
+    date_str = str(row.get('date', 'Unknown'))
+    pdf.text(60, y, date_str)
+    
+    y += 20
+    
+    # Image Embedding
+    img_url = str(row.get('image', ''))
+    print(f"DEBUG: Generating PDF for {report_id}. Image URL from Sheet: '{img_url}'")
+    
+    if img_url and img_url.lower() != 'nan' and img_url.lower() != 'none':
+        try:
+            # Check if it's a remote URL
+            if img_url.startswith('http'):
+                 print(f"DEBUG: Fetching remote image: {img_url}")
+                 async with httpx.AsyncClient() as client:
+                    resp = await client.get(img_url, follow_redirects=True)
+                    if resp.status_code == 200:
+                         img_data = io.BytesIO(resp.content)
+                         pdf.text(20, y, "Evidence:")
+                         pdf.image(img_data, x=20, y=y+5, w=100)
+                    else:
+                        print(f"DEBUG: Failed to fetch remote image. Status: {resp.status_code}")
+            else:
+                 # Assume Local File Path (e.g. "uploads/xyz.jpg")
+                 import os
+                 cwd = os.getcwd()
+                 print(f"DEBUG: CWD is {cwd}")
+                 
+                 # Attempt to construct absolute path if it is relative
+                 if not os.path.isabs(img_url):
+                     abs_path = os.path.join(cwd, img_url)
+                 else:
+                     abs_path = img_url
+                 
+                 print(f"DEBUG: Checking local path: '{abs_path}'")
+                 
+                 if os.path.exists(abs_path):
+                      print(f"DEBUG: Image found locally.")
+                      pdf.text(20, y, "Evidence:")
+                      pdf.image(abs_path, x=20, y=y+5, w=100)
+                 else:
+                      print(f"DEBUG: Image NOT found at '{abs_path}'")
+                      logger.warning(f"Local image file not found: {img_url}")
+
+        except Exception as e:
+            print(f"DEBUG: Exception during image embedding: {e}")
+            logger.error(f"Failed to embed image in PDF: {e}")
+            
+    # Footer
+    pdf.set_y(-20)
+    pdf.set_font("helvetica", "I", 8)
+    pdf.set_text_color(150, 150, 150)
+    pdf.cell(0, 10, "Generated by CityGuardian System", align='C')
+
+    # Output
+    pdf_bytes = pdf.output() 
+    
+    return StreamingResponse(
+        io.BytesIO(bytes(pdf_bytes)), 
+        media_type="application/pdf",
+        headers={"Content-Disposition": f"attachment; filename=Report_{report_id}.pdf"}
+    )
+    
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
