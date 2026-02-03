@@ -198,15 +198,17 @@ const Dashboard: React.FC<DashboardProps> = ({ isDarkMode }) => {
               <Activity className="w-5 h-5 text-electric-blue-500" />
               {viewAll ? 'All Reports' : 'Live Reports Feed'}
             </h3>
-            <div className="flex gap-2">
-              <button
-                onClick={() => setViewAll(!viewAll)}
-                className="text-sm font-medium text-electric-blue-600 hover:text-electric-blue-700 dark:text-electric-blue-400 flex items-center gap-1 transition-colors"
-              >
-                {viewAll ? 'Show Less' : 'View All'}
-                <ArrowRight className={`w-4 h-4 transition-transform ${viewAll ? 'rotate-90' : ''}`} />
-              </button>
-            </div>
+            {data.length > 8 && (
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setViewAll(!viewAll)}
+                  className="text-sm font-medium text-electric-blue-600 hover:text-electric-blue-700 dark:text-electric-blue-400 flex items-center gap-1 transition-colors"
+                >
+                  {viewAll ? 'Show Less' : 'View All'}
+                  <ArrowRight className={`w-4 h-4 transition-transform ${viewAll ? 'rotate-90' : ''}`} />
+                </button>
+              </div>
+            )}
           </div>
 
           {data.length > 0 ? (

@@ -65,7 +65,7 @@ const UrgencyTrendsChart: React.FC<UrgencyTrendsChartProps> = ({ data }) => {
         <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100 flex items-center gap-2">
           <AlertTriangle className="w-5 h-5 text-electric-blue-500" />
           Risk Matrix
-          <span className="text-xs font-normal text-gray-500 dark:text-gray-400 ml-2">(Live Heatmap)</span>
+
         </h3>
       </div>
 
