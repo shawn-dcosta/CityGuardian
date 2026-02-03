@@ -71,36 +71,50 @@ async def send_report(
     latitude: float = Form(...),
     longitude: float = Form(...),
     address: str = Form(None),
-    image: UploadFile = File(None)
+    image: UploadFile = File(None),
+    category: str = Form(None),  # User-verified category
+    urgency: str = Form(None)    # User-verified urgency
 ):
     # 1. IMAGE & VISION PROCESSING (Agent 1)
     img_b64 = None
     image_bytes = None
     
-    # Defaults
-    cat = 'Roads'
-    urg = 'medium'
+    # Defaults (Use provided values if available)
+    cat = category if category else 'Roads'
+    urg = urgency if urgency else 'medium'
     
     if image:
         image_bytes = await image.read()
         img_b64 = base64.b64encode(image_bytes).decode()
         
-        # MASTER AGENT CALL (1 Call)
-        analysis = await analyze_civic_image(image_bytes)
+        # We only need to run AI strictly if we DON'T have a valid category/urgency from frontend
+        # OR if we just want to validate validity.
+        # But for consistency, let's respect the frontend's explicit fields if provided.
         
-        if not analysis.get("valid"):
-            raise HTTPException(status_code=400, detail="Image rejected: Not a civic issue.")
+        if not category or not urgency:
+             # MASTER AGENT CALL (Only if data missing)
+             analysis = await analyze_civic_image(image_bytes)
+             
+             if not analysis.get("valid"):
+                 raise HTTPException(status_code=400, detail="Image rejected: Not a civic issue.")
 
-        # Auto-fill description if missing
-        if not complaint or complaint.strip() == "" or complaint.lower() == "undefined":
-            complaint = analysis.get("description", "Issue detected.")
+             # Auto-fill description if missing
+             if not complaint or complaint.strip() == "" or complaint.lower() == "undefined":
+                 complaint = analysis.get("description", "Issue detected.")
 
-        # Use AI classification
-        cat = analysis.get("category", "General")
-        urg = analysis.get("urgency", "medium")
-
+             # Use AI classification if not provided by user
+             if not category: cat = analysis.get("category", "General")
+             if not urgency: urg = analysis.get("urgency", "medium")
+        else:
+            # If skipping analysis, ensures complaint has a fallback
+            if not complaint or complaint.strip() == "" or complaint.lower() == "undefined":
+                complaint = f"Image Report - {cat} Issue"
+    
     if not complaint:
-        raise HTTPException(status_code=400, detail="No complaint text or image provided.")
+        # Final safety check
+        complaint = "No description provided."
+
+    # ... (Rest of function) ...
 
     # 2. DUPLICATE CHECK (Geospatial + Semantic)
     try:
@@ -154,14 +168,15 @@ async def send_report(
     except Exception as e: logger.error(f"Duplicate check log: {e}")
 
     # 3. CLASSIFICATION & ROUTING
-    # If we didn't use Image agent (text only), classify now
-    if not image:
+    # If we didn't use Image agent (text only) AND didn't get form data
+    if not image and (not category or not urgency):
         cl = await classification_agent(complaint)
-        cat = cl.get('category', 'Roads')
-        urg = cl.get('urgency', 'medium')
+        if not category: cat = cl.get('category', 'Roads')
+        if not urgency: urg = cl.get('urgency', 'medium')
     
     report_id = str(uuid.uuid4())[:8]
 
+    # Department Logic
     tokens = set(re.findall(r"\b[a-z]+\b", complaint.lower()))
     dept = next((d for d in OFFICERS if any(k in tokens for k in d['keywords'])), None)
     
@@ -171,12 +186,19 @@ async def send_report(
     # 4. DATA SYNC (Synchronous - Critical Path)
     # We await this to ensure data is saved before confirming success to user.
     try:
-        await sync_report_data(report_id, name, email, complaint, cat, urg, latitude, longitude)
+        print(f"DEBUG: Syncing report {report_id} | Cat: {cat} | Urg: {urg}")
+        data_synced = await sync_report_data(report_id, name, email, complaint, cat, urg, latitude, longitude)
+        
+        if not data_synced:
+             print("DEBUG: Sync returned False")
+             raise Exception("Webhook sync returned False (Check n8n/Network)")
+        
+        print("DEBUG: Sync Successful")
+        
     except Exception as e:
         logger.error(f"Critical Data Sync Failed: {e}")
-        # If persistence fails, deciding whether to fail the request or return partial success.
-        # "Right way" = Fail request so user knows to retry.
-        raise HTTPException(status_code=500, detail="Failed to save report to database. Please try again.")
+        # Return detailed error to help debugging
+        raise HTTPException(status_code=500, detail=f"Database Sync Failed: {str(e)}")
 
     # 5. SIDE EFFECTS (Background - Notifications)
     background_tasks.add_task(
@@ -210,8 +232,10 @@ async def analyze_image(image: UploadFile = File(...)):
 
         return {
             "valid": True,
-            "suggestion": f"{analysis.get('category', 'Issue')} Detected",
-            "description": analysis.get("description", "Issue detected.")
+            "suggestion": analysis.get('category', 'Issue'), # Frontend expects 'suggestion' as category
+            "category": analysis.get('category', 'Issue'),   # Sending explicit key too
+            "description": analysis.get("description", "Issue detected."),
+            "urgency": analysis.get("urgency", "medium")    # Now explicitly sending urgency
         }
     except Exception as e:
         logger.error(f"Analysis Error: {e}")

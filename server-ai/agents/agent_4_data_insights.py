@@ -112,4 +112,8 @@ async def sync_report_data(report_id, name, email, complaint, category, urgency,
                 },
                 timeout=5
             )
-        except Exception as e: logger.error(f"Data Sync Failed: {e}")
+        except Exception as e: 
+            logger.error(f"Data Sync Failed: {e}")
+            return False
+            
+        return True

@@ -76,7 +76,7 @@ const RegisterPage: React.FC = () => {
                             value={name}
                             onChange={onChange}
                             required
-                            className="w-full px-4 py-2 rounded-xl bg-white/50 dark:bg-deep-charcoal-800/50 border border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-electric-blue-500 outline-none transition-all"
+                            className="w-full px-4 py-2 rounded-xl bg-white/50 dark:bg-midnight-800/50 border border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-electric-blue-500 outline-none transition-all"
                         />
                     </div>
                     <div>
@@ -87,7 +87,7 @@ const RegisterPage: React.FC = () => {
                             value={email}
                             onChange={onChange}
                             required
-                            className="w-full px-4 py-2 rounded-xl bg-white/50 dark:bg-deep-charcoal-800/50 border border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-electric-blue-500 outline-none transition-all"
+                            className="w-full px-4 py-2 rounded-xl bg-white/50 dark:bg-midnight-800/50 border border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-electric-blue-500 outline-none transition-all"
                         />
                     </div>
                     <div>
@@ -99,7 +99,7 @@ const RegisterPage: React.FC = () => {
                             onChange={onChange}
                             required
                             minLength={6}
-                            className="w-full px-4 py-2 rounded-xl bg-white/50 dark:bg-deep-charcoal-800/50 border border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-electric-blue-500 outline-none transition-all"
+                            className="w-full px-4 py-2 rounded-xl bg-white/50 dark:bg-midnight-800/50 border border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-electric-blue-500 outline-none transition-all"
                         />
                     </div>
                     <div>
@@ -111,7 +111,7 @@ const RegisterPage: React.FC = () => {
                             onChange={onChange}
                             required
                             minLength={6}
-                            className="w-full px-4 py-2 rounded-xl bg-white/50 dark:bg-deep-charcoal-800/50 border border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-electric-blue-500 outline-none transition-all"
+                            className="w-full px-4 py-2 rounded-xl bg-white/50 dark:bg-midnight-800/50 border border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-electric-blue-500 outline-none transition-all"
                         />
                     </div>
 
@@ -129,7 +129,7 @@ const RegisterPage: React.FC = () => {
                             <div className="w-full border-t border-gray-200 dark:border-gray-700"></div>
                         </div>
                         <div className="relative flex justify-center text-sm">
-                            <span className="px-2 bg-white dark:bg-deep-charcoal-800 text-gray-500">Or continue with</span>
+                            <span className="px-2 bg-white dark:bg-midnight-800 text-gray-500">Or continue with</span>
                         </div>
                     </div>
 

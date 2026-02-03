@@ -111,7 +111,7 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleTheme }) => {
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className="px-4 py-2 rounded-lg font-medium bg-white dark:bg-deep-charcoal-700 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-deep-charcoal-600 transition-all flex items-center gap-2"
+                    className="px-4 py-2 rounded-lg font-medium bg-white dark:bg-midnight-700 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-midnight-600 transition-all flex items-center gap-2"
                   >
                     <LogIn className="w-4 h-4" />
                     Sign In
@@ -154,7 +154,7 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleTheme }) => {
               <Link to="/admin" className="flex-1">
                 <motion.button
                   whileTap={{ scale: 0.95 }}
-                  className="w-full px-4 py-2 rounded-lg font-medium bg-gray-100 dark:bg-deep-charcoal-800 text-gray-700 dark:text-gray-300 flex items-center justify-center gap-2"
+                  className="w-full px-4 py-2 rounded-lg font-medium bg-gray-100 dark:bg-midnight-800 text-gray-700 dark:text-gray-300 flex items-center justify-center gap-2"
                 >
                   <LayoutDashboard className="w-4 h-4" />
                   Admin
@@ -176,7 +176,7 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleTheme }) => {
             <Link to="/login">
               <motion.button
                 whileTap={{ scale: 0.95 }}
-                className="w-full px-4 py-2 rounded-lg font-medium bg-white dark:bg-deep-charcoal-700 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600 flex items-center justify-center gap-2"
+                className="w-full px-4 py-2 rounded-lg font-medium bg-white dark:bg-midnight-700 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600 flex items-center justify-center gap-2"
               >
                 <LogIn className="w-4 h-4" />
                 Sign In

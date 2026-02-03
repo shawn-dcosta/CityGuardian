@@ -50,7 +50,7 @@ function App() {
     <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
       <AuthProvider>
         <Router>
-          <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-gray-100 dark:from-deep-charcoal-900 dark:via-deep-charcoal-800 dark:to-deep-charcoal-900 transition-colors duration-300">
+          <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-gray-100 dark:from-midnight-900 dark:via-midnight-800 dark:to-midnight-900 transition-colors duration-300">
             <Navbar isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
 
             <Routes>

@@ -92,7 +92,7 @@ const Dashboard: React.FC<DashboardProps> = ({ isDarkMode }) => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-gray-100 dark:from-deep-charcoal-900 dark:via-deep-charcoal-800 dark:to-deep-charcoal-900 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-gray-100 dark:from-midnight-900 dark:via-midnight-800 dark:to-midnight-900 p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.div

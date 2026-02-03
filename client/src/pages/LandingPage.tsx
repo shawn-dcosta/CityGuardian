@@ -31,10 +31,10 @@ const LandingPage: React.FC = () => {
     ];
 
     return (
-        <div className="min-h-screen bg-white dark:bg-deep-charcoal-900 overflow-x-hidden">
+        <div className="min-h-screen bg-white dark:bg-midnight-900 overflow-x-hidden">
             {/* Hero Section */}
             <section className="relative pt-20 pb-32 overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-deep-charcoal-800 dark:to-deep-charcoal-900 -z-10" />
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-midnight-800 dark:to-midnight-900 -z-10" />
                 <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-electric-blue-500/10 to-transparent blur-3xl -z-10" />
 
                 <div className="container mx-auto px-6">
@@ -128,7 +128,7 @@ const LandingPage: React.FC = () => {
             </section>
 
             {/* Features Grid */}
-            <section className="py-24 bg-gray-50 dark:bg-deep-charcoal-900">
+            <section className="py-24 bg-gray-50 dark:bg-midnight-900">
                 <div className="container mx-auto px-6">
                     <div className="text-center max-w-2xl mx-auto mb-16">
                         <h2 className="text-3xl md:text-5xl font-bold mb-6 text-gray-900 dark:text-white">
@@ -163,7 +163,7 @@ const LandingPage: React.FC = () => {
             </section>
 
             {/* Trust Section */}
-            <section className="py-24 bg-white dark:bg-deep-charcoal-800">
+            <section className="py-24 bg-white dark:bg-midnight-800">
                 <div className="container mx-auto px-6">
                     <div className="bg-gradient-to-r from-electric-blue-600 to-indigo-600 rounded-3xl p-12 md:p-20 text-center relative overflow-hidden">
                         <div className="relative z-10">

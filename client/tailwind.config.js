@@ -21,19 +21,23 @@ export default {
                     900: '#0c4a6e',
                     950: '#082f49',
                 },
-                'deep-charcoal': {
-                    50: '#f6f7f9',
-                    100: '#edeff2',
-                    200: '#d5dae1',
-                    300: '#b1bac8',
-                    400: '#8695aa',
-                    500: '#64748b',
-                    600: '#4f5e71',
-                    700: '#404b5a',
-                    800: '#363e49',
-                    900: '#2f353d',
-                    950: '#1f2329',
+                'midnight': {
+                    50: '#f4f6f8',
+                    100: '#e4e7eb',
+                    200: '#c5cdd7',
+                    300: '#9ba8bc',
+                    400: '#6f819f',
+                    500: '#4e6282',
+                    600: '#3c4d68',
+                    700: '#313e53',
+                    800: '#2a3343',
+                    900: '#1a1f29', // Deep Midnight
+                    950: '#020617', // Pure Midnight (Background)
                 },
+            },
+            fontFamily: {
+                sans: ['Inter', 'sans-serif'],
+                heading: ['Outfit', 'sans-serif'],
             },
             animation: {
                 'shimmer': 'shimmer 1.5s infinite',

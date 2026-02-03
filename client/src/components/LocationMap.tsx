@@ -93,18 +93,18 @@ const LocationMap: React.FC<LocationMapProps> = ({ location, isDarkMode }) => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.2 }}
-      className="glass-card rounded-2xl p-6 overflow-hidden"
+      className="glass-card rounded-2xl p-6 overflow-hidden h-full flex flex-col"
     >
-      <h3 className="text-lg font-bold mb-3 flex items-center gap-2 text-gray-800 dark:text-gray-100">
+      <h3 className="text-lg font-bold mb-3 flex items-center gap-2 text-gray-800 dark:text-gray-100 flex-shrink-0">
         <MapPin className="w-5 h-5 text-electric-blue-500" />
         Detected Location
       </h3>
 
-      <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-2">
+      <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-2 flex-shrink-0">
         {address}
       </p>
 
-      <div className="rounded-xl overflow-hidden shadow-lg h-[300px]">
+      <div className="rounded-xl overflow-hidden shadow-lg flex-1 w-full relative">
         <MapContainer
           center={[latitude, longitude]}
           zoom={15}
