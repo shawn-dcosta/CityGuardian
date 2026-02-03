@@ -1,7 +1,7 @@
 import axios from 'axios';
+import { AI_API_URL } from '../config';
 
-
-const API_URL = 'http://localhost:8000';
+const API_URL = AI_API_URL;
 
 /**
  * Fetches and processes data from Google Sheets via Backend Proxy

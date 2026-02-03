@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, MapPin, Calendar, Clock, CheckCircle, Tag, User, Download } from 'lucide-react';
 
 import { generatePDF } from '../utils/helpers';
+import { AI_API_URL } from '../config';
 
 interface ReportDetailsModalProps {
     report: any;
@@ -25,8 +26,8 @@ const ReportDetailsModal: React.FC<ReportDetailsModalProps> = ({ report, isOpen,
                 imageSource = rawImage;
             } else {
                 // Local Path (e.g. "uploads/xyz.jpg") -> Convert to Server URL
-                // Assuming backend is at http://127.0.0.1:8000
-                imageSource = `http://127.0.0.1:8000/${rawImage}`;
+                // Use configured AI Backend URL
+                imageSource = `${AI_API_URL}/${rawImage}`;
             }
         }
 

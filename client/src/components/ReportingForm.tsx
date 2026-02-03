@@ -5,7 +5,7 @@ import { useSpeechRecognition } from '../hooks/useSpeechRecognition';
 import axios from 'axios';
 import { generatePDF } from '../utils/helpers';
 import { useAuth } from '../context/AuthContext';
-import { AUTH_API_URL } from '../config';
+import { AUTH_API_URL, AI_API_URL } from '../config';
 import DuplicateModal from './DuplicateModal';
 
 interface ReportingFormProps {
@@ -70,7 +70,7 @@ const ReportingForm: React.FC<ReportingFormProps> = ({ location, addToast, onRep
         analysisPayload.append('image', file);
 
         try {
-          const response = await axios.post('http://127.0.0.1:8000/analyze-image', analysisPayload, {
+          const response = await axios.post(`${AI_API_URL}/analyze-image`, analysisPayload, {
             headers: { 'Content-Type': 'multipart/form-data' }
           });
 
@@ -120,7 +120,7 @@ const ReportingForm: React.FC<ReportingFormProps> = ({ location, addToast, onRep
     }
 
     try {
-      await axios.post('http://127.0.0.1:8000/upvote-report', {
+      await axios.post(`${AI_API_URL}/upvote-report`, {
         report_id: duplicateData.id,
         user_email: userEmail
       });
@@ -165,7 +165,7 @@ const ReportingForm: React.FC<ReportingFormProps> = ({ location, addToast, onRep
 
     try {
       const response = await axios.post(
-        'http://127.0.0.1:8000/send-report',
+        `${AI_API_URL}/send-report`,
         submitData,
         {
           headers: {

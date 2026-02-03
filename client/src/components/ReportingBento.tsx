@@ -6,9 +6,9 @@ import axios from 'axios';
 import LocationMap from './LocationMap';
 import DuplicateModal from './DuplicateModal';
 import { generatePDF } from '../utils/helpers';
-import { AUTH_API_URL } from '../config';
+import { AUTH_API_URL, AI_API_URL } from '../config';
 
-const API_BASE_URL = 'http://127.0.0.1:8000';
+const API_BASE_URL = AI_API_URL;
 
 interface ReportingBentoProps {
     isDarkMode: boolean;
