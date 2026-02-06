@@ -35,8 +35,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                     axios.defaults.headers.common['x-auth-token'] = token;
                     const res = await axios.get(`${AUTH_API_URL}/auth/me`);
                     setUser(res.data);
-                } catch (error) {
-                    console.error('Auth Error:', error);
+                } catch (error: any) {
+                    if (error.response && error.response.status === 401) {
+                        console.warn('Session expired or invalid token. Logging out...');
+                    } else {
+                        console.error('Auth Error:', error);
+                    }
                     localStorage.removeItem('token');
                     setToken(null);
                     setUser(null);
