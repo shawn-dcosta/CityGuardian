@@ -59,7 +59,7 @@ async def send_upvote_event(report_id, user_email):
             # Using a dedicated webhook for Upvotes/Subscriptions
             # If this webhook doesn't exist yet, it will need to be created in n8n.
             await http_client.post(
-                "https://shawn02.app.n8n.cloud/webhook/city-report-upvote",
+                "https://shawn2004.app.n8n.cloud/webhook/city-report-upvote",
                 json={
                     "action": "upvote",
                     "report_id": report_id,
@@ -112,7 +112,7 @@ async def sync_report_data(report_id, name, email, complaint, category, urgency,
                 payload["image"] = image_path
 
             await http_client.post(
-                "https://shawn02.app.n8n.cloud/webhook/city-report-intake",
+                "https://shawn2004.app.n8n.cloud/webhook/city-report-intake",
                 json=payload,
                 timeout=5
             )
