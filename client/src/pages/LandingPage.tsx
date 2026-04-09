@@ -33,29 +33,29 @@ const LandingPage: React.FC = () => {
     return (
         <div className="min-h-screen bg-white dark:bg-midnight-900 overflow-x-hidden">
             {/* Hero Section */}
-            <section className="relative pt-20 pb-32 overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-midnight-800 dark:to-midnight-900 -z-10" />
-                <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-electric-blue-500/10 to-transparent blur-3xl -z-10" />
-
-                <div className="container mx-auto px-6">
+            <section className="relative pt-32 pb-40 overflow-visible">
+                {/* Majestic Premium Orb */}
+                <div className="absolute top-[-10%] left-1/2 transform -translate-x-1/2 w-[800px] h-[500px] bg-gradient-to-r from-electric-blue-500/20 to-purple-500/20 blur-[100px] rounded-full -z-10 animate-float pointer-events-none" />
+                
+                <div className="container mx-auto px-6 relative z-10">
                     <div className="flex flex-col md:flex-row items-center gap-12">
                         <motion.div
-                            initial={{ opacity: 0, x: -30 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ duration: 0.6 }}
+                            initial={{ opacity: 0, y: 30 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.8, ease: "easeOut" }}
                             className="md:w-1/2 text-center md:text-left"
                         >
-                            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-sm font-semibold mb-6">
-                                <span className="relative flex h-3 w-3">
-                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-                                    <span className="relative inline-flex rounded-full h-3 w-3 bg-blue-500"></span>
+                            <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/60 dark:bg-slate-800/60 backdrop-blur-md border border-gray-200/50 dark:border-white/10 text-electric-blue-600 dark:text-blue-300 text-sm font-medium mb-8 shadow-sm">
+                                <span className="relative flex h-2.5 w-2.5">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-electric-blue-400 opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-electric-blue-500"></span>
                                 </span>
-                                Live Civic Action Platform
+                                Next-Gen Civic Platform
                             </div>
-                            <h1 className="text-5xl md:text-7xl font-bold leading-tight mb-6 text-gray-900 dark:text-white">
-                                Fix Your City <br />
-                                <span className="bg-gradient-to-r from-electric-blue-500 to-purple-600 bg-clip-text text-transparent">
-                                    In One Click.
+                            <h1 className="text-6xl md:text-[5.5rem] font-extrabold tracking-tight leading-[1.05] mb-8 text-slate-900 dark:text-white">
+                                Empower Your <br />
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-electric-blue-600 to-indigo-500 dark:from-electric-blue-400 dark:to-purple-400">
+                                    Community.
                                 </span>
                             </h1>
                             <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
@@ -64,14 +64,14 @@ const LandingPage: React.FC = () => {
                             <div className="flex flex-col sm:flex-row items-center gap-4 justify-center md:justify-start">
                                 <button
                                     onClick={() => navigate('/login')}
-                                    className="px-8 py-4 bg-electric-blue-600 hover:bg-electric-blue-700 text-white rounded-xl font-bold text-lg shadow-lg shadow-blue-500/30 transition-all transform hover:-translate-y-1 flex items-center gap-2"
+                                    className="px-8 py-4 bg-electric-blue-600 text-white rounded-full font-semibold text-lg shadow-[0_8px_20px_-6px_rgba(37,99,235,0.5)] hover:shadow-[0_14px_24px_-6px_rgba(37,99,235,0.6)] hover:-translate-y-1 transition-all duration-300 flex items-center gap-2"
                                 >
                                     Get Started
-                                    <ArrowRight className="w-5 h-5" />
+                                    <ArrowRight className="w-5 h-5 opacity-90" />
                                 </button>
                                 <button
                                     onClick={() => navigate('/register')}
-                                    className="px-8 py-4 bg-white dark:bg-gray-800 text-gray-800 dark:text-white rounded-xl font-bold text-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all"
+                                    className="px-8 py-4 bg-white/70 dark:bg-slate-800/50 backdrop-blur-md text-slate-800 dark:text-gray-200 rounded-full font-semibold text-lg border border-gray-200/50 dark:border-white/10 hover:bg-white dark:hover:bg-slate-700 transition-all duration-300 shadow-sm"
                                 >
                                     Learn More
                                 </button>

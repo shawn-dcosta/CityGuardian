@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { Moon, Sun, AlertCircle, LayoutDashboard, FileText, LogIn, LogOut, User } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Moon, Sun, AlertCircle, LayoutDashboard, FileText, LogIn, LogOut, User, Menu, X } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 interface NavbarProps {
@@ -13,6 +13,7 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleTheme }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, logout, isAuthenticated } = useAuth();
+  const [isOpen, setIsOpen] = useState(false);
   const isDashboard = location.pathname === '/dashboard';
 
   const handleLogout = () => {
@@ -21,13 +22,14 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleTheme }) => {
   };
 
   return (
+    <div className="w-full sticky top-4 z-50 px-4 flex justify-center pb-4">
     <motion.nav
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="glass-card rounded-none border-x-0 border-t-0 mb-6 shadow-lg"
+      className="glass-card rounded-2xl md:rounded-full w-full max-w-6xl z-50 transition-all duration-300"
     >
-      <div className="container mx-auto px-4 py-4">
+      <div className="px-6 py-3">
         <div className="flex justify-between items-center">
           <Link to="/">
             <motion.div
@@ -48,7 +50,7 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleTheme }) => {
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className={`px-4 py-2 rounded-lg font-medium transition-all flex items-center gap-2 ${location.pathname === '/report'
+                  className={`px-4 py-2 rounded-full hover:-translate-y-[1px] font-medium transition-all flex items-center gap-2 ${location.pathname === '/report'
                     ? 'bg-electric-blue-500 text-white'
                     : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
                     }`}
@@ -63,7 +65,7 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleTheme }) => {
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className={`px-4 py-2 rounded-lg font-medium transition-all flex items-center gap-2 ${location.pathname === '/admin'
+                    className={`px-4 py-2 rounded-full hover:-translate-y-[1px] font-medium transition-all flex items-center gap-2 ${location.pathname === '/admin'
                       ? 'bg-electric-blue-500 text-white'
                       : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
                       }`}
@@ -79,7 +81,7 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleTheme }) => {
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className={`px-4 py-2 rounded-lg font-medium transition-all flex items-center gap-2 ${isDashboard && location.pathname !== '/admin'
+                    className={`px-4 py-2 rounded-full hover:-translate-y-[1px] font-medium transition-all flex items-center gap-2 ${isDashboard && location.pathname !== '/admin'
                       ? 'bg-electric-blue-500 text-white'
                       : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
                       }`}
@@ -100,7 +102,7 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleTheme }) => {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={handleLogout}
-                    className="px-3 py-2 rounded-lg font-medium bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-900/50 transition-colors flex items-center gap-2"
+                    className="px-3 py-2 rounded-full hover:-translate-y-[1px] font-medium bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-900/50 transition-colors flex items-center gap-2"
                   >
                     <LogOut className="w-4 h-4" />
                     Logout
@@ -111,7 +113,7 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleTheme }) => {
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className="px-4 py-2 rounded-lg font-medium bg-white dark:bg-midnight-700 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-midnight-600 transition-all flex items-center gap-2"
+                    className="px-4 py-2 rounded-full hover:-translate-y-[1px] font-medium bg-white dark:bg-midnight-700 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-midnight-600 transition-all flex items-center gap-2"
                   >
                     <LogIn className="w-4 h-4" />
                     Sign In
@@ -120,73 +122,89 @@ const Navbar: React.FC<NavbarProps> = ({ isDarkMode, toggleTheme }) => {
               )}
             </div>
 
-            {/* Theme Toggle */}
-            <motion.button
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={toggleTheme}
-              className="p-2 rounded-full glass-input focus-ring"
-              aria-label="Toggle theme"
+
+            {/* Mobile Menu Hamburger */}
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              className="md:hidden p-2 rounded-full hover:-translate-y-[1px] text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-midnight-800 transition-colors focus-ring"
             >
-              {isDarkMode ? (
-                <Sun className="w-5 h-5 text-yellow-400" />
-              ) : (
-                <Moon className="w-5 h-5 text-electric-blue-600" />
-              )}
-            </motion.button>
+              {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
           </div>
         </div>
 
         {/* Mobile Navigation */}
-        <div className="md:hidden flex flex-col gap-2 mt-4">
-          <div className="flex gap-2">
-            <Link to="/report" className="flex-1">
-              <motion.button
-                whileTap={{ scale: 0.95 }}
-                className="w-full px-4 py-2 rounded-lg font-medium bg-electric-blue-500 text-white flex items-center justify-center gap-2"
-              >
-                <FileText className="w-4 h-4" />
-                Report
-              </motion.button>
-            </Link>
-
-            {isAuthenticated && user?.role === 'admin' && (
-              <Link to="/admin" className="flex-1">
-                <motion.button
-                  whileTap={{ scale: 0.95 }}
-                  className="w-full px-4 py-2 rounded-lg font-medium bg-gray-100 dark:bg-midnight-800 text-gray-700 dark:text-gray-300 flex items-center justify-center gap-2"
-                >
-                  <LayoutDashboard className="w-4 h-4" />
-                  Admin
-                </motion.button>
-              </Link>
-            )}
-          </div>
-
-          {isAuthenticated ? (
-            <motion.button
-              whileTap={{ scale: 0.95 }}
-              onClick={handleLogout}
-              className="w-full px-4 py-2 rounded-lg font-medium bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 flex items-center justify-center gap-2"
+        <AnimatePresence>
+          {isOpen && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              className="md:hidden overflow-hidden"
             >
-              <LogOut className="w-4 h-4" />
-              Logout ({user?.name})
-            </motion.button>
-          ) : (
-            <Link to="/login">
-              <motion.button
-                whileTap={{ scale: 0.95 }}
-                className="w-full px-4 py-2 rounded-lg font-medium bg-white dark:bg-midnight-700 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600 flex items-center justify-center gap-2"
-              >
-                <LogIn className="w-4 h-4" />
-                Sign In
-              </motion.button>
-            </Link>
-          )}
+              <div className="flex flex-col gap-2 mt-4 pt-4 border-t border-gray-200 dark:border-gray-800">
+                <div className="flex gap-2">
+                  <Link to="/report" className="flex-1" onClick={() => setIsOpen(false)}>
+                    <motion.button
+                      whileTap={{ scale: 0.95 }}
+                      className="w-full px-4 py-2 rounded-full hover:-translate-y-[1px] font-medium bg-electric-blue-500 text-white flex items-center justify-center gap-2"
+                    >
+                      <FileText className="w-4 h-4" />
+                      Report
+                    </motion.button>
+                  </Link>
 
-        </div>
+                  {isAuthenticated && user?.role === 'admin' && (
+                    <Link to="/admin" className="flex-1" onClick={() => setIsOpen(false)}>
+                      <motion.button
+                        whileTap={{ scale: 0.95 }}
+                        className="w-full px-4 py-2 rounded-full hover:-translate-y-[1px] font-medium bg-gray-100 dark:bg-midnight-800 text-gray-700 dark:text-gray-300 flex items-center justify-center gap-2"
+                      >
+                        <LayoutDashboard className="w-4 h-4" />
+                        Admin
+                      </motion.button>
+                    </Link>
+                  )}
+                </div>
+
+                {isAuthenticated ? (
+                  <>
+                    <Link to="/dashboard" onClick={() => setIsOpen(false)}>
+                      <motion.button
+                        whileTap={{ scale: 0.95 }}
+                        className="w-full px-4 py-2 rounded-full hover:-translate-y-[1px] font-medium bg-gray-100 dark:bg-midnight-800 text-gray-700 dark:text-gray-300 flex items-center justify-center gap-2"
+                      >
+                        <User className="w-4 h-4" />
+                        Dashboard
+                      </motion.button>
+                    </Link>
+                    <motion.button
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => { setIsOpen(false); handleLogout(); }}
+                      className="w-full px-4 py-2 rounded-full hover:-translate-y-[1px] font-medium bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 flex items-center justify-center gap-2"
+                    >
+                      <LogOut className="w-4 h-4" />
+                      Logout ({user?.name})
+                    </motion.button>
+                  </>
+                ) : (
+                  <Link to="/login" onClick={() => setIsOpen(false)}>
+                    <motion.button
+                      whileTap={{ scale: 0.95 }}
+                      className="w-full px-4 py-2 rounded-full hover:-translate-y-[1px] font-medium bg-white dark:bg-midnight-700 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600 flex items-center justify-center gap-2"
+                    >
+                      <LogIn className="w-4 h-4" />
+                      Sign In
+                    </motion.button>
+                  </Link>
+                )}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </motion.nav>
+    </div>
   );
 };
 

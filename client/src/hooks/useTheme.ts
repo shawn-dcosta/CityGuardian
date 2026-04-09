@@ -1,23 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 
 export const useTheme = () => {
-  const [isDarkMode, setIsDarkMode] = useState(() => {
-    const savedTheme = localStorage.getItem('theme');
-    return savedTheme === 'dark';
-  });
-
   useEffect(() => {
+    // Permanently enforce light mode globally
     const root = document.documentElement;
-    if (isDarkMode) {
-      root.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-    } else {
-      root.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
-    }
-  }, [isDarkMode]);
+    root.classList.remove('dark');
+    localStorage.setItem('theme', 'light');
+  }, []);
 
-  const toggleTheme = () => setIsDarkMode(prev => !prev);
-
-  return { isDarkMode, toggleTheme };
+  // Return static false for dark mode, and a dummy toggle so we don't break existing prop types in other components
+  return { isDarkMode: false, toggleTheme: () => {} };
 };
