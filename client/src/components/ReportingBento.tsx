@@ -34,6 +34,7 @@ const ReportingBento: React.FC<ReportingBentoProps> = ({ isDarkMode, location, a
     const [duplicateData, setDuplicateData] = useState<any>(null);
 
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const cameraInputRef = useRef<HTMLInputElement>(null);
 
     // AI Analysis Handler
     const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -172,8 +173,7 @@ const ReportingBento: React.FC<ReportingBentoProps> = ({ isDarkMode, location, a
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.95 }}
-                        className="flex flex-col items-center justify-center h-[500px] glass-card rounded-3xl border-2 border-dashed border-gray-300 dark:border-gray-700 hover:border-electric-blue-500 transition-all cursor-pointer group shadow-2xl relative overflow-hidden"
-                        onClick={() => fileInputRef.current?.click()}
+                        className="flex flex-col items-center justify-center h-[500px] glass-card rounded-3xl border-2 border-dashed border-gray-300 dark:border-gray-700 hover:border-electric-blue-500 transition-all group shadow-2xl relative overflow-hidden"
                     >
                         <div className="absolute inset-0 bg-gradient-to-tr from-electric-blue-500/5 to-purple-500/5 group-hover:opacity-100 transition-opacity" />
 
@@ -184,6 +184,14 @@ const ReportingBento: React.FC<ReportingBentoProps> = ({ isDarkMode, location, a
                             accept="image/*"
                             className="hidden"
                         />
+                        <input
+                            type="file"
+                            ref={cameraInputRef}
+                            onChange={handleImageUpload}
+                            accept="image/*"
+                            capture="environment"
+                            className="hidden"
+                        />
                         <div className="w-28 h-28 rounded-full bg-electric-blue-100 dark:bg-electric-blue-900/30 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform shadow-lg shadow-blue-500/20">
                             <Camera className="w-12 h-12 text-electric-blue-600" />
                         </div>
@@ -191,10 +199,22 @@ const ReportingBento: React.FC<ReportingBentoProps> = ({ isDarkMode, location, a
                         <p className="text-gray-500 dark:text-gray-400 text-lg mb-8 max-w-md text-center px-4">
                             Take a photo of any civic issue. Our AI will analyze the context and location instantly.
                         </p>
-                        <button className="px-8 py-4 bg-white dark:bg-midnight-800 rounded-2xl font-bold shadow-lg border border-gray-100 dark:border-gray-700 text-gray-700 dark:text-gray-200 flex items-center gap-3 group-hover:bg-gray-50 dark:group-hover:bg-midnight-700 transition-colors">
-                            <Upload className="w-5 h-5" />
-                            Upload Evidence
-                        </button>
+                        <div className="flex flex-col sm:flex-row gap-4 relative z-10 w-full px-8 max-w-md">
+                            <button 
+                                onClick={() => fileInputRef.current?.click()}
+                                className="flex-1 py-4 bg-white dark:bg-midnight-800 rounded-2xl font-bold shadow-lg border border-gray-100 dark:border-gray-700 text-gray-700 dark:text-gray-200 flex items-center justify-center gap-3 hover:bg-gray-50 dark:hover:bg-midnight-700 transition-colors"
+                            >
+                                <Upload className="w-5 h-5" />
+                                Gallery
+                            </button>
+                            <button 
+                                onClick={() => cameraInputRef.current?.click()}
+                                className="flex-1 py-4 bg-electric-blue-600 text-white rounded-2xl font-bold shadow-lg flex items-center justify-center gap-3 hover:bg-electric-blue-700 transition-colors"
+                            >
+                                <Camera className="w-5 h-5" />
+                                Take Photo
+                            </button>
+                        </div>
                     </motion.div>
                 )}
 
