@@ -18,7 +18,7 @@ if not GEMINI_API_KEY:
     logger.warning("GEMINI_API_KEY not set")
     
 client = genai.Client(api_key=GEMINI_API_KEY)
-GEMINI_MODEL = 'gemini-2.5-flash'
+GEMINI_MODEL = 'gemini-2.0-flash'
 
 # --- UTILS ---
 def calculate_distance(lat1, lon1, lat2, lon2):
