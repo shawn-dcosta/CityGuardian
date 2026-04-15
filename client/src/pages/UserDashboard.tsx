@@ -82,7 +82,8 @@ const UserDashboard: React.FC<UserDashboardProps> = () => {
     };
 
     return (
-        <div className="container mx-auto px-4 pt-10 pb-20 relative font-sans">
+        <div className="min-h-screen relative font-sans">
+            <div className="container mx-auto px-4 pt-10 pb-20 max-w-7xl relative z-10">
             {/* Cinematic Ambient Elements */}
             <div className="absolute top-[-10%] right-[-5%] w-[800px] h-[800px] bg-city-blue/5 dark:bg-city-blue/10 blur-[150px] rounded-full pointer-events-none -z-10 animate-pulse duration-[5000ms]" />
             <div className="absolute top-[40%] left-[-10%] w-[600px] h-[600px] bg-city-red/5 dark:bg-city-red/10 blur-[150px] rounded-full pointer-events-none -z-10" style={{ animation: "pulse 7s cubic-bezier(0.4, 0, 0.6, 1) infinite" }} />
@@ -113,23 +114,6 @@ const UserDashboard: React.FC<UserDashboardProps> = () => {
                     <h1 className="font-heading text-5xl md:text-6xl font-black text-city-black dark:text-white uppercase tracking-tighter mb-2 drop-shadow-md">
                         Command <span className="text-transparent bg-clip-text bg-gradient-to-br from-city-blue to-blue-400 dark:from-city-blue dark:to-blue-200">Center</span>
                     </h1>
-                </motion.div>
-
-                <motion.div
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.5, delay: 0.2 }}
-                >
-                    <Link
-                        to="/report"
-                        className="group relative px-8 py-4 bg-city-blue dark:bg-white text-white dark:text-city-black rounded-xl font-black uppercase tracking-widest overflow-hidden transition-all duration-300 hover:shadow-[0_0_30px_rgba(37,99,235,0.4)] dark:hover:shadow-[0_0_30px_rgba(255,255,255,0.3)] active:scale-95 flex items-center justify-center gap-3 backdrop-blur-md"
-                    >
-                        <span className="relative z-10 flex items-center gap-2">
-                            <Target className="w-5 h-5 group-hover:rotate-90 transition-transform duration-500" />
-                            Init Report
-                        </span>
-                        <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-city-blue dark:from-gray-200 dark:to-white transform scale-x-0 origin-left group-hover:scale-x-100 transition-transform duration-300 ease-out" />
-                    </Link>
                 </motion.div>
             </div>
 
@@ -194,7 +178,7 @@ const UserDashboard: React.FC<UserDashboardProps> = () => {
             </div>
 
             {/* Main Manifest grid */}
-            <div className="space-y-6 max-w-4xl relative z-10">
+            <div className="space-y-6 relative z-10">
                 <div className="flex items-center justify-between border-b border-gray-200/50 dark:border-white/10 pb-4 mb-8">
                     <h2 className="text-sm font-bold text-city-black dark:text-gray-300 uppercase tracking-[0.2em] flex items-center gap-3">
                         <div className="p-1.5 bg-city-red/10 rounded-md">
@@ -227,7 +211,7 @@ const UserDashboard: React.FC<UserDashboardProps> = () => {
                         </Link>
                     </motion.div>
                 ) : (
-                    <div className="grid gap-6">
+                    <div className="grid gap-6 w-full">
                         {reports.map((report, index) => {
                             const currentStep = getStatusStep(report.Status || 'pending');
                             const isHighPriority = report.Urgency?.toLowerCase() === 'high';
@@ -256,13 +240,13 @@ const UserDashboard: React.FC<UserDashboardProps> = () => {
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: index * 0.05 + 0.3 }}
-                                    className={`bg-white/80 dark:bg-city-surface/80 backdrop-blur-md rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm hover:shadow-lg dark:shadow-none group cursor-pointer transition-all duration-300 border-l-[6px] ${borderColor} hover:-translate-y-1`}
+                                    className={`w-full bg-white/80 dark:bg-city-surface/80 backdrop-blur-md rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm hover:shadow-lg dark:shadow-none group cursor-pointer transition-all duration-300 border-l-[6px] ${borderColor} hover:-translate-y-1 overflow-hidden`}
                                     onClick={() => setSelectedReport(report)}
                                 >
-                                    <div className="p-6 md:p-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-8 relative overflow-hidden">
+                                    <div className="p-6 md:p-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-8 relative">
                                         <div className="absolute top-0 right-0 w-32 h-full bg-gradient-to-l from-black/5 dark:from-white/5 to-transparent skew-x-12 translate-x-20 group-hover:translate-x-10 transition-transform duration-700 opacity-0 group-hover:opacity-100" />
 
-                                        <div className="w-full md:w-[45%] relative z-10">
+                                        <div className="w-full md:w-[45%] min-w-0 relative z-10">
                                             <div className="flex flex-wrap items-center gap-3 mb-4">
                                                 <span className="px-2.5 py-1 bg-gray-100 dark:bg-white/5 rounded-md border border-gray-200 dark:border-white/10 text-xs font-bold text-gray-500 tracking-widest shadow-inner">
                                                     ID:{report.ID}
@@ -279,7 +263,7 @@ const UserDashboard: React.FC<UserDashboardProps> = () => {
                                             </p>
                                         </div>
 
-                                        <div className="w-full md:w-[50%] mt-2 md:mt-0 relative z-10">
+                                        <div className="w-full md:w-[50%] min-w-0 mt-2 md:mt-0 relative z-10">
                                             <div className="flex justify-between items-center text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3 px-1">
                                                 <span className={currentStep >= 1 ? 'text-city-black dark:text-white drop-shadow-sm' : ''}>Logged</span>
                                                 <span className={currentStep >= 2 ? 'text-city-black dark:text-white drop-shadow-sm' : ''}>Verified</span>
@@ -434,6 +418,7 @@ const UserDashboard: React.FC<UserDashboardProps> = () => {
                     </motion.div>
                 )}
             </AnimatePresence>
+            </div>
         </div>
     );
 };
