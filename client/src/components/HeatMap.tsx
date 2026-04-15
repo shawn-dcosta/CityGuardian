@@ -37,11 +37,11 @@ const HeatMapLayer = ({ data }: { data: any[]; isDarkMode: boolean }) => {
   return null;
 };
 
-// Component to handle map clicks for clearing selection
-const MapClickHandler = ({ onMapClick }: { onMapClick: () => void }) => {
+// Component to handle map clicks for clearing selection and reset filters
+const MapClickHandler = ({ onMapReset }: { onMapReset: () => void }) => {
   useMapEvents({
     click: () => {
-      onMapClick();
+      onMapReset();
     },
   });
   return null;
@@ -113,22 +113,36 @@ const InteractiveMarker = ({ point, icon, isLocked, onLock }: any) => {
 
 interface HeatMapProps {
   data: any[];
-  isDarkMode: boolean; // Keeping prop to avoid breaking types
+  isDarkMode: boolean; 
   showHeatmap?: boolean;
 }
 
 const HeatMap: React.FC<HeatMapProps> = ({ data, isDarkMode, showHeatmap = true }) => {
   const [lockedId, setLockedId] = useState<number | null>(null);
+  const [activeFilters, setActiveFilters] = useState<string[]>(['high', 'medium', 'low']);
 
   const urgencyColors: Record<string, string> = {
-    high: '#ef4444',     // city-red
-    medium: '#f97316',   // city-orange
-    low: '#3b82f6'       // city-blue
+    high: '#ef4444',     
+    medium: '#f97316',   
+    low: '#3b82f6'       
   };
 
   const center: [number, number] = data.length > 0
     ? [data[0].lat, data[0].lon]
     : [19.0760, 72.8777];
+
+  const handleMapReset = () => {
+    setLockedId(null);
+    setActiveFilters(['high', 'medium', 'low']);
+  };
+
+  const toggleFilter = (urgency: string) => {
+    setActiveFilters(prev => 
+      prev.includes(urgency) 
+        ? prev.filter(f => f !== urgency) 
+        : [...prev, urgency]
+    );
+  };
 
   const createPulseIcon = (urgency: string, status: string) => {
     // @ts-ignore
@@ -147,6 +161,9 @@ const HeatMap: React.FC<HeatMapProps> = ({ data, isDarkMode, showHeatmap = true 
     });
   };
 
+  // Filter data for both markers and heatmap
+  const filteredData = data.filter(p => activeFilters.includes(p.Urgency?.toLowerCase()));
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -161,20 +178,43 @@ const HeatMap: React.FC<HeatMapProps> = ({ data, isDarkMode, showHeatmap = true 
           Geospatial Impact Map
         </h3>
 
-        {/* Map Legend */}
+        {/* Interactive Map Legend */}
         <div className="flex items-center gap-4 text-[9px] font-black uppercase tracking-widest text-gray-500">
-          <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 shadow-inner">
-            <span className="w-2 h-2 rounded-full bg-city-red animate-pulse shadow-[0_0_5px_rgba(239,68,68,0.8)]"></span>
+          <button 
+            onClick={() => toggleFilter('high')}
+            className={`flex items-center gap-1.5 px-2 py-1 rounded-md border transition-all duration-300 ${
+              activeFilters.includes('high') 
+                ? 'bg-city-red/10 border-city-red/30 text-city-red shadow-sm' 
+                : 'bg-gray-100 dark:bg-white/5 border-transparent opacity-40 grayscale'
+            }`}
+          >
+            <span className={`w-2 h-2 rounded-full bg-city-red shadow-[0_0_5px_rgba(239,68,68,0.8)] ${activeFilters.includes('high') ? 'animate-pulse' : ''}`}></span>
             <span>Critical</span>
-          </div>
-          <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 shadow-inner">
-            <span className="w-2 h-2 rounded-full bg-city-orange shadow-[0_0_5px_rgba(249,115,22,0.8)]"></span>
+          </button>
+          
+          <button 
+            onClick={() => toggleFilter('medium')}
+            className={`flex items-center gap-1.5 px-2 py-1 rounded-md border transition-all duration-300 ${
+              activeFilters.includes('medium') 
+                ? 'bg-city-orange/10 border-city-orange/30 text-city-orange shadow-sm' 
+                : 'bg-gray-100 dark:bg-white/5 border-transparent opacity-40 grayscale'
+            }`}
+          >
+            <span className={`w-2 h-2 rounded-full bg-city-orange shadow-[0_0_5px_rgba(249,115,22,0.8)] ${activeFilters.includes('medium') ? 'animate-pulse' : ''}`}></span>
             <span>Moderate</span>
-          </div>
-          <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 shadow-inner">
-            <span className="w-2 h-2 rounded-full bg-city-blue shadow-[0_0_5px_rgba(59,130,246,0.8)]"></span>
+          </button>
+          
+          <button 
+            onClick={() => toggleFilter('low')}
+            className={`flex items-center gap-1.5 px-2 py-1 rounded-md border transition-all duration-300 ${
+              activeFilters.includes('low') 
+                ? 'bg-city-blue/10 border-city-blue/30 text-city-blue shadow-sm' 
+                : 'bg-gray-100 dark:bg-white/5 border-transparent opacity-40 grayscale'
+            }`}
+          >
+            <span className={`w-2 h-2 rounded-full bg-city-blue shadow-[0_0_5px_rgba(59,130,246,0.8)] ${activeFilters.includes('low') ? 'animate-pulse' : ''}`}></span>
             <span>Low</span>
-          </div>
+          </button>
         </div>
       </div>
 
@@ -183,7 +223,7 @@ const HeatMap: React.FC<HeatMapProps> = ({ data, isDarkMode, showHeatmap = true 
         {/* HUD Elements */}
         <div className="absolute top-3 left-3 z-[400] pointer-events-none bg-city-black/40 dark:bg-black/60 backdrop-blur-md rounded-lg px-3 py-1.5 border border-white/10">
             <span className="text-[9px] font-black text-white uppercase tracking-widest font-mono">SYS.MAP.TRACKING</span>
-            {data.length > 0 && <span className="text-[9px] text-city-blue font-bold ml-2 animate-pulse">LIVE</span>}
+            {filteredData.length > 0 && <span className="text-[9px] text-city-blue font-bold ml-2 animate-pulse">LIVE</span>}
         </div>
         <div className="absolute inset-0 ring-1 ring-inset ring-city-blue/10 pointer-events-none z-[400] rounded-2xl"></div>
 
@@ -197,7 +237,7 @@ const HeatMap: React.FC<HeatMapProps> = ({ data, isDarkMode, showHeatmap = true 
             className="z-0"
           >
             <ZoomControl position="bottomright" />
-            <MapClickHandler onMapClick={() => setLockedId(null)} />
+            <MapClickHandler onMapReset={handleMapReset} />
 
             <TileLayer
               className={isDarkMode ? 'map-tiles-dark opacity-80' : 'map-tiles-standard opacity-[0.85]'}
@@ -222,9 +262,9 @@ const HeatMap: React.FC<HeatMapProps> = ({ data, isDarkMode, showHeatmap = true 
               }
             `}</style>
 
-            {showHeatmap && <HeatMapLayer data={data} isDarkMode={isDarkMode} />}
+            {showHeatmap && <HeatMapLayer data={filteredData} isDarkMode={isDarkMode} />}
 
-            {data.filter(p => p.Status !== 'Resolved').map((point, index) => {
+            {filteredData.filter(p => p.Status !== 'Resolved').map((point, index) => {
               const icon = createPulseIcon(point.Urgency, point.Status);
               if (!icon) return null;
 
