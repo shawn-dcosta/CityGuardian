@@ -268,23 +268,23 @@ const UserDashboard: React.FC<UserDashboardProps> = () => {
                                                 <div className={`w-1/4 text-center ${currentStep >= 1 ? 'text-city-black dark:text-white drop-shadow-sm' : ''}`}>Logged</div>
                                                 <div className={`w-1/4 text-center ${currentStep >= 2 ? 'text-city-black dark:text-white drop-shadow-sm' : ''}`}>Verified</div>
                                                 <div className={`w-1/4 text-center ${currentStep >= 3 ? 'text-city-black dark:text-white drop-shadow-sm' : ''}`}>In-Progress</div>
-                                                <div className={`w-1/4 text-center ${currentStep >= 4 ? 'text-city-green drop-shadow-[0_0_8px_rgba(0,230,118,0.5)]' : ''}`}>Resolved</div>
+                                                <div className={`w-1/4 text-center ${currentStep >= 4 ? 'text-city-green drop-shadow-[0_0_5px_rgba(5,150,105,0.4)]' : ''}`}>Resolved</div>
                                             </div>
                                             <div className="w-full h-4 relative">
                                                 {/* The Track Container (Constrained between center of first and last items) */}
                                                 <div className="absolute left-[calc(12.5%-12px)] right-[calc(12.5%-12px)] top-0 bottom-0 bg-gray-100 dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/5 rounded-full shadow-inner overflow-hidden">
                                                     <motion.div
                                                         initial={{ width: 0 }}
-                                                        animate={{ width: `${currentStep === 1 ? '8%' : ((currentStep - 1) / 3) * 100}%` }}
+                                                        animate={{ width: `${currentStep === 1 ? 20 : ((currentStep - 1) / 3) * 100}%` }}
                                                         transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
-                                                        className={`absolute inset-y-0 left-0 rounded-full ${statusColor} backdrop-blur-sm shadow-[0_0_15px_rgba(255,255,255,0.3)]`}
+                                                        className={`absolute inset-y-0 left-0 rounded-full ${statusColor} shadow-[0_0_15px_rgba(255,255,255,0.3)]`}
                                                     />
                                                     {/* Glow effect on progress bar */}
                                                     <motion.div
                                                         initial={{ width: 0 }}
-                                                        animate={{ width: `${currentStep === 1 ? '8%' : ((currentStep - 1) / 3) * 100}%` }}
+                                                        animate={{ width: `${currentStep === 1 ? 20 : ((currentStep - 1) / 3) * 100}%` }}
                                                         transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
-                                                        className={`absolute top-0 bottom-0 left-0 bg-white/30 blur-[4px]`}
+                                                        className="absolute top-0 bottom-0 left-0 bg-white/30 blur-[4px]"
                                                     />
                                                 </div>
 
@@ -300,7 +300,7 @@ const UserDashboard: React.FC<UserDashboardProps> = () => {
                                                                 }}
                                                                 className={`relative z-20 transition-all duration-700 ${currentStep >= step
                                                                         ? step === 4
-                                                                            ? 'text-city-green drop-shadow-[0_0_10px_#00E676]'
+                                                                            ? 'text-city-green drop-shadow-[0_0_6px_rgba(5,150,105,0.5)]'
                                                                             : 'text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.9)]'
                                                                         : 'text-gray-400 dark:text-gray-600'
                                                                     }`}

@@ -21,7 +21,7 @@ export default {
                 'city-surface-light': '#f5f5f5',
                 'city-white': '#ffffff',
                 'city-red': '#D31212', // Danger / Error
-                'city-green': '#00E676', // Success / Solved
+                'city-green': '#059669', // Success / Solved / Emerald 600 shade
                 'city-orange': '#FF9100', // Warning / Ongoing
                 'city-blue': '#2563eb', // Info
             },
