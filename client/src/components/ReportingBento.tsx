@@ -32,6 +32,7 @@ const ReportingBento: React.FC<ReportingBentoProps> = ({ isDarkMode, location, a
     const [loading, setLoading] = useState(false);
     const [duplicateModalOpen, setDuplicateModalOpen] = useState(false);
     const [duplicateData, setDuplicateData] = useState<any>(null);
+    const [manualAddress, setManualAddress] = useState('');
 
     const fileInputRef = useRef<HTMLInputElement>(null);
     const cameraInputRef = useRef<HTMLInputElement>(null);
@@ -63,6 +64,7 @@ const ReportingBento: React.FC<ReportingBentoProps> = ({ isDarkMode, location, a
                 setCategory(data.category || data.suggestion || 'General');
                 setDescription(data.description || '');
                 setUrgency(data.urgency || 'medium');
+                setManualAddress(location.address || '');
                 setStep('verify');
                 addToast('AI Analysis Complete', 'success');
             } else {
@@ -110,7 +112,7 @@ const ReportingBento: React.FC<ReportingBentoProps> = ({ isDarkMode, location, a
         submitData.append('complaint', description);
         submitData.append('latitude', location.latitude.toString());
         submitData.append('longitude', location.longitude.toString());
-        submitData.append('address', location.address || 'Unknown Location');
+        submitData.append('address', manualAddress || location.address || 'Unknown Location');
 
         if (image) submitData.append('image', image);
         submitData.append('category', category); // Send verified category
@@ -277,10 +279,10 @@ const ReportingBento: React.FC<ReportingBentoProps> = ({ isDarkMode, location, a
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-full items-stretch"
+                        className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-center"
                     >
                         {/* LEFT: Contextual Validation */}
-                        <div className="space-y-6 flex flex-col h-full bg-white/40 dark:bg-city-surface/40 backdrop-blur-2xl rounded-[2rem] border border-gray-200/50 dark:border-white/10 p-6 shadow-2xl relative overflow-hidden">
+                        <div className="space-y-6 flex flex-col h-fit bg-white/40 dark:bg-city-surface/40 backdrop-blur-2xl rounded-[2rem] border border-gray-200/50 dark:border-white/10 px-6 pb-6 pt-2 shadow-2xl relative overflow-hidden">
                              <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.05] mix-blend-overlay pointer-events-none -z-10"></div>
                             
                             <div className="relative h-[250px] overflow-hidden rounded-2xl shadow-inner border border-gray-200 dark:border-white/10 group">
@@ -294,25 +296,24 @@ const ReportingBento: React.FC<ReportingBentoProps> = ({ isDarkMode, location, a
                                     <span className={`inline-flex px-3 py-1 text-xs font-black uppercase tracking-widest rounded-lg shadow-[0_0_15px_rgba(0,0,0,0.5)] border ${
                                         urgency === 'high' ? 'bg-city-red/90 border-city-red text-white' : 'bg-city-orange/90 border-city-orange text-white'
                                     }`}>
-                                        {urgency} PRTY
+                                        {urgency}
                                     </span>
                                 </div>
                             </div>
 
                             {/* Integrated Map Verification */}
-                            <div className="flex-1 min-h-[300px] border border-gray-200 dark:border-white/10 rounded-2xl relative overflow-hidden bg-white dark:bg-[#0a0a0a] shadow-inner p-1">
-                                <LocationMap location={location} isDarkMode={isDarkMode} />
-                                <div className="absolute top-4 right-4 bg-white/90 dark:bg-city-black/90 backdrop-blur px-3 py-1.5 border border-gray-200 dark:border-white/10 rounded-lg shadow-sm">
-                                    <span className="text-[9px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-2">
-                                       <span className="w-1.5 h-1.5 rounded-full bg-city-green animate-pulse" />
-                                       GPS Locked
-                                    </span>
-                                </div>
+                            <div className="h-[500px] border border-gray-200 dark:border-white/10 rounded-2xl relative overflow-hidden bg-white dark:bg-[#0a0a0a] shadow-inner p-6">
+                                <LocationMap 
+                                    location={location} 
+                                    isDarkMode={isDarkMode} 
+                                    editableAddress={manualAddress}
+                                    onAddressChange={setManualAddress}
+                                />
                             </div>
                         </div>
 
                         {/* RIGHT: Form Data */}
-                        <div className="bg-white/60 dark:bg-city-surface/60 backdrop-blur-2xl p-8 rounded-[2rem] border border-gray-200/50 dark:border-white/10 shadow-2xl flex flex-col h-full min-h-[624px] relative overflow-hidden">
+                        <div className="bg-white/60 dark:bg-city-surface/60 backdrop-blur-2xl p-8 rounded-[2rem] border border-gray-200/50 dark:border-white/10 shadow-2xl flex flex-col h-fit self-center relative overflow-hidden">
                             <div className="absolute inset-0 bg-gradient-to-b from-white/40 to-white/10 dark:from-white/5 dark:to-transparent pointer-events-none -z-10"></div>
                             
                             <div className="flex items-center gap-3 mb-8 border-b border-gray-200 dark:border-white/10 pb-6 relative z-10">
@@ -320,14 +321,14 @@ const ReportingBento: React.FC<ReportingBentoProps> = ({ isDarkMode, location, a
                                     <CheckCircle className="w-5 h-5 text-city-green" />
                                 </div>
                                 <div>
-                                    <h2 className="font-heading text-3xl font-black uppercase tracking-tighter text-city-black dark:text-white leading-none">
+                                    <h2 className="font-heading text-2xl font-black uppercase tracking-tighter text-city-black dark:text-white leading-none">
                                         Verify Metrics
                                     </h2>
                                     <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mt-1">Cross-check AI analysis</p>
                                 </div>
                             </div>
 
-                            <div className="space-y-8 flex-1 relative z-10">
+                            <div className="space-y-6 flex-1 relative z-10">
                                 <div className="group">
                                     <label className="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] mb-2 flex items-center gap-2">
                                         <Zap className="w-3 h-3 text-city-blue" />
@@ -348,21 +349,15 @@ const ReportingBento: React.FC<ReportingBentoProps> = ({ isDarkMode, location, a
                                     <textarea
                                         value={description}
                                         onChange={(e) => setDescription(e.target.value)}
-                                        className="w-full px-4 py-3 bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-xl font-medium text-sm text-city-black dark:text-white focus:border-city-blue focus:ring-2 focus:ring-city-blue/20 outline-none min-h-[160px] resize-none transition-all shadow-inner"
+                                        className="w-full px-4 py-3 bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-xl font-medium text-base text-city-black dark:text-white focus:border-city-blue focus:ring-2 focus:ring-city-blue/20 outline-none min-h-[120px] resize-none transition-all shadow-inner"
                                     />
                                 </div>
 
-                                <div className="mt-auto pt-8 flex gap-4 flex-col sm:flex-row">
-                                    <button
-                                        onClick={() => { setStep('capture'); setImage(null); }}
-                                        className="py-4 px-6 rounded-2xl bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 text-xs font-bold uppercase tracking-widest text-city-black dark:text-white hover:bg-gray-100 dark:hover:bg-white/5 transition-all shadow-sm hover:shadow-md"
-                                    >
-                                        Abort
-                                    </button>
+                                <div className="mt-auto pt-10 flex flex-row items-center justify-center gap-4 px-2">
                                     <button
                                         onClick={handleSubmit}
                                         disabled={loading}
-                                        className="flex-1 py-4 rounded-2xl bg-city-blue text-white uppercase font-black tracking-widest transition-all hover:bg-city-blue/90 hover:shadow-[0_0_20px_rgba(37,99,235,0.4)] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                                        className="flex-1 max-w-[180px] py-4 rounded-xl bg-city-green text-white uppercase font-black tracking-widest text-base transition-all hover:bg-city-green/90 hover:shadow-[0_0_20px_rgba(34,197,94,0.4)] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                                     >
                                         {loading ? (
                                             <>
@@ -370,8 +365,14 @@ const ReportingBento: React.FC<ReportingBentoProps> = ({ isDarkMode, location, a
                                                 Transmitting...
                                             </>
                                         ) : (
-                                            'Commit Secure Log'
+                                            'Submit Report'
                                         )}
+                                    </button>
+                                    <button
+                                        onClick={() => { setStep('capture'); setImage(null); }}
+                                        className="flex-1 max-w-[180px] py-4 rounded-xl bg-city-red text-white uppercase font-black tracking-widest text-base hover:bg-city-red/90 transition-all shadow-md active:scale-95 flex items-center justify-center"
+                                    >
+                                        Abort
                                     </button>
                                 </div>
                             </div>

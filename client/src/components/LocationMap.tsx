@@ -95,62 +95,49 @@ const LocationMap: React.FC<LocationMapProps> = ({ location, isDarkMode, editabl
   if (!latitude || !longitude) return null;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.2 }}
-      className="p-6 h-full flex flex-col bg-white/40 dark:bg-city-surface/40 backdrop-blur-2xl rounded-[2rem] border border-gray-200/50 dark:border-white/10 shadow-[0_10px_30px_-10px_rgba(37,99,235,0.1)] relative overflow-hidden"
-    >
-      <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03] mix-blend-overlay pointer-events-none"></div>
-      
-      <div className="flex items-center gap-3 mb-5 border-b border-gray-200/50 dark:border-white/10 pb-4 relative z-10">
+    <div className="h-full min-h-[450px] flex flex-col relative overflow-hidden">
+      <div className="flex items-center gap-3 mb-6 relative z-10">
         <div className="p-1.5 rounded-lg bg-city-blue/10 dark:bg-city-blue/20">
-            <Target className="w-4 h-4 text-city-blue" />
+            <MapPin className="w-4 h-4 text-city-blue" />
         </div>
-        <div>
-            <h3 className="font-heading text-xl font-black text-city-black dark:text-white uppercase tracking-tighter leading-none drop-shadow-sm">
-                Geospatial Vector
-            </h3>
-            <p className="text-[9px] font-bold text-gray-500 uppercase tracking-widest mt-1">Satellite Lock Acquired</p>
-        </div>
+        <h3 className="font-heading text-xl font-black text-city-black dark:text-white uppercase tracking-tighter leading-none drop-shadow-sm">
+            Detected Location
+        </h3>
       </div>
       
-      {onAddressChange ? (
-        <textarea
-          value={editableAddress || ''}
-          onChange={(e) => onAddressChange(e.target.value)}
-          placeholder="Enter detailed location..."
-          className="w-full text-xs font-bold uppercase tracking-widest mb-5 p-4 rounded-xl border border-gray-200 dark:border-white/10 bg-white/50 dark:bg-[#0a0a0a] outline-none focus:border-city-blue focus:ring-1 focus:ring-city-blue shadow-inner transition-all relative z-10"
-          rows={2}
-        />
-      ) : (
-        <p className="text-[10px] uppercase font-bold tracking-[0.15em] text-city-black dark:text-gray-300 mb-5 line-clamp-2 p-4 rounded-xl border border-gray-200/50 dark:border-white/5 bg-white/50 dark:bg-[#0a0a0a] flex-shrink-0 shadow-inner relative z-10">
-          {address}
-        </p>
-      )}
+      <div className="flex flex-col flex-1 gap-4">
+        {onAddressChange ? (
+          <textarea
+            value={editableAddress || ''}
+            onChange={(e) => onAddressChange(e.target.value)}
+            placeholder="Enter detailed location..."
+            className="w-full text-xs font-bold uppercase tracking-widest p-4 rounded-xl border border-gray-200 dark:border-white/10 bg-white/50 dark:bg-[#0a0a0a] outline-none focus:border-city-blue focus:ring-1 focus:ring-city-blue shadow-inner transition-all relative z-10 resize-none text-gray-700 dark:text-gray-200"
+            rows={3}
+          />
+        ) : (
+          <p className="text-[10px] uppercase font-bold tracking-[0.15em] text-city-black dark:text-gray-300 p-4 rounded-xl border border-gray-200/50 dark:border-white/5 bg-white/50 dark:bg-[#0a0a0a] flex-shrink-0 shadow-inner relative z-10">
+            {address}
+          </p>
+        )}
 
-      <div className="flex-1 w-full relative rounded-2xl border border-gray-200 dark:border-white/10 min-h-[250px] overflow-hidden shadow-inner group relative z-10">
-        
-        {/* Cinematic hud elements over map */}
-        <div className="absolute top-2 left-2 z-[400] pointer-events-none bg-black/40 backdrop-blur rounded px-2 py-1 border border-white/10">
-            <span className="text-[8px] font-black text-white font-mono">{latitude.toFixed(4)}N {longitude.toFixed(4)}E</span>
+        <div className="flex-1 w-full relative rounded-2xl border border-gray-200 dark:border-white/10 min-h-[300px] overflow-hidden shadow-inner group relative z-10">
+          <div className="absolute inset-0 ring-1 ring-inset ring-city-blue/20 pointer-events-none z-[400] rounded-2xl mix-blend-overlay"></div>
+
+          <MapContainer
+            center={[latitude, longitude]}
+            zoom={15}
+            style={{ height: '100%', width: '100%', backgroundColor: isDarkMode ? '#1a1a1a' : '#f9fafb' }}
+            scrollWheelZoom={false}
+            className="z-0"
+          >
+            <MapTileLayer isDarkMode={isDarkMode} />
+            <Marker position={[latitude, longitude]}>
+              <Popup className="font-heading font-black uppercase text-xs">Active Trace</Popup>
+            </Marker>
+          </MapContainer>
         </div>
-        <div className="absolute inset-0 ring-1 ring-inset ring-city-blue/20 pointer-events-none z-[400] rounded-2xl mix-blend-overlay"></div>
-
-        <MapContainer
-          center={[latitude, longitude]}
-          zoom={15}
-          style={{ height: '100%', width: '100%', backgroundColor: isDarkMode ? '#1a1a1a' : '#f9fafb' }}
-          scrollWheelZoom={false}
-          className="z-0"
-        >
-          <MapTileLayer isDarkMode={isDarkMode} />
-          <Marker position={[latitude, longitude]}>
-            <Popup className="font-heading font-black uppercase text-xs">Active Trace</Popup>
-          </Marker>
-        </MapContainer>
       </div>
-    </motion.div>
+    </div>
   );
 };
 
