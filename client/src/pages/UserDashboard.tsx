@@ -264,33 +264,34 @@ const UserDashboard: React.FC<UserDashboardProps> = () => {
                                         </div>
 
                                         <div className="w-full md:w-[50%] min-w-0 mt-2 md:mt-0 relative z-10">
-                                            <div className="flex justify-between items-center text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3 px-1">
-                                                <span className={currentStep >= 1 ? 'text-city-black dark:text-white drop-shadow-sm' : ''}>Logged</span>
-                                                <span className={currentStep >= 2 ? 'text-city-black dark:text-white drop-shadow-sm' : ''}>Verified</span>
-                                                <span className={currentStep >= 3 ? 'text-city-black dark:text-white drop-shadow-sm' : ''}>In-Progress</span>
-                                                <span className={currentStep >= 4 ? 'text-city-green drop-shadow-[0_0_8px_rgba(0,230,118,0.5)]' : ''}>Resolved</span>
+                                            <div className="flex w-full text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3">
+                                                <div className={`w-1/4 text-center ${currentStep >= 1 ? 'text-city-black dark:text-white drop-shadow-sm' : ''}`}>Logged</div>
+                                                <div className={`w-1/4 text-center ${currentStep >= 2 ? 'text-city-black dark:text-white drop-shadow-sm' : ''}`}>Verified</div>
+                                                <div className={`w-1/4 text-center ${currentStep >= 3 ? 'text-city-black dark:text-white drop-shadow-sm' : ''}`}>In-Progress</div>
+                                                <div className={`w-1/4 text-center ${currentStep >= 4 ? 'text-city-green drop-shadow-[0_0_8px_rgba(0,230,118,0.5)]' : ''}`}>Resolved</div>
                                             </div>
                                             <div className="w-full h-4 relative">
-                                                <div className="absolute inset-0 bg-gray-100 dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/5 rounded-full shadow-inner overflow-hidden">
+                                                {/* The Track Container (Constrained between center of first and last items) */}
+                                                <div className="absolute left-[calc(12.5%-12px)] right-[calc(12.5%-12px)] top-0 bottom-0 bg-gray-100 dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/5 rounded-full shadow-inner overflow-hidden">
                                                     <motion.div
                                                         initial={{ width: 0 }}
-                                                        animate={{ width: `${((currentStep - 1) / 3) * 100}%` }}
+                                                        animate={{ width: `${currentStep === 1 ? '8%' : ((currentStep - 1) / 3) * 100}%` }}
                                                         transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
-                                                        className={`absolute inset-y-0 left-0 rounded-full ${statusColor} backdrop-blur-sm`}
+                                                        className={`absolute inset-y-0 left-0 rounded-full ${statusColor} backdrop-blur-sm shadow-[0_0_15px_rgba(255,255,255,0.3)]`}
                                                     />
                                                     {/* Glow effect on progress bar */}
                                                     <motion.div
                                                         initial={{ width: 0 }}
-                                                        animate={{ width: `${((currentStep - 1) / 3) * 100}%` }}
+                                                        animate={{ width: `${currentStep === 1 ? '8%' : ((currentStep - 1) / 3) * 100}%` }}
                                                         transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
                                                         className={`absolute top-0 bottom-0 left-0 bg-white/30 blur-[4px]`}
                                                     />
                                                 </div>
 
-                                                {/* Hex-Lock Checkpoint Indicators */}
-                                                <div className="absolute inset-0 flex justify-between items-center px-0.5 pointer-events-none">
+                                                {/* Hex-Lock Checkpoint Indicators (Aligned to column centers) */}
+                                                <div className="absolute inset-0 flex pointer-events-none">
                                                     {[1, 2, 3, 4].map((step) => (
-                                                        <div key={step} className="relative flex items-center justify-center">
+                                                        <div key={step} className="w-1/4 flex items-center justify-center">
                                                             <motion.div
                                                                 initial={false}
                                                                 animate={{
