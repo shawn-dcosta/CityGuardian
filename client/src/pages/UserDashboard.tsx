@@ -259,7 +259,7 @@ const UserDashboard: React.FC<UserDashboardProps> = () => {
                                                     ID:{report.ID}
                                                 </span>
                                                 <span className={`px-2.5 py-1 rounded-md border text-[10px] font-black uppercase tracking-widest shadow-inner ${badgeBg}`}>
-                                                    {report.Urgency} PRTY
+                                                    {report.Urgency}
                                                 </span>
                                             </div>
                                             <h3 className="font-heading text-2xl font-black text-city-black dark:text-white uppercase tracking-tight mb-2 drop-shadow-sm">
@@ -394,7 +394,7 @@ const UserDashboard: React.FC<UserDashboardProps> = () => {
                                                 selectedReport.Urgency?.toLowerCase() === 'medium' ? 'bg-city-orange/10 dark:bg-city-orange/20 border-city-orange/20 text-city-orange' :
                                                     'bg-city-blue/10 dark:bg-city-blue/20 border-city-blue/20 text-city-blue'
                                             }`}>
-                                            {selectedReport.Urgency || 'STD'} PRTY
+                                            {selectedReport.Urgency || 'STD'}
                                         </span>
                                     </div>
 
@@ -416,9 +416,14 @@ const UserDashboard: React.FC<UserDashboardProps> = () => {
                                             <Clock className="w-4 h-4 text-gray-400" />
                                             <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Timeframe Est.</h4>
                                         </div>
-                                        <span className="text-sm font-black text-city-black dark:text-white uppercase tracking-wider block mt-1">
-                                            {selectedReport.Urgency?.toLowerCase() === 'high' ? 'IMMEDIATE // 24H' : 'STANDARD // 3-7D'}
-                                        </span>
+                                        <div className="flex flex-col">
+                                            <span className="text-sm font-black text-city-black dark:text-white uppercase tracking-wider block mt-1">
+                                                {selectedReport.Urgency?.toLowerCase() === 'high' ? 'IMMEDIATE' : 'STANDARD'}
+                                            </span>
+                                            <span className="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest">
+                                                {selectedReport.Urgency?.toLowerCase() === 'high' ? '24H' : '3-7D'}
+                                            </span>
+                                        </div>
                                     </div>
 
                                     <div className="bg-gray-50 dark:bg-[#0e0e0e] p-6 rounded-2xl border border-gray-200/60 dark:border-white/5 shadow-sm">
