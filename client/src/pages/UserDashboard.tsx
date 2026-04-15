@@ -215,23 +215,30 @@ const UserDashboard: React.FC<UserDashboardProps> = () => {
                         {reports.map((report, index) => {
                             const currentStep = getStatusStep(report.Status || 'pending');
                             const isHighPriority = report.Urgency?.toLowerCase() === 'high';
+                            const isMediumPriority = report.Urgency?.toLowerCase() === 'medium';
                             const isResolved = currentStep === 4;
 
-                            // Calculate status color
+                            // Calculate tactical styling
                             let statusColor = 'bg-city-blue/90';
                             let borderColor = 'border-l-city-blue/50 focus:border-l-city-blue';
                             let badgeBg = 'bg-city-blue/10 dark:bg-city-blue/20 text-city-blue border-city-blue/20';
+                            let barShadow = 'shadow-[0_0_15px_rgba(37,99,235,0.3)]';
 
                             if (isResolved) {
                                 statusColor = 'bg-city-green/90';
                                 borderColor = 'border-l-city-green/50 focus:border-l-city-green';
                                 badgeBg = 'bg-city-green/10 dark:bg-city-green/20 text-city-green border-city-green/20';
+                                barShadow = 'shadow-[0_0_15px_rgba(5,150,105,0.3)]';
                             } else if (isHighPriority) {
                                 statusColor = 'bg-city-red/90';
                                 borderColor = 'border-l-city-red/50 focus:border-l-city-red text-city-red';
-                                badgeBg = 'bg-city-red border-city-red text-white'; // High priority gets stark colors
-                            } else if (report.Urgency?.toLowerCase() === 'medium') {
+                                badgeBg = 'bg-city-red border-city-red text-white';
+                                barShadow = 'shadow-[0_0_15px_rgba(211,18,18,0.3)]';
+                            } else if (isMediumPriority) {
+                                statusColor = 'bg-city-orange/90';
+                                borderColor = 'border-l-city-orange/50 focus:border-l-city-orange text-city-orange';
                                 badgeBg = 'bg-city-orange/10 dark:bg-city-orange/20 text-city-orange border-city-orange/20';
+                                barShadow = 'shadow-[0_0_15px_rgba(255,145,0,0.3)]';
                             }
 
                             return (
@@ -277,7 +284,7 @@ const UserDashboard: React.FC<UserDashboardProps> = () => {
                                                         initial={{ width: 0 }}
                                                         animate={{ width: `${currentStep === 1 ? 20 : ((currentStep - 1) / 3) * 100}%` }}
                                                         transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
-                                                        className={`absolute inset-y-0 left-0 rounded-full ${statusColor} shadow-[0_0_15px_rgba(255,255,255,0.3)]`}
+                                                        className={`absolute inset-y-0 left-0 rounded-full ${statusColor} ${barShadow}`}
                                                     />
                                                     {/* Glow effect on progress bar */}
                                                     <motion.div
