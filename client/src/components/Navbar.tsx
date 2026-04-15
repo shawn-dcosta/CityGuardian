@@ -93,7 +93,7 @@ const Navbar: React.FC<NavbarProps> = ({ }) => {
                         }`}
                     >
                       <User className="w-4 h-4" />
-                      Manifest
+                      Dashboard
                     </motion.button>
                   </Link>
                 )}
@@ -116,7 +116,7 @@ const Navbar: React.FC<NavbarProps> = ({ }) => {
                       className="px-4 py-2.5 rounded-full border border-city-red/30 bg-city-red/10 text-city-red hover:bg-city-red hover:text-white transition-all flex items-center gap-2 text-xs font-bold uppercase tracking-widest group"
                     >
                       <LogOut className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-                      Abort
+                      Logout
                     </motion.button>
                   </div>
                 ) : (
