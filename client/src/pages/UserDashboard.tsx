@@ -261,6 +261,10 @@ const UserDashboard: React.FC<UserDashboardProps> = () => {
                                                 <span className={`px-2.5 py-1 rounded-md border text-[10px] font-black uppercase tracking-widest shadow-inner ${badgeBg}`}>
                                                     {report.Urgency}
                                                 </span>
+                                                <span className="px-2.5 py-1 bg-gray-100 dark:bg-white/5 rounded-md border border-gray-200 dark:border-white/10 text-[10px] font-bold text-gray-500 tracking-widest flex items-center gap-1.5 shadow-inner">
+                                                    <Clock className="w-3 h-3" />
+                                                    {report.Date ? new Date(report.Date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : 'LOG DATE UNKNOWN'}
+                                                </span>
                                             </div>
                                             <h3 className="font-heading text-2xl font-black text-city-black dark:text-white uppercase tracking-tight mb-2 drop-shadow-sm">
                                                 {report.Category || 'ANOMALY'}
@@ -403,12 +407,18 @@ const UserDashboard: React.FC<UserDashboardProps> = () => {
                                             </button>
 
                                             <div className="mb-10 pr-12">
-                                                <div className="flex items-center gap-4 mb-5">
+                                                <div className="flex flex-wrap items-center gap-4 mb-5">
                                                     <div className="px-3 py-1 bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-lg flex items-center gap-3">
                                                         <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">
                                                             Log ID: {selectedReport.ID}
                                                         </span>
                                                         <span className={`w-2 h-2 rounded-full bg-${themeColor} animate-pulse shadow-[0_0_8px_${glowColor}]`} />
+                                                    </div>
+                                                    <div className="px-3 py-1 bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-lg flex items-center gap-2">
+                                                        <Clock className="w-3 h-3 text-gray-500" />
+                                                        <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">
+                                                            REPORTED: {selectedReport.Date ? `${new Date(selectedReport.Date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })} • ${new Date(selectedReport.Date).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })}` : 'PENDING'}
+                                                        </span>
                                                     </div>
                                                     <span className={`px-2.5 py-1 rounded-md border text-[10px] font-black uppercase tracking-widest shadow-inner ${
                                                         urg === 'high' ? 'bg-city-red border-city-red text-white' :
