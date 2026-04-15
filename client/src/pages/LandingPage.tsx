@@ -2,9 +2,23 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Camera, MapPin, CheckCircle, ArrowRight, Shield, Zap } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 const LandingPage: React.FC = () => {
     const navigate = useNavigate();
+    const { isAuthenticated, user } = useAuth();
+
+    const handleStartNow = () => {
+        if (isAuthenticated) {
+            if (user?.role === 'admin') {
+                navigate('/admin');
+            } else {
+                navigate('/report');
+            }
+        } else {
+            navigate('/register');
+        }
+    };
 
     const features = [
         {
@@ -183,7 +197,7 @@ const LandingPage: React.FC = () => {
                     </h2>
                     <p className="text-gray-400 max-w-xl mx-auto mb-12 text-xl">The city needs guardians. Time to step up.</p>
                     <button
-                        onClick={() => navigate('/register')}
+                        onClick={handleStartNow}
                         className="group relative px-14 py-6 bg-city-red text-white rounded-xl font-black uppercase tracking-widest text-xl overflow-hidden shadow-[0_0_40px_rgba(211,18,18,0.4)] hover:shadow-[0_0_60px_rgba(211,18,18,0.6)] transition-all duration-300"
                     >
                         <span className="relative z-10 flex items-center gap-2">

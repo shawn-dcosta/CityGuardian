@@ -53,7 +53,7 @@ const Navbar: React.FC<NavbarProps> = ({ }) => {
             <div className="flex items-center gap-6">
               {/* Navigation Links - Pushed to the Right */}
               <div className="hidden md:flex items-center gap-4">
-                {isAuthenticated && (
+                {isAuthenticated && user?.role !== 'admin' && (
                   <Link to="/report">
                     <motion.button
                       whileTap={{ scale: 0.95 }}
@@ -83,7 +83,7 @@ const Navbar: React.FC<NavbarProps> = ({ }) => {
                   </Link>
                 )}
 
-                {isAuthenticated && (
+                {isAuthenticated && user?.role !== 'admin' && (
                   <Link to="/dashboard">
                     <motion.button
                       whileTap={{ scale: 0.95 }}
