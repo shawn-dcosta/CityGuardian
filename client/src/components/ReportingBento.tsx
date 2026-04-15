@@ -394,16 +394,16 @@ const ReportingBento: React.FC<ReportingBentoProps> = ({ isDarkMode, location, a
                         <div className="w-24 h-24 rounded-full bg-city-green/20 border border-city-green/40 flex items-center justify-center mb-8 shadow-[0_0_30px_rgba(0,230,118,0.3)] relative z-10">
                             <CheckCircle className="w-12 h-12 text-city-green" />
                         </div>
-                        <h2 className="font-heading text-4xl md:text-5xl font-black text-city-black dark:text-white uppercase tracking-tighter mb-4 drop-shadow-sm relative z-10">System Logged</h2>
+                        <h2 className="font-heading text-4xl md:text-5xl font-black text-city-black dark:text-white uppercase tracking-tighter mb-4 drop-shadow-sm relative z-10">Report Submitted</h2>
                         <p className="text-sm font-bold text-gray-500 uppercase tracking-[0.2em] mb-10 text-center max-w-sm relative z-10">
-                            Operations command has received the designated payload package.
+                            Your report has been successfully sent. Authorities will review it shortly.
                         </p>
                         <div className="flex flex-col sm:flex-row gap-4 relative z-10 w-full sm:w-auto">
                             <button
                                 onClick={() => window.location.href = '/dashboard'}
                                 className="px-8 py-4 bg-white dark:bg-city-surface border border-gray-200 dark:border-white/10 text-city-black dark:text-white font-bold uppercase tracking-widest text-sm hover:shadow-lg rounded-2xl transition-all shadow-sm"
                             >
-                                Track Manifest
+                                Track Issue
                             </button>
                             <button
                                 onClick={() => {
@@ -413,7 +413,7 @@ const ReportingBento: React.FC<ReportingBentoProps> = ({ isDarkMode, location, a
                                 }}
                                 className="px-8 py-4 bg-city-green text-white font-bold uppercase tracking-widest text-sm hover:shadow-[0_0_20px_rgba(0,230,118,0.4)] hover:-translate-y-1 rounded-2xl transition-all"
                             >
-                                Dispatch Next
+                                New Report
                             </button>
                         </div>
                     </motion.div>
