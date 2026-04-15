@@ -130,15 +130,17 @@ const HeatMap: React.FC<HeatMapProps> = ({ data, isDarkMode, showHeatmap = true 
     ? [data[0].lat, data[0].lon]
     : [19.0760, 72.8777];
 
-  const createPulseIcon = (urgency: string) => {
+  const createPulseIcon = (urgency: string, status: string) => {
     // @ts-ignore
     if (!window.L) return null;
+
+    const isActive = status?.toLowerCase() !== 'resolved';
 
     // @ts-ignore
     return window.L.divIcon({
       className: 'custom-pulse-marker',
       html: `<div class="w-3 h-3 relative rounded-full border border-white/50 shadow-[0_0_8px_rgba(0,0,0,0.5)]" style="background-color: ${urgencyColors[urgency] || urgencyColors.medium}">
-              <div class="absolute -inset-1 rounded-full animate-ping opacity-75" style="background-color: ${urgencyColors[urgency] || urgencyColors.medium}"></div>
+              ${isActive ? `<div class="absolute -inset-1 rounded-full animate-ping opacity-75" style="background-color: ${urgencyColors[urgency] || urgencyColors.medium}"></div>` : ''}
             </div>`,
       iconSize: [12, 12],
       iconAnchor: [6, 6]
@@ -222,8 +224,8 @@ const HeatMap: React.FC<HeatMapProps> = ({ data, isDarkMode, showHeatmap = true 
 
             {showHeatmap && <HeatMapLayer data={data} isDarkMode={isDarkMode} />}
 
-            {data.map((point, index) => {
-              const icon = createPulseIcon(point.Urgency);
+            {data.filter(p => p.Status !== 'Resolved').map((point, index) => {
+              const icon = createPulseIcon(point.Urgency, point.Status);
               if (!icon) return null;
 
               return (
