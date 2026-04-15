@@ -34,13 +34,7 @@ const LandingPage: React.FC = () => {
         <div className="min-h-screen bg-city-surface-light dark:bg-city-black overflow-x-hidden selection:bg-city-red/20 selection:text-city-red font-sans">
             {/* Cinematic Hero */}
             <section className="relative min-h-[95vh] flex flex-col justify-center pt-24 pb-12 overflow-hidden bg-[#030303]">
-                {/* Tactical Grid Background */}
-                <div className="absolute inset-0 opacity-[0.15] pointer-events-none" 
-                     style={{ 
-                         backgroundImage: `linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px)`,
-                         backgroundSize: '40px 40px'
-                     }}>
-                </div>
+
 
                 {/* Dynamic Ambient Background Elements */}
                 <div className="absolute top-0 right-0 w-1/3 h-1/3 bg-city-blue/20 blur-[130px] rounded-full pointer-events-none animate-pulse duration-1000" />
@@ -49,6 +43,9 @@ const LandingPage: React.FC = () => {
                 {/* Texture Overlays */}
                 <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 pointer-events-none mix-blend-overlay"></div>
                 <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_50%,transparent_0%,#030303_100%)] pointer-events-none" />
+
+                {/* Tactical Grid Background - Moved here for visibility */}
+                <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.1)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_50%,#000_80%,transparent_100%)] pointer-events-none" />
 
                 <div className="container mx-auto px-6 relative z-10 flex flex-col items-center text-center">
                     <motion.div
