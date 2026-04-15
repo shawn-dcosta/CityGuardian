@@ -174,7 +174,7 @@ function App() {
                   </div>
                 </div>
 
-                <div className="mt-8 pt-6 border-t border-gray-200 flex justify-center">
+                <div className="mt-8 pt-6 flex justify-center">
                   <p className="text-xs font-black text-gray-400 uppercase tracking-wide flex items-center gap-1.5">
                     <span className="text-lg leading-none">©</span> {new Date().getFullYear()} CityGuardian. All Rights Reserved.
                   </p>
