@@ -94,14 +94,21 @@ const UserDashboard: React.FC<UserDashboardProps> = () => {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.6, ease: "easeOut" }}
                 >
-                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-full mb-4 shadow-inner">
-                        <span className="relative flex h-2 w-2">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-city-green opacity-75"></span>
-                            <span className="relative inline-flex rounded-full h-2 w-2 bg-city-green"></span>
-                        </span>
-                        <p className="text-[10px] font-bold tracking-widest text-gray-500 dark:text-gray-400 uppercase">
-                            Operative: <span className="text-city-blue">{user?.name || 'Unknown'}</span> // Clearance: Citizen
-                        </p>
+                    <div className="inline-flex items-center gap-4 px-5 py-3 bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl mb-6 shadow-inner">
+                        <div className="flex-shrink-0">
+                            <span className="relative flex h-2 w-2">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-city-green opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-2 w-2 bg-city-green"></span>
+                            </span>
+                        </div>
+                        <div className="flex flex-col items-start gap-1">
+                            <p className="text-[10px] font-black tracking-widest text-gray-500/80 dark:text-gray-400/80 uppercase leading-none">
+                                Operative: <span className="text-city-blue">{user?.name || 'Unknown'}</span>
+                            </p>
+                            <p className="text-[10px] font-black tracking-widest text-gray-500 dark:text-gray-400 uppercase leading-none">
+                                Clearance: Citizen
+                            </p>
+                        </div>
                     </div>
                     <h1 className="font-heading text-5xl md:text-6xl font-black text-city-black dark:text-white uppercase tracking-tighter mb-2 drop-shadow-md">
                         Command <span className="text-transparent bg-clip-text bg-gradient-to-br from-city-blue to-blue-400 dark:from-city-blue dark:to-blue-200">Center</span>
