@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
-import { Activity, CheckCircle, Clock, MapPin, AlertTriangle, ArrowRight, X, Target } from 'lucide-react';
+import { Activity, CheckCircle, Clock, MapPin, AlertTriangle, ArrowRight, X, Target, Hexagon, Check } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { fetchReportsData } from '../services/dataService';
 
@@ -133,7 +133,7 @@ const UserDashboard: React.FC<UserDashboardProps> = () => {
                         <div className="p-2.5 rounded-lg bg-city-blue/10 border border-city-blue/20 text-city-blue">
                             <Activity className="w-6 h-6" />
                         </div>
-                        <span className="text-xs font-bold text-gray-500 tracking-[0.2em] uppercase">Total Ops</span>
+                        <span className="text-xs font-bold text-gray-500 tracking-[0.2em] uppercase">Total Reports</span>
                     </div>
                     <h3 className="font-heading text-6xl font-black text-city-black dark:text-white relative z-10 drop-shadow-sm">{stats.total}</h3>
                 </motion.div>
@@ -152,7 +152,7 @@ const UserDashboard: React.FC<UserDashboardProps> = () => {
                         <div className="p-2.5 rounded-lg bg-city-orange/10 border border-city-orange/20 text-city-orange">
                             <Clock className="w-6 h-6" />
                         </div>
-                        <span className="text-xs font-bold text-gray-500 tracking-[0.2em] uppercase">Active Ops</span>
+                        <span className="text-xs font-bold text-gray-500 tracking-[0.2em] uppercase">Active Cases</span>
                     </div>
                     <h3 className="font-heading text-6xl font-black text-city-black dark:text-white relative z-10 drop-shadow-sm">{stats.pending}</h3>
                 </motion.div>
@@ -171,7 +171,7 @@ const UserDashboard: React.FC<UserDashboardProps> = () => {
                         <div className="p-2.5 rounded-lg bg-city-green/10 border border-city-green/20 text-city-green">
                             <CheckCircle className="w-6 h-6" />
                         </div>
-                        <span className="text-xs font-bold text-gray-500 tracking-[0.2em] uppercase">Neutralized</span>
+                        <span className="text-xs font-bold text-gray-500 tracking-[0.2em] uppercase">Resolved</span>
                     </div>
                     <h3 className="font-heading text-6xl font-black text-city-black dark:text-white relative z-10 drop-shadow-sm">{stats.fixed}</h3>
                 </motion.div>
@@ -184,7 +184,7 @@ const UserDashboard: React.FC<UserDashboardProps> = () => {
                         <div className="p-1.5 bg-city-red/10 rounded-md">
                             <MapPin className="w-4 h-4 text-city-red" />
                         </div>
-                        Operation Log Manifest
+                        Report Logs
                     </h2>
                 </div>
 
@@ -267,27 +267,61 @@ const UserDashboard: React.FC<UserDashboardProps> = () => {
                                             <div className="flex justify-between items-center text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3 px-1">
                                                 <span className={currentStep >= 1 ? 'text-city-black dark:text-white drop-shadow-sm' : ''}>Logged</span>
                                                 <span className={currentStep >= 2 ? 'text-city-black dark:text-white drop-shadow-sm' : ''}>Verified</span>
-                                                <span className={currentStep >= 3 ? 'text-city-black dark:text-white drop-shadow-sm' : ''}>Active</span>
-                                                <span className={currentStep >= 4 ? 'text-city-green drop-shadow-[0_0_8px_rgba(0,230,118,0.5)]' : ''}>Neutral</span>
+                                                <span className={currentStep >= 3 ? 'text-city-black dark:text-white drop-shadow-sm' : ''}>In-Progress</span>
+                                                <span className={currentStep >= 4 ? 'text-city-green drop-shadow-[0_0_8px_rgba(0,230,118,0.5)]' : ''}>Resolved</span>
                                             </div>
-                                            <div className="w-full bg-gray-100 dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/5 h-3 rounded-full relative overflow-hidden shadow-inner">
-                                                {/* Stepped progress indicators */}
-                                                <div className="absolute top-0 bottom-0 left-1/3 w-px bg-gray-200 dark:bg-white/10 z-10" />
-                                                <div className="absolute top-0 bottom-0 left-2/3 w-px bg-gray-200 dark:bg-white/10 z-10" />
+                                            <div className="w-full h-4 relative">
+                                                <div className="absolute inset-0 bg-gray-100 dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/5 rounded-full shadow-inner overflow-hidden">
+                                                    <motion.div
+                                                        initial={{ width: 0 }}
+                                                        animate={{ width: `${((currentStep - 1) / 3) * 100}%` }}
+                                                        transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
+                                                        className={`absolute inset-y-0 left-0 rounded-full ${statusColor} backdrop-blur-sm`}
+                                                    />
+                                                    {/* Glow effect on progress bar */}
+                                                    <motion.div
+                                                        initial={{ width: 0 }}
+                                                        animate={{ width: `${((currentStep - 1) / 3) * 100}%` }}
+                                                        transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
+                                                        className={`absolute top-0 bottom-0 left-0 bg-white/30 blur-[4px]`}
+                                                    />
+                                                </div>
 
-                                                <motion.div
-                                                    initial={{ width: 0 }}
-                                                    animate={{ width: `${((currentStep - 1) / 3) * 100}%` }}
-                                                    transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
-                                                    className={`absolute inset-y-0 left-0 rounded-full ${statusColor} backdrop-blur-sm`}
-                                                />
-                                                {/* Glow effect on progress bar */}
-                                                <motion.div
-                                                    initial={{ width: 0 }}
-                                                    animate={{ width: `${((currentStep - 1) / 3) * 100}%` }}
-                                                    transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
-                                                    className={`absolute top-0 bottom-0 left-0 bg-white/30 blur-[4px]`}
-                                                />
+                                                {/* Hex-Lock Checkpoint Indicators */}
+                                                <div className="absolute inset-0 flex justify-between items-center px-0.5 pointer-events-none">
+                                                    {[1, 2, 3, 4].map((step) => (
+                                                        <div key={step} className="relative flex items-center justify-center">
+                                                            <motion.div
+                                                                initial={false}
+                                                                animate={{
+                                                                    scale: currentStep >= step ? 1.15 : 1,
+                                                                    rotate: currentStep >= step ? 0 : -30
+                                                                }}
+                                                                className={`relative z-20 transition-all duration-700 ${currentStep >= step
+                                                                        ? step === 4
+                                                                            ? 'text-city-green drop-shadow-[0_0_10px_#00E676]'
+                                                                            : 'text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.9)]'
+                                                                        : 'text-gray-400 dark:text-gray-600'
+                                                                    }`}
+                                                            >
+                                                                <Hexagon
+                                                                    className={`w-5 h-5 ${currentStep >= step ? 'stroke-city-black/70 dark:stroke-white/30' : ''}`}
+                                                                    fill={currentStep >= step ? 'currentColor' : 'transparent'}
+                                                                    strokeWidth={currentStep >= step ? 1.5 : 2.5}
+                                                                />
+                                                                {currentStep >= step && (
+                                                                    <motion.div
+                                                                        initial={{ scale: 0, opacity: 0 }}
+                                                                        animate={{ scale: 1, opacity: 1 }}
+                                                                        className="absolute inset-0 flex items-center justify-center"
+                                                                    >
+                                                                        <Check className={`w-3 h-3 ${step === 4 ? 'text-city-black' : 'text-city-blue dark:text-city-black'} stroke-[4]`} />
+                                                                    </motion.div>
+                                                                )}
+                                                            </motion.div>
+                                                        </div>
+                                                    ))}
+                                                </div>
                                             </div>
                                         </div>
 
