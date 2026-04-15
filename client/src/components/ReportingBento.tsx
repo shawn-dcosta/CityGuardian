@@ -237,23 +237,27 @@ const ReportingBento: React.FC<ReportingBentoProps> = ({ isDarkMode, location, a
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="flex flex-col items-center justify-center min-h-[500px] text-center bg-white/40 dark:bg-city-surface/40 backdrop-blur-2xl rounded-[2rem] border border-gray-200/50 dark:border-white/10 shadow-2xl relative overflow-hidden"
+                        className="flex flex-col items-center justify-center min-h-[600px] py-16 text-center bg-white/40 dark:bg-city-surface/40 backdrop-blur-2xl rounded-[2rem] border border-gray-200/50 dark:border-white/10 shadow-2xl relative overflow-hidden"
                     >
                         <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.05] mix-blend-overlay pointer-events-none"></div>
 
-                        <div className="relative w-72 h-72 md:w-[22rem] md:h-[22rem] mb-10 overflow-hidden shadow-2xl border-4 border-white dark:border-[#1a1a1a] rounded-full bg-city-black">
+                        <div className="relative w-full max-w-2xl aspect-square md:aspect-video mb-12 overflow-hidden shadow-2xl border border-gray-200 dark:border-white/10 rounded-2xl bg-city-black group">
                             <motion.div
-                                className="absolute inset-0 border-b-[8px] border-city-blue z-10 bg-city-blue/20 blur-[2px]"
-                                animate={{ top: ["-10%", "110%", "-10%"] }}
-                                transition={{ duration: 2.5, repeat: Infinity, ease: "linear" }}
+                                className="absolute inset-0 border-b-[4px] border-city-blue z-30 bg-city-blue/10"
+                                animate={{ top: ["-5%", "105%", "-5%"] }}
+                                transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
                             />
-                            {/* HUD Overlays */}
-                            <div className="absolute inset-0 border-[20px] border-city-black/20 rounded-full z-20 pointer-events-none" />
-                            <div className="absolute top-1/2 left-0 w-full h-[1px] bg-city-blue/30 z-20 pointer-events-none" />
-                            <div className="absolute top-0 left-1/2 w-[1px] h-full bg-city-blue/30 z-20 pointer-events-none" />
-                            <Target className="absolute inset-0 m-auto w-12 h-12 text-city-blue/40 z-20 animate-pulse pointer-events-none" />
+                            {/* HUD Overlays - Simplified Rectangular HUD */}
+                            <div className="absolute inset-0 border-8 border-city-black/40 z-20 pointer-events-none" />
+                            <div className="absolute top-0 left-0 w-full h-full bg-[linear-gradient(rgba(37,99,235,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(37,99,235,0.1)_1px,transparent_1px)] bg-[size:20px_20px] z-10 opacity-30 px-px"></div>
+                            
+                            {/* Corner Accents */}
+                            <div className="absolute top-4 left-4 w-4 h-4 border-t-2 border-l-2 border-city-blue z-30 opacity-60" />
+                            <div className="absolute top-4 right-4 w-4 h-4 border-t-2 border-r-2 border-city-blue z-30 opacity-60" />
+                            <div className="absolute bottom-4 left-4 w-4 h-4 border-b-2 border-l-2 border-city-blue z-30 opacity-60" />
+                            <div className="absolute bottom-4 right-4 w-4 h-4 border-b-2 border-r-2 border-city-blue z-30 opacity-60" />
 
-                            <img src={imagePreview!} alt="Analyzing" className="w-[120%] h-[120%] -mt-[10%] -ml-[10%] object-cover mix-blend-screen opacity-70 filter contrast-125 brightness-125" />
+                            <img src={imagePreview!} alt="Analyzing" className="w-full h-full object-cover opacity-60 filter contrast-125 grayscale-[50%]" />
                         </div>
 
                         <h2 className="font-heading text-3xl md:text-4xl font-black text-city-black dark:text-white uppercase tracking-tighter mb-4 drop-shadow-sm">
