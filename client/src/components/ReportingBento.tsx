@@ -205,7 +205,7 @@ const ReportingBento: React.FC<ReportingBentoProps> = ({ isDarkMode, location, a
                         </div>
                         
                         <h2 className="font-heading text-4xl md:text-5xl font-black text-city-black dark:text-white uppercase tracking-tighter mb-4 text-center drop-shadow-sm relative z-10">
-                            Snap <span className="text-transparent bg-clip-text bg-gradient-to-br from-city-blue to-blue-400">&&</span> Fix
+                            Snap <span className="text-transparent bg-clip-text bg-gradient-to-br from-city-blue to-blue-400">&</span> Fix
                         </h2>
                         
                         <p className="text-gray-500 dark:text-gray-400 font-bold uppercase tracking-[0.2em] text-xs mb-10 max-w-sm text-center px-4 relative z-10">
@@ -218,7 +218,7 @@ const ReportingBento: React.FC<ReportingBentoProps> = ({ isDarkMode, location, a
                                 className="flex-1 py-4 bg-white dark:bg-city-surface border border-gray-200 dark:border-white/10 text-city-black dark:text-white font-black uppercase tracking-widest text-sm hover:shadow-lg rounded-2xl transition-all flex items-center justify-center gap-2 hover:-translate-y-1"
                             >
                                 <Upload className="w-4 h-4" />
-                                Archive
+                                Gallery
                             </button>
                             <button 
                                 onClick={() => cameraInputRef.current?.click()}
