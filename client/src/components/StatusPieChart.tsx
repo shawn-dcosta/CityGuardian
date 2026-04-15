@@ -1,6 +1,6 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from 'recharts';
 
 interface StatusPieChartProps {
   data: {
@@ -10,28 +10,9 @@ interface StatusPieChartProps {
   };
 }
 
-const CustomTooltip = ({ active, payload, total }: any) => {
-  if (active && payload && payload.length) {
-    const percentage = total > 0 ? ((payload[0].value / total) * 100).toFixed(1) : 0;
-    return (
-      <div className="bg-white/95 dark:bg-city-black/95 backdrop-blur-xl border border-gray-200/50 dark:border-white/10 p-5 rounded-2xl shadow-2xl relative overflow-hidden">
-        {/* Glow */}
-        <div className="absolute top-0 right-0 w-24 h-24 bg-city-blue/10 blur-[30px] rounded-full pointer-events-none -z-10 translate-x-1/2 -translate-y-1/2"></div>
-        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.05] mix-blend-overlay pointer-events-none z-0"></div>
-
-        <p className="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2 relative z-10">
-          {payload[0].name} Status
-        </p>
-        <p className="font-heading text-2xl font-black text-city-black dark:text-white uppercase relative z-10 flex items-end gap-2">
-          {payload[0].value} <span className="text-gray-500 font-bold tracking-[0.2em] text-[10px] mb-1">({percentage}%)</span>
-        </p>
-      </div>
-    );
-  }
-  return null;
-};
-
 const StatusPieChart: React.FC<StatusPieChartProps> = ({ data }) => {
+  const [hoveredSlice, setHoveredSlice] = useState<number | null>(null);
+
   // Using city-orange for pending, city-green for resolved
   const chartData = [
     { name: 'Pending', value: data.pending, color: '#f97316' }, // city-orange
@@ -39,6 +20,10 @@ const StatusPieChart: React.FC<StatusPieChartProps> = ({ data }) => {
   ];
 
   const renderData = data.total > 0 ? chartData : [{ name: 'No Data', value: 1, color: '#374151' }];
+
+  const onPieEnter = (_: any, index: number) => {
+    setHoveredSlice(index);
+  };
 
   return (
     <motion.div
@@ -71,16 +56,21 @@ const StatusPieChart: React.FC<StatusPieChartProps> = ({ data }) => {
               cornerRadius={2}
               stroke="none"
               strokeWidth={0}
+              onMouseEnter={onPieEnter}
+              onMouseLeave={() => setHoveredSlice(null)}
             >
               {renderData.map((entry, index) => (
                 <Cell
                   key={`cell-${index}`}
                   fill={data.total > 0 ? entry.color : 'rgba(107, 114, 128, 0.2)'}
-                  style={{ filter: data.total > 0 ? `drop-shadow(0 0 10px ${entry.color}40)` : 'none' }}
+                  style={{ 
+                    filter: data.total > 0 ? `drop-shadow(0 0 10px ${entry.color}40)` : 'none',
+                    outline: 'none',
+                    cursor: 'pointer'
+                  }}
                 />
               ))}
             </Pie>
-            <Tooltip content={<CustomTooltip total={data.total} />} cursor={false} />
             <Legend
               verticalAlign="bottom"
               height={36}
@@ -103,6 +93,43 @@ const StatusPieChart: React.FC<StatusPieChartProps> = ({ data }) => {
           </div>
           <span className="text-[9px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] mt-1 relative">All Trace Logs</span>
         </div>
+
+        {/* Fixed HUD Panel near legend */}
+        <AnimatePresence>
+          {hoveredSlice !== null && data.total > 0 && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, x: 20, y: 10 }}
+              animate={{ opacity: 1, scale: 1, x: 0, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, x: 10, y: 5 }}
+              className="absolute bottom-16 right-6 p-4 bg-white/90 dark:bg-city-black/90 backdrop-blur-xl border border-gray-200/50 dark:border-white/10 rounded-2xl shadow-2xl z-20 min-w-[150px] overflow-hidden"
+            >
+              {/* Internal Accent Glow */}
+              <div 
+                className="absolute top-0 right-0 w-16 h-16 blur-[20px] rounded-full opacity-20 pointer-events-none -z-10 translate-x-1/2 -translate-y-1/2"
+                style={{ backgroundColor: renderData[hoveredSlice]?.color || '#3b82f6' }}
+              ></div>
+
+              <div className="flex items-center gap-2 mb-1.5">
+                <div 
+                  className="w-2 h-2 rounded-full animate-pulse shadow-sm"
+                  style={{ backgroundColor: renderData[hoveredSlice]?.color || '#3b82f6' }}
+                ></div>
+                <p className="text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest">
+                  {renderData[hoveredSlice]?.name} LOGS
+                </p>
+              </div>
+
+              <div className="flex items-end gap-2 relative z-10">
+                <span className="font-heading text-3xl font-black text-city-black dark:text-white leading-none">
+                  {renderData[hoveredSlice]?.value}
+                </span>
+                <span className="text-[10px] font-bold text-city-blue uppercase tracking-widest mb-1">
+                  ({((renderData[hoveredSlice]?.value / data.total) * 100).toFixed(1)}%)
+                </span>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </motion.div>
   );
