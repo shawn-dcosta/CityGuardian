@@ -10,12 +10,18 @@ interface ReportCardProps {
 
 const ReportCard: React.FC<ReportCardProps> = ({ report, onClick, index = 0 }) => {
     const isHighPriority = report.Urgency?.toLowerCase() === 'high';
+    const isMediumPriority = report.Urgency?.toLowerCase() === 'medium';
     const currentStep = report.Status === 'Resolved' ? 4 : (report.Status === 'Pending' ? 1 : 2);
     const isResolved = currentStep === 4;
 
     let borderColor = 'border-l-city-blue/50 group-hover:border-l-city-blue/80';
-    if (isResolved) borderColor = 'border-l-city-green/50 group-hover:border-l-city-green/80';
-    if (isHighPriority) borderColor = 'border-l-city-red/50 group-hover:border-l-city-red/80 text-city-red';
+    if (isResolved) {
+        borderColor = 'border-l-city-green/50 group-hover:border-l-city-green/80';
+    } else if (isHighPriority) {
+        borderColor = 'border-l-city-red/50 group-hover:border-l-city-red/80 text-city-red';
+    } else if (isMediumPriority) {
+        borderColor = 'border-l-city-orange/50 group-hover:border-l-city-orange/80 text-city-orange';
+    }
 
     return (
         <motion.div
@@ -36,7 +42,7 @@ const ReportCard: React.FC<ReportCardProps> = ({ report, onClick, index = 0 }) =
                         isHighPriority ? 'bg-city-red text-white border border-city-red' : 
                         report.Urgency?.toLowerCase() === 'medium' ? 'bg-city-orange/10 dark:bg-city-orange/20 text-city-orange border border-city-orange/20' : 'bg-city-blue/10 dark:bg-city-blue/20 text-city-blue border border-city-blue/20'
                     }`}>
-                        {report.Urgency || 'MEDIUM'} PRTY
+                        {report.Urgency || 'MEDIUM'}
                     </span>
                 </div>
 

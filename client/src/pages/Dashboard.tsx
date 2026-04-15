@@ -216,7 +216,7 @@ const Dashboard: React.FC<DashboardProps> = ({ isDarkMode }) => {
               <div className="p-1.5 bg-city-red/10 rounded-md">
                  <Activity className="w-4 h-4 text-city-red" />
               </div>
-              {viewAll ? 'All Operations' : 'Active Manifest Feed'}
+              {viewAll ? 'All Operations' : 'Reports Feed'}
             </h3>
             {data.length > 8 && (
               <div className="flex gap-2">

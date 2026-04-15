@@ -91,7 +91,7 @@ const ReportDetailsModal: React.FC<ReportDetailsModalProps> = ({ report, isOpen,
                                         isHighPriority ? 'bg-city-red text-white border border-city-red' : 
                                         report.Urgency?.toLowerCase() === 'medium' ? 'bg-city-orange/10 dark:bg-city-orange/20 text-city-orange border border-city-orange/20' : 'bg-city-blue/10 dark:bg-city-blue/20 text-city-blue border border-city-blue/20'
                                     }`}>
-                                        {report.Urgency} PRTY
+                                        {report.Urgency}
                                     </span>
                                     <div className="px-3 py-1 bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-lg flex items-center gap-2 shadow-inner">
                                         <span className="text-gray-500 dark:text-gray-400 text-[10px] font-bold uppercase tracking-widest">ID:{report.ID}</span>

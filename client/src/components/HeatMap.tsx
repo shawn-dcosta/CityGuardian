@@ -99,7 +99,7 @@ const InteractiveMarker = ({ point, icon, isLocked, onLock }: any) => {
                 point.Urgency === 'high' ? 'bg-city-red/10 border-city-red/30 text-city-red' :
                 point.Urgency === 'medium' ? 'bg-city-orange/10 border-city-orange/30 text-city-orange' : 'bg-city-blue/10 border-city-blue/30 text-city-blue'
               }`}>
-              {point.Urgency} PRTY
+              {point.Urgency}
             </span>
             <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">{point.Date}</span>
           </div>
