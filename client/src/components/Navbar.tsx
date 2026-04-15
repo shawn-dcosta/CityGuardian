@@ -51,18 +51,20 @@ const Navbar: React.FC<NavbarProps> = ({ }) => {
             <div className="flex items-center gap-4">
               {/* Navigation Links */}
               <div className="hidden md:flex items-center gap-3">
-                <Link to="/report">
-                  <motion.button
-                    whileTap={{ scale: 0.95 }}
-                    className={`px-5 py-2.5 rounded-full flex items-center gap-2 text-sm font-bold uppercase tracking-widest transition-all ${location.pathname === '/report'
-                      ? 'bg-city-blue text-white shadow-[0_0_20px_rgba(37,99,235,0.4)]'
-                      : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 border border-transparent hover:border-gray-200 dark:hover:border-white/10'
-                      }`}
-                  >
-                    <FileText className="w-4 h-4" />
-                    Report Issue
-                  </motion.button>
-                </Link>
+                {isAuthenticated && (
+                  <Link to="/report">
+                    <motion.button
+                      whileTap={{ scale: 0.95 }}
+                      className={`px-5 py-2.5 rounded-full flex items-center gap-2 text-sm font-bold uppercase tracking-widest transition-all ${location.pathname === '/report'
+                        ? 'bg-city-blue text-white shadow-[0_0_20px_rgba(37,99,235,0.4)]'
+                        : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 border border-transparent hover:border-gray-200 dark:hover:border-white/10'
+                        }`}
+                    >
+                      <FileText className="w-4 h-4" />
+                      Report Issue
+                    </motion.button>
+                  </Link>
+                )}
 
                 {isAuthenticated && user?.role === 'admin' && (
                   <Link to="/admin">
@@ -118,7 +120,7 @@ const Navbar: React.FC<NavbarProps> = ({ }) => {
                       className="px-6 py-2.5 rounded-full bg-city-black dark:bg-white text-white dark:text-city-black border border-gray-200 dark:border-white/10 hover:shadow-[0_0_20px_rgba(0,0,0,0.2)] dark:hover:shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:-translate-y-0.5 transition-all flex items-center gap-2 text-xs font-black uppercase tracking-widest"
                     >
                       <LogIn className="w-4 h-4" />
-                      Auth
+                      Login
                     </motion.button>
                   </Link>
                 )}
