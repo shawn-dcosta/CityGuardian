@@ -1,6 +1,5 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
 import ReportingBento from '../components/ReportingBento';
 import { useGeolocation } from '../hooks/useGeolocation';
 import { type ToastItem } from '../components/ToastContainer';
@@ -12,14 +11,10 @@ interface ReportingPageProps {
 }
 
 const ReportingPage: React.FC<ReportingPageProps> = ({ isDarkMode, addToast }) => {
-    const navigate = useNavigate();
     const location = useGeolocation();
 
-    const handleReportSubmitted = (data: any) => {
-        // Redirect to dashboard after successful submission
-        setTimeout(() => {
-            navigate('/dashboard', { state: { newReport: data } });
-        }, 1500);
+    const handleReportSubmitted = () => {
+        // Stay on success panel to allow user choice
     };
 
     return (
