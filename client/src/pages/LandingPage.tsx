@@ -33,14 +33,22 @@ const LandingPage: React.FC = () => {
     return (
         <div className="min-h-screen bg-city-surface-light dark:bg-city-black overflow-x-hidden selection:bg-city-red/20 selection:text-city-red font-sans">
             {/* Cinematic Hero */}
-            <section className="relative min-h-[95vh] flex flex-col justify-center pt-24 pb-12 overflow-hidden">
+            <section className="relative min-h-[95vh] flex flex-col justify-center pt-24 pb-12 overflow-hidden bg-[#030303]">
+                {/* Tactical Grid Background */}
+                <div className="absolute inset-0 opacity-[0.15] pointer-events-none" 
+                     style={{ 
+                         backgroundImage: `linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px)`,
+                         backgroundSize: '40px 40px'
+                     }}>
+                </div>
+
                 {/* Dynamic Ambient Background Elements */}
-                <div className="absolute top-0 right-0 w-1/3 h-1/3 bg-city-blue/10 dark:bg-city-blue/20 blur-[130px] rounded-full pointer-events-none animate-pulse duration-1000" />
-                <div className="absolute bottom-0 left-0 w-1/4 h-1/4 bg-city-red/10 dark:bg-city-red/20 blur-[120px] rounded-full pointer-events-none" style={{ animation: "pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite" }} />
+                <div className="absolute top-0 right-0 w-1/3 h-1/3 bg-city-blue/20 blur-[130px] rounded-full pointer-events-none animate-pulse duration-1000" />
+                <div className="absolute bottom-0 left-0 w-1/4 h-1/4 bg-city-red/15 blur-[120px] rounded-full pointer-events-none" style={{ animation: "pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite" }} />
                 
-                {/* Grid Overlay */}
+                {/* Texture Overlays */}
                 <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 pointer-events-none mix-blend-overlay"></div>
-                <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] dark:bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] pointer-events-none" />
+                <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_50%,transparent_0%,#030303_100%)] pointer-events-none" />
 
                 <div className="container mx-auto px-6 relative z-10 flex flex-col items-center text-center">
                     <motion.div
@@ -62,11 +70,11 @@ const LandingPage: React.FC = () => {
                             Next-Gen Civic Platform
                         </motion.div>
                         
-                        <h1 className="font-heading text-[11vw] md:text-[7.5rem] font-black tracking-tighter leading-[0.9] text-city-black dark:text-white uppercase mb-6 drop-shadow-2xl">
+                        <h1 className="font-heading text-[11vw] md:text-[7.5rem] font-black tracking-tighter leading-[0.9] text-white uppercase mb-6 drop-shadow-2xl">
                             Empower <br/>
                             <span className="relative inline-block mt-2">
-                                <span className="absolute -inset-1 blur-xl bg-gradient-to-r from-city-blue to-city-red opacity-30 dark:opacity-40 animate-pulse"></span>
-                                <span className="relative text-transparent bg-clip-text bg-gradient-to-r from-city-blue via-purple-500 to-city-red">
+                                <span className="absolute -inset-1 blur-2xl bg-gradient-to-r from-city-blue to-city-red opacity-40 animate-pulse"></span>
+                                <span className="relative text-transparent bg-clip-text bg-gradient-to-r from-city-blue via-purple-500 to-city-red filter drop-shadow-[0_0_15px_rgba(37,99,235,0.3)]">
                                     Reality.
                                 </span>
                             </span>
@@ -76,47 +84,17 @@ const LandingPage: React.FC = () => {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ delay: 0.4, duration: 0.8 }}
-                            className="text-lg md:text-2xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-12 font-medium tracking-tight"
+                            className="text-lg md:text-2xl text-gray-400 max-w-2xl mx-auto mb-12 font-medium tracking-tight"
                         >
                             Join the movement creating smarter, safer neighborhoods. Use AI to report and eliminate urban degradation instantly.
                         </motion.p>
                         
-                        <motion.div 
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.6, duration: 0.5 }}
-                            className="flex flex-col sm:flex-row items-center gap-6 justify-center"
-                        >
-                            <button
-                                onClick={() => navigate('/login')}
-                                className="group relative px-10 py-5 bg-city-black dark:bg-white text-white dark:text-city-black rounded-xl font-bold uppercase tracking-widest overflow-hidden transition-all hover:shadow-[0_0_40px_rgba(37,99,235,0.3)] dark:hover:shadow-[0_0_40px_rgba(255,255,255,0.2)] active:scale-95"
-                            >
-                                <span className="relative z-10 flex items-center gap-3">
-                                    Take Action
-                                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1.5 transition-transform duration-300" />
-                                </span>
-                                <div className="absolute inset-0 bg-gradient-to-r from-city-blue to-blue-700 dark:from-gray-200 dark:to-white transform scale-x-0 origin-left group-hover:scale-x-100 transition-transform duration-300 ease-out" />
-                            </button>
-                            <button
-                                onClick={() => navigate('/register')}
-                                className="px-10 py-5 bg-white/10 dark:bg-transparent backdrop-blur-sm text-city-black dark:text-white border border-city-black/20 dark:border-white/20 hover:border-city-black dark:hover:border-white hover:bg-city-black/5 dark:hover:bg-white/5 rounded-xl font-bold uppercase tracking-widest transition-all active:scale-95"
-                            >
-                                Learn More
-                            </button>
-                        </motion.div>
+
                     </motion.div>
                 </div>
 
                 {/* Scroll Indicator */}
-                <motion.div 
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 1, duration: 1 }}
-                    className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
-                >
-                    <span className="text-[10px] uppercase tracking-[0.2em] text-gray-400 font-bold">Scroll</span>
-                    <div className="w-[1px] h-12 bg-gradient-to-b from-gray-400 to-transparent"></div>
-                </motion.div>
+
             </section>
 
             {/* Stark Stats Strip */}
@@ -148,15 +126,18 @@ const LandingPage: React.FC = () => {
                 <div className="absolute bottom-0 right-0 w-96 h-96 bg-city-orange/5 dark:bg-city-orange/10 blur-[100px] rounded-full point-events-none translate-x-1/3 translate-y-1/3" />
 
                 <div className="container mx-auto px-6 relative z-10">
-                    <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-8">
-                        <div>
-                            <h2 className="font-heading text-5xl md:text-7xl font-black text-city-black dark:text-white uppercase tracking-tighter leading-[0.9]">
-                                How It <br/> <span className="text-transparent bg-clip-text bg-gradient-to-r from-gray-700 to-black dark:from-gray-300 dark:to-white">Works.</span>
+                    <div className="flex flex-col md:flex-row justify-between items-center mb-24 gap-12">
+                        <div className="flex-1">
+                            <h2 className="font-heading text-6xl md:text-8xl font-black text-city-black dark:text-white uppercase tracking-tighter leading-[0.85]">
+                                HOW IT <br/> 
+                                <span className="text-gray-900 dark:text-gray-100">WORKS.</span>
                             </h2>
                         </div>
-                        <p className="text-xl text-gray-600 dark:text-gray-400 max-w-sm font-medium border-l-2 border-city-blue/30 pl-4">
-                            Reporting urban degradation has never been this simple, or this visually striking.
-                        </p>
+                        <div className="flex-1 max-w-md border-l-[1.5px] border-city-blue/40 pl-8 ml-auto">
+                            <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-400 font-medium leading-snug tracking-tight">
+                                Reporting urban degradation has never been this simple, or this visually striking.
+                            </p>
+                        </div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
