@@ -14,7 +14,7 @@ import ReportingPage from './pages/ReportingPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { useTheme } from './hooks/useTheme';
-import { Mail, Instagram, Twitter, Linkedin, Github, Phone } from 'lucide-react';
+import { Mail, Instagram, Linkedin, Github, Phone } from 'lucide-react';
 
 // REPLACE WITH YOUR ACTUAL GOOGLE CLIENT ID
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || "YOUR_GOOGLE_CLIENT_ID_HERE";
@@ -140,7 +140,7 @@ function App() {
                   <div className="flex flex-col gap-8 md:min-w-[300px]">
                     {/* Section: Contact */}
                     <div className="space-y-3">
-                      <h3 className="text-[10px] font-black text-gray-500 uppercase tracking-widest leading-none">Contact Us</h3>
+                      <h3 className="text-xs font-black text-gray-500 uppercase tracking-widest leading-none">Contact Us</h3>
                       <div className="flex flex-col gap-2">
                         <a 
                           href="mailto:feedback.cityguardian@gmail.com" 
@@ -156,12 +156,9 @@ function App() {
                       </div>
                     </div>
 
-                    {/* Subtle Break Line */}
-                    <div className="h-px w-full bg-gray-300 opacity-50" />
-
                     {/* Section: Socials */}
                     <div className="space-y-3">
-                      <h3 className="text-[10px] font-black text-gray-500 uppercase tracking-widest leading-none">Socials</h3>
+                      <h3 className="text-xs font-black text-gray-500 uppercase tracking-widest leading-none">Socials</h3>
                       <div className="flex items-center gap-6">
                         <Instagram className="w-5 h-5 text-gray-400 hover:text-city-blue transition-colors cursor-pointer" />
                         {/* Custom X (Twitter) Icon */}
