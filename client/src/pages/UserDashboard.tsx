@@ -299,9 +299,7 @@ const UserDashboard: React.FC<UserDashboardProps> = () => {
                                                                     rotate: currentStep >= step ? 0 : -30
                                                                 }}
                                                                 className={`relative z-20 transition-all duration-700 ${currentStep >= step
-                                                                        ? step === 4
-                                                                            ? 'text-city-green drop-shadow-[0_0_6px_rgba(5,150,105,0.5)]'
-                                                                            : 'text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.9)]'
+                                                                        ? (step === 4 ? 'text-white drop-shadow-[0_0_10px_rgba(5,150,105,0.4)]' : 'text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.9)]')
                                                                         : 'text-gray-400 dark:text-gray-600'
                                                                     }`}
                                                             >
@@ -316,7 +314,7 @@ const UserDashboard: React.FC<UserDashboardProps> = () => {
                                                                         animate={{ scale: 1, opacity: 1 }}
                                                                         className="absolute inset-0 flex items-center justify-center"
                                                                     >
-                                                                        <Check className={`w-3 h-3 ${step === 4 ? 'text-city-black' : 'text-city-blue dark:text-city-black'} stroke-[4]`} />
+                                                                        <Check className={`w-3 h-3 ${step === 4 ? 'text-city-green' : 'text-city-blue dark:text-city-black'} stroke-[4]`} />
                                                                     </motion.div>
                                                                 )}
                                                             </motion.div>
