@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, FileText, User, LayoutDashboard, LogIn } from 'lucide-react';
+import { FileText, User, LayoutDashboard, LogIn } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { motion } from 'framer-motion';
 
@@ -56,8 +56,8 @@ const BottomNav: React.FC = () => {
               <div className="relative p-2.5 z-10">
                 <Icon
                   className={`w-5 h-5 transition-all duration-500 relative z-20 ${isActive
-                      ? 'text-city-blue drop-shadow-[0_0_8px_rgba(37,99,235,0.6)] scale-110'
-                      : 'text-gray-400 dark:text-gray-500 group-hover:text-city-black dark:group-hover:text-white'
+                    ? 'text-city-blue drop-shadow-[0_0_8px_rgba(37,99,235,0.6)] scale-110'
+                    : 'text-gray-400 dark:text-gray-500 group-hover:text-city-black dark:group-hover:text-white'
                     }`}
                 />
 
@@ -72,8 +72,8 @@ const BottomNav: React.FC = () => {
               </div>
 
               <span className={`text-[8px] font-heading font-black uppercase tracking-[0.2em] mt-1 transition-all duration-300 relative z-10 ${isActive
-                  ? 'text-city-blue opacity-100 translate-y-0'
-                  : 'text-gray-400 dark:text-gray-500 opacity-60'
+                ? 'text-city-blue opacity-100 translate-y-0'
+                : 'text-gray-400 dark:text-gray-500 opacity-60'
                 }`}>
                 {link.name}
               </span>

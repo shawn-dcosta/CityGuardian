@@ -10,7 +10,6 @@ import {
   Target,
   Menu,
   X,
-  Home,
   Shield,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
@@ -156,7 +155,7 @@ const Navbar: React.FC<NavbarProps> = ({ }) => {
               onClick={() => setIsMenuOpen(false)}
               className="fixed inset-0 bg-black/80 z-[100] md:hidden"
             />
-            
+
             {/* Solid Side Panel (Exactly from Top-Right Corner) */}
             <motion.div
               initial={{ x: '100%', opacity: 0 }}
@@ -176,7 +175,7 @@ const Navbar: React.FC<NavbarProps> = ({ }) => {
                     <X className="w-5 h-5" />
                   </button>
                 </div>
-                
+
                 {isAuthenticated && (
                   <div className="flex items-center gap-4 mt-2 mb-2">
                     <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-city-blue to-blue-600 flex items-center justify-center shadow-lg shadow-city-blue/20">
