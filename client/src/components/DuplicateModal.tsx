@@ -38,7 +38,7 @@ const DuplicateModal: React.FC<DuplicateModalProps> = ({
     return (
         <AnimatePresence>
             {isOpen && (
-                <div className="fixed inset-0 z-[100] flex items-start sm:items-center justify-center p-4 overflow-y-auto font-sans">
+                <div className="fixed inset-0 z-[9999] flex items-start sm:items-center justify-center p-4 overflow-y-auto font-sans">
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}

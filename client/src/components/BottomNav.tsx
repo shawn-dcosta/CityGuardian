@@ -13,19 +13,28 @@ const BottomNav: React.FC = () => {
     return null;
   }
 
-  const baseLinks = [
-    { name: 'Home', path: '/', icon: Home },
-    { name: 'Report', path: '/report', icon: FileText },
-  ];
+  const getAllLinks = () => {
+    const links = [{ name: 'Home', path: '/', icon: Home }];
 
-  const authLinks = isAuthenticated ? [
-    { name: 'Dashboard', path: '/dashboard', icon: User },
-    ...(user?.role === 'admin' ? [{ name: 'Admin', path: '/admin', icon: LayoutDashboard }] : [])
-  ] : [
-    { name: 'Sign In', path: '/login', icon: LogIn }
-  ];
+    if (isAuthenticated) {
+      if (user?.role === 'admin') {
+        // Admins only see Home and Admin Dashboard
+        links.push({ name: 'Admin', path: '/admin', icon: LayoutDashboard });
+      } else {
+        // Citizens see Home, Report, and User Dashboard
+        links.push({ name: 'Report', path: '/report', icon: FileText });
+        links.push({ name: 'Dashboard', path: '/dashboard', icon: User });
+      }
+    } else {
+      // Guests see Home, Report, and Sign In
+      links.push({ name: 'Report', path: '/report', icon: FileText });
+      links.push({ name: 'Sign In', path: '/login', icon: LogIn });
+    }
 
-  const allLinks = [...baseLinks, ...authLinks];
+    return links;
+  };
+
+  const allLinks = getAllLinks();
 
   return (
     <div className="md:hidden fixed bottom-0 left-0 w-full z-[100] px-4 pb-6 pt-4 bg-gradient-to-t from-white/90 dark:from-[#050505]/95 to-transparent pointer-events-none">
