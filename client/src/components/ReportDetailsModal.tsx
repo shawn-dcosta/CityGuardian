@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, MapPin, Calendar, Clock, CheckCircle, Tag, User, Download } from 'lucide-react';
+import { X, MapPin, Calendar, Clock, CheckCircle, Tag, User, Download, Activity, ArrowRight } from 'lucide-react';
 
 import { generatePDF } from '../utils/helpers';
 import { AI_API_URL } from '../config';
@@ -37,25 +37,34 @@ const ReportDetailsModal: React.FC<ReportDetailsModalProps> = ({ report, isOpen,
 
     const isResolved = report.Status === 'Resolved';
     const isHighPriority = report.Urgency?.toLowerCase() === 'high';
+    const isMediumPriority = report.Urgency?.toLowerCase() === 'medium';
 
     let themeColor = 'city-blue';
     let themeBg = 'bg-city-blue';
     let themeShadow = 'shadow-[0_0_30px_rgba(37,99,235,0.3)]';
+    let glowColor = 'rgba(37,99,235,0.6)';
     
     if (isResolved) {
         themeColor = 'city-green';
         themeBg = 'bg-city-green';
         themeShadow = 'shadow-[0_0_30px_rgba(0,230,118,0.3)]';
+        glowColor = 'rgba(5,150,105,0.6)';
     } else if (isHighPriority) {
         themeColor = 'city-red';
         themeBg = 'bg-city-red';
         themeShadow = 'shadow-[0_0_30px_rgba(211,18,18,0.3)]';
+        glowColor = 'rgba(211,18,18,0.6)';
+    } else if (isMediumPriority) {
+        themeColor = 'city-orange';
+        themeBg = 'bg-city-orange';
+        themeShadow = 'shadow-[0_0_30px_rgba(255,145,0,0.3)]';
+        glowColor = 'rgba(255,145,0,0.6)';
     }
 
     return (
         <AnimatePresence>
             {isOpen && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 xl:p-0 font-sans">
+                <div className="fixed inset-0 z-[9999] flex items-start sm:items-center justify-center p-4 overflow-y-auto font-sans">
                     {/* Cinematic Blur Backdrop */}
                     <motion.div
                         initial={{ opacity: 0 }}
@@ -74,22 +83,22 @@ const ReportDetailsModal: React.FC<ReportDetailsModalProps> = ({ report, isOpen,
                         animate={{ opacity: 1, scale: 1, y: 0, rotateX: 0 }}
                         exit={{ opacity: 0, scale: 0.95, y: 20 }}
                         transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-                        className={`bg-white/95 dark:bg-city-surface/95 backdrop-blur-2xl border border-gray-200/50 dark:border-white/10 w-full max-w-4xl rounded-3xl overflow-hidden relative ${themeShadow} dark:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.8)]`}
+                        className={`bg-white/95 dark:bg-city-surface/95 backdrop-blur-2xl border border-gray-200/50 dark:border-white/10 w-full max-w-4xl max-h-[90dvh] rounded-3xl overflow-hidden relative my-auto flex flex-col ${themeShadow} dark:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.8)]`}
                     >
                         {/* Decorative Top Bar reflecting status */}
-                        <div className={`absolute top-0 left-0 right-0 h-1.5 ${themeBg} drop-shadow-[0_0_15px_currentColor]`} />
+                        <div className={`absolute top-0 left-0 right-0 h-1.5 ${themeBg} drop-shadow-[0_0_15px_currentColor] shadow-[0_0_20px_${glowColor}]`} />
 
                         {/* Cinematic Light Accents */}
                         <div className={`absolute top-0 right-0 w-80 h-80 bg-${themeColor}/5 dark:bg-${themeColor}/10 blur-[80px] rounded-full pointer-events-none`} />
                         <div className={`absolute bottom-0 left-0 w-80 h-80 bg-${themeColor}/5 dark:bg-${themeColor}/10 blur-[80px] rounded-full pointer-events-none`} />
 
                         {/* Header */}
-                        <div className="p-8 md:p-10 pb-6 border-b border-gray-200/50 dark:border-white/10 flex justify-between items-start relative z-10">
-                            <div className="pr-12">
+                        <div className="p-6 md:p-10 pb-6 border-b border-gray-200/50 dark:border-white/10 flex justify-between items-start relative z-10">
+                            <div className="pr-10 md:pr-12">
                                 <div className="flex flex-wrap items-center gap-3 mb-4">
                                     <span className={`px-2.5 py-1 text-[10px] font-black uppercase tracking-widest rounded-md shadow-inner ${
                                         isHighPriority ? 'bg-city-red text-white border border-city-red' : 
-                                        report.Urgency?.toLowerCase() === 'medium' ? 'bg-city-orange/10 dark:bg-city-orange/20 text-city-orange border border-city-orange/20' : 'bg-city-blue/10 dark:bg-city-blue/20 text-city-blue border border-city-blue/20'
+                                        isMediumPriority ? 'bg-city-orange/10 dark:bg-city-orange/20 text-city-orange border border-city-orange/20' : 'bg-city-blue/10 dark:bg-city-blue/20 text-city-blue border border-city-blue/20'
                                     }`}>
                                         {report.Urgency}
                                     </span>
@@ -98,20 +107,20 @@ const ReportDetailsModal: React.FC<ReportDetailsModalProps> = ({ report, isOpen,
                                         <span className={`w-1.5 h-1.5 rounded-full ${themeBg} animate-pulse`} />
                                     </div>
                                 </div>
-                                <h2 className="font-heading text-4xl md:text-5xl font-black text-city-black dark:text-white uppercase tracking-tighter leading-[0.9] mt-1 drop-shadow-sm">
-                                    {report.Category} Anomaly
+                                <h2 className="font-heading text-3xl sm:text-4xl md:text-5xl font-black text-city-black dark:text-white uppercase tracking-tighter leading-[0.9] mt-1 drop-shadow-sm">
+                                    {report.Category || 'Anomaly Detected'}
                                 </h2>
                             </div>
                             <button
                                 onClick={onClose}
-                                className="absolute top-8 right-8 w-11 h-11 bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 flex items-center justify-center rounded-xl hover:bg-gray-200 dark:hover:bg-white/10 hover:scale-105 active:scale-95 transition-all text-gray-500 dark:text-gray-400 group"
+                                className="absolute top-6 right-6 md:top-8 md:right-8 w-11 h-11 bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 flex items-center justify-center rounded-xl hover:bg-gray-200 dark:hover:bg-white/10 hover:scale-105 active:scale-95 transition-all text-gray-500 dark:text-gray-400 group"
                             >
                                 <X className="w-5 h-5 group-hover:text-city-black dark:group-hover:text-white transition-colors" />
                             </button>
                         </div>
 
                         {/* Scrollable Body */}
-                        <div className="p-8 md:p-10 overflow-y-auto max-h-[60vh] custom-scrollbar space-y-8 relative z-10 w-full box-border">
+                        <div className="p-6 md:p-10 flex-1 overflow-y-auto custom-scrollbar space-y-8 relative z-10 w-full box-border">
 
                             {/* Status Section */}
                             <div className={`flex items-center gap-5 p-6 rounded-2xl border ${isResolved ? 'border-city-green/30 bg-city-green/5 drop-shadow-[0_0_15px_rgba(0,230,118,0.1)]' : 'border-city-orange/30 bg-city-orange/5 drop-shadow-[0_0_15px_rgba(245,158,11,0.1)]'}`}>
@@ -143,21 +152,62 @@ const ReportDetailsModal: React.FC<ReportDetailsModalProps> = ({ report, isOpen,
 
                             {/* Metadata Grid */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                                {/* Location */}
-                                <div className="p-6 bg-white/50 dark:bg-[#0e0e0e] rounded-2xl border border-gray-200/60 dark:border-white/5 shadow-sm hover:shadow-md dark:shadow-none transition-all group">
+                                {/* Timeframe Est */}
+                                <div className="p-6 bg-white/50 dark:bg-[#0e0e0e] rounded-2xl border border-gray-200/60 dark:border-white/5 shadow-sm group">
                                     <div className="flex items-center gap-3 mb-3">
-                                        <div className="p-1.5 rounded-md bg-gray-100 dark:bg-white/5 group-hover:bg-city-red/10 transition-colors">
-                                           <MapPin className="w-4 h-4 text-gray-400 group-hover:text-city-red transition-colors" />
+                                        <div className="p-1.5 rounded-md bg-gray-100 dark:bg-white/5 group-hover:bg-city-blue/10 transition-colors">
+                                           <Clock className="w-4 h-4 text-gray-400 group-hover:text-city-blue transition-colors" />
                                         </div>
-                                        <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Location Vector</span>
+                                        <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Timeframe Est.</span>
                                     </div>
-                                    <p className="text-sm font-black text-city-black dark:text-white uppercase drop-shadow-sm truncate">
-                                        {report.Location || report.location || "Coordinate unknown"}
+                                    <div className="flex flex-col">
+                                        <span className="text-sm font-black text-city-black dark:text-white uppercase tracking-wider">
+                                            {isHighPriority ? 'IMMEDIATE' : 'STANDARD'}
+                                        </span>
+                                        <span className="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest">
+                                            {isHighPriority ? '24H URGENCY' : '3-7D WINDOW'}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                {/* Sector Focus */}
+                                <div className="p-6 bg-white/50 dark:bg-[#0e0e0e] rounded-2xl border border-gray-200/60 dark:border-white/5 shadow-sm group">
+                                    <div className="flex items-center gap-3 mb-3">
+                                        <div className="p-1.5 rounded-md bg-gray-100 dark:bg-white/5 group-hover:bg-city-blue/10 transition-colors">
+                                            <Activity className="w-4 h-4 text-gray-400 group-hover:text-city-blue transition-colors" />
+                                        </div>
+                                        <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Sector Focus</span>
+                                    </div>
+                                    <p className="text-sm font-black text-city-black dark:text-white uppercase tracking-wider">
+                                        {report.Category || 'MUNICIPAL CORE'}
                                     </p>
                                 </div>
 
-                                {/* Date */}
-                                <div className="p-6 bg-white/50 dark:bg-[#0e0e0e] rounded-2xl border border-gray-200/60 dark:border-white/5 shadow-sm hover:shadow-md dark:shadow-none transition-all group">
+                                {/* Location with Maps Link */}
+                                <div className="md:col-span-2 p-6 bg-gradient-to-br from-gray-50 to-white dark:from-[#0e0e0e] dark:to-[#141414] rounded-2xl border border-gray-200/60 dark:border-white/5 shadow-inner group">
+                                    <div className="flex items-center gap-3 mb-4">
+                                        <div className="p-1.5 rounded-md bg-gray-100 dark:bg-white/5 group-hover:bg-city-red/10 transition-colors">
+                                           <MapPin className="w-4 h-4 text-gray-400 group-hover:text-city-red transition-colors" />
+                                        </div>
+                                        <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Target Coordinates</span>
+                                    </div>
+                                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white dark:bg-black/40 border border-gray-200 dark:border-white/10 p-4 rounded-xl shadow-sm">
+                                        <span className="text-sm font-medium text-gray-800 dark:text-gray-300 truncate max-w-full sm:max-w-[60%]">
+                                            {report.Location || report.location || "Scan Coordinates pending..."}
+                                        </span>
+                                        <a
+                                            href={`https://www.google.com/maps?q=${report.Location || report.location}`}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            className="w-full sm:w-auto px-4 py-2 bg-city-blue/10 dark:bg-city-blue/20 text-city-blue hover:bg-city-blue hover:text-white transition-colors rounded-lg text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2"
+                                        >
+                                            Open Maps <ArrowRight className="w-3 h-3" />
+                                        </a>
+                                    </div>
+                                </div>
+
+                                {/* Log Date */}
+                                <div className="p-6 bg-white/50 dark:bg-[#0e0e0e] rounded-2xl border border-gray-200/60 dark:border-white/5 shadow-sm group md:col-span-2">
                                     <div className="flex items-center gap-3 mb-3">
                                         <div className="p-1.5 rounded-md bg-gray-100 dark:bg-white/5 group-hover:bg-city-blue/10 transition-colors">
                                             <Calendar className="w-4 h-4 text-gray-400 group-hover:text-city-blue transition-colors" />

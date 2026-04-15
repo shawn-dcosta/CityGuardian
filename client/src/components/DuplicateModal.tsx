@@ -38,7 +38,7 @@ const DuplicateModal: React.FC<DuplicateModalProps> = ({
     return (
         <AnimatePresence>
             {isOpen && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 xl:p-0 font-sans">
+                <div className="fixed inset-0 z-[100] flex items-start sm:items-center justify-center p-4 overflow-y-auto font-sans">
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -55,7 +55,7 @@ const DuplicateModal: React.FC<DuplicateModalProps> = ({
                         animate={{ opacity: 1, scale: 1, y: 0, rotateX: 0 }}
                         exit={{ opacity: 0, scale: 0.95, y: 20 }}
                         transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-                        className="relative w-full max-w-lg bg-white/95 dark:bg-city-surface/95 backdrop-blur-2xl border border-gray-200/50 dark:border-white/10 shadow-[0_40px_80px_-20px_rgba(0,0,0,0.8)] overflow-hidden rounded-3xl"
+                        className="relative w-full max-w-lg max-h-[90dvh] bg-white/95 dark:bg-city-surface/95 backdrop-blur-2xl border border-gray-200/50 dark:border-white/10 shadow-[0_40px_80px_-20px_rgba(0,0,0,0.8)] overflow-hidden rounded-3xl my-auto flex flex-col"
                     >
                         {/* Decorative Warning Lines */}
                         <div className="absolute top-0 left-0 w-full h-2 bg-city-red drop-shadow-[0_0_15px_rgba(211,18,18,0.8)]" style={{ backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(0,0,0,0.1) 10px, rgba(0,0,0,0.1) 20px)' }} />
@@ -63,14 +63,14 @@ const DuplicateModal: React.FC<DuplicateModalProps> = ({
                          {/* Cinematic Light Accents */}
                          <div className="absolute top-0 right-0 w-64 h-64 bg-city-red/10 blur-[80px] rounded-full pointer-events-none" />
 
-                        <div className="p-8 pb-6 border-b border-gray-200/50 dark:border-white/10 mt-2 relative z-10">
+                        <div className="p-6 md:p-8 pb-6 border-b border-gray-200/50 dark:border-white/10 mt-2 relative z-10">
                             <div className="flex items-start justify-between">
                                 <div className="flex items-start gap-4">
                                     <div className="h-12 w-12 rounded-xl border border-city-red bg-city-red/10 flex items-center justify-center text-city-red shadow-inner">
                                         <AlertTriangle className="w-6 h-6 animate-pulse" />
                                     </div>
                                     <div>
-                                        <h3 className="font-heading text-3xl font-black text-city-black dark:text-white uppercase tracking-tighter drop-shadow-sm">
+                                        <h3 className="font-heading text-2xl sm:text-3xl font-black text-city-black dark:text-white uppercase tracking-tighter drop-shadow-sm">
                                             Tracing Collision
                                         </h3>
                                         <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-city-red/80 drop-shadow-sm">
@@ -87,7 +87,7 @@ const DuplicateModal: React.FC<DuplicateModalProps> = ({
                             </div>
                         </div>
 
-                        <div className="p-8 relative z-10">
+                        <div className="p-6 md:p-8 relative z-10 flex-1 overflow-y-auto custom-scrollbar">
                             <p className="text-sm font-bold text-gray-500 mb-6 uppercase tracking-wider leading-relaxed border-l-2 border-city-red/50 dark:border-city-red/30 pl-4 py-1">
                                 An active trace matches your coordinates. Elevating priority on the existing vector is advised over a new log.
                             </p>
@@ -113,7 +113,10 @@ const DuplicateModal: React.FC<DuplicateModalProps> = ({
                                     {originalReport.id && <span>SYS ID: {originalReport.id.slice(0, 6)}</span>}
                                 </div>
                             </div>
+                        </div>
 
+                        {/* Pinned Footer Actions */}
+                        <div className="p-6 md:p-8 border-t border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-black/20 relative z-10">
                             <div className="space-y-4">
                                 <button
                                     onClick={handleUpvoteClick}

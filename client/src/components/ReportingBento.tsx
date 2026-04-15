@@ -206,7 +206,7 @@ const ReportingBento: React.FC<ReportingBentoProps> = ({ isDarkMode, location, a
                             <Camera className="w-12 h-12 text-city-blue transition-colors group-hover:rotate-12 duration-500" />
                         </div>
                         
-                        <h2 className="font-heading text-4xl md:text-5xl font-black text-city-black dark:text-white uppercase tracking-tighter mb-4 text-center drop-shadow-sm relative z-10">
+                        <h2 className="font-heading text-4xl sm:text-5xl font-black text-city-black dark:text-white uppercase tracking-tighter mb-4 text-center drop-shadow-sm relative z-10">
                             Snap <span className="text-transparent bg-clip-text bg-gradient-to-br from-city-blue to-blue-400">&</span> Fix
                         </h2>
                         
@@ -262,7 +262,7 @@ const ReportingBento: React.FC<ReportingBentoProps> = ({ isDarkMode, location, a
                             <img src={imagePreview!} alt="Analyzing" className="w-full h-full object-cover opacity-60 filter contrast-125 grayscale-[50%]" />
                         </div>
 
-                        <h2 className="font-heading text-3xl md:text-4xl font-black text-city-black dark:text-white uppercase tracking-tighter mb-4 drop-shadow-sm">
+                        <h2 className="font-heading text-2xl sm:text-3xl md:text-4xl font-black text-city-black dark:text-white uppercase tracking-tighter mb-4 drop-shadow-sm">
                             Executing Trace
                         </h2>
                         <div className="px-6 py-2 bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-full shadow-inner flex items-center justify-center gap-3">
@@ -302,7 +302,7 @@ const ReportingBento: React.FC<ReportingBentoProps> = ({ isDarkMode, location, a
                             </div>
 
                             {/* Integrated Map Verification */}
-                            <div className="h-[500px] border border-gray-200 dark:border-white/10 rounded-2xl relative overflow-hidden bg-white dark:bg-[#0a0a0a] shadow-inner p-6">
+                            <div className="h-72 sm:h-96 lg:h-[500px] border border-gray-200 dark:border-white/10 rounded-2xl relative overflow-hidden bg-white dark:bg-[#0a0a0a] shadow-inner p-6">
                                 <LocationMap 
                                     location={location} 
                                     isDarkMode={isDarkMode} 
@@ -353,11 +353,11 @@ const ReportingBento: React.FC<ReportingBentoProps> = ({ isDarkMode, location, a
                                     />
                                 </div>
 
-                                <div className="mt-auto pt-10 flex flex-row items-center justify-center gap-4 px-2">
+                                <div className="mt-auto pt-10 flex flex-col sm:flex-row items-center justify-center gap-4 w-full">
                                     <button
                                         onClick={handleSubmit}
                                         disabled={loading}
-                                        className="flex-1 max-w-[180px] py-4 rounded-xl bg-city-green text-white uppercase font-black tracking-widest text-base transition-all hover:bg-city-green/90 hover:shadow-[0_0_20px_rgba(34,197,94,0.4)] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                                        className="w-full sm:flex-1 py-4 rounded-xl bg-city-green text-white uppercase font-black tracking-widest text-base transition-all hover:bg-city-green/90 hover:shadow-[0_0_20px_rgba(34,197,94,0.4)] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                                     >
                                         {loading ? (
                                             <>
@@ -370,7 +370,7 @@ const ReportingBento: React.FC<ReportingBentoProps> = ({ isDarkMode, location, a
                                     </button>
                                     <button
                                         onClick={() => { setStep('capture'); setImage(null); }}
-                                        className="flex-1 max-w-[180px] py-4 rounded-xl bg-city-red text-white uppercase font-black tracking-widest text-base hover:bg-city-red/90 transition-all shadow-md active:scale-95 flex items-center justify-center"
+                                        className="w-full sm:flex-1 py-4 rounded-xl bg-city-red text-white uppercase font-black tracking-widest text-base hover:bg-city-red/90 transition-all shadow-md active:scale-95 flex items-center justify-center"
                                     >
                                         Abort
                                     </button>

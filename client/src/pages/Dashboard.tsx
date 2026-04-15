@@ -116,9 +116,9 @@ const Dashboard: React.FC<DashboardProps> = ({ isDarkMode }) => {
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-gray-300/80 dark:border-white/20 pb-5 backdrop-blur-sm"
+          className="mb-8 flex flex-col lg:flex-row lg:items-end justify-between gap-6 border-b border-gray-300/80 dark:border-white/20 pb-5 backdrop-blur-sm"
         >
-          <div>
+          <div className="text-center lg:text-left">
             <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-full mb-4 shadow-inner">
                 <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-city-blue opacity-75"></span>
@@ -128,13 +128,13 @@ const Dashboard: React.FC<DashboardProps> = ({ isDarkMode }) => {
                     Clearance: <span className="text-city-red">{user?.role || 'Admin'}</span>
                 </p>
             </div>
-            <h1 className="font-heading text-5xl md:text-6xl font-black text-city-black dark:text-white uppercase tracking-tighter mb-2 drop-shadow-md">
+            <h1 className="font-heading text-4xl sm:text-5xl md:text-6xl font-black text-city-black dark:text-white uppercase tracking-tighter mb-2 drop-shadow-md">
               City <span className="text-transparent bg-clip-text bg-gradient-to-br from-city-blue to-blue-400 dark:from-city-blue dark:to-blue-200">Oversight</span>
             </h1>
           </div>
 
-          <div className="flex items-center gap-6 bg-white/60 dark:bg-city-surface/60 backdrop-blur-md p-4 rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm">
-            <div className="text-right border-r border-gray-200 dark:border-white/10 pr-6">
+          <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 bg-white/60 dark:bg-city-surface/60 backdrop-blur-md p-4 rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm">
+            <div className="text-center sm:text-right sm:border-r border-gray-200 dark:border-white/10 pr-0 sm:pr-6 w-full sm:w-auto">
               <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">Network Sync</p>
               <p className="text-sm font-black text-city-black dark:text-white tracking-wider">
                 {lastUpdated.toLocaleTimeString()}
@@ -146,7 +146,7 @@ const Dashboard: React.FC<DashboardProps> = ({ isDarkMode }) => {
               whileTap={{ scale: 0.95 }}
               onClick={handleRefresh}
               disabled={loading}
-              className="p-3.5 bg-city-blue/10 dark:bg-city-blue/20 text-city-blue hover:bg-city-blue hover:text-white rounded-xl transition-colors disabled:opacity-50 relative group"
+              className="w-full sm:w-auto p-3.5 bg-city-blue/10 dark:bg-city-blue/20 text-city-blue hover:bg-city-blue hover:text-white rounded-xl transition-colors disabled:opacity-50 relative group flex items-center justify-center"
             >
               <div className="absolute inset-0 bg-city-blue opacity-0 group-hover:opacity-40 blur-md transition-opacity rounded-xl"></div>
               <RefreshCw className={`w-5 h-5 relative z-10 ${loading ? 'animate-spin' : ''}`} />
