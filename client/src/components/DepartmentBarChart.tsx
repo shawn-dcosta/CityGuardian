@@ -53,14 +53,16 @@ const DepartmentBarChart: React.FC<DepartmentBarChartProps> = ({ data }) => {
     <motion.div
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
-      className="bg-white/50 border border-city-black/10 p-6 h-full flex flex-col relative overflow-hidden"
+      className="bg-white/40 dark:bg-city-surface/40 backdrop-blur-2xl rounded-3xl border border-gray-200/50 dark:border-white/10 p-6 h-full flex flex-col relative overflow-hidden group shadow-2xl"
     >
-      {/* Decorative Line */}
-      <div className="absolute top-0 left-0 w-full h-1 bg-city-blue/90"></div>
+      <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.05] mix-blend-overlay pointer-events-none z-0"></div>
+      <div className="absolute inset-0 bg-gradient-to-tr from-white/40 to-transparent dark:from-white/5 dark:to-transparent pointer-events-none -z-10"></div>
+      
+      <div className="absolute top-0 right-0 w-48 h-48 bg-city-blue/10 dark:bg-city-blue/5 rounded-full blur-[60px] -mr-10 -mt-10 pointer-events-none group-hover:scale-125 group-hover:bg-city-blue/15 transition-all duration-1000"></div>
 
-      <div className="border-b border-city-black/10 pb-4 mb-6">
-        <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest">
-           Vector Distribution By Depth
+      <div className="flex items-center justify-between mb-4 relative z-10 border-b border-gray-200/50 dark:border-white/10 pb-4">
+        <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest flex items-center gap-2">
+            Reports by Category
         </h3>
       </div>
 

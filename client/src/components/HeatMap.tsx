@@ -156,7 +156,7 @@ const HeatMap: React.FC<HeatMapProps> = ({ data, isDarkMode, showHeatmap = true 
       <div className="flex items-center justify-between mb-5 pb-4 border-b border-gray-200/50 dark:border-white/10 relative z-10">
         <h3 className="text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em] flex items-center gap-2">
           <Target className="w-4 h-4 text-city-blue animate-pulse" />
-          Geospatial Impact Matrix
+          Geospatial Impact Map
         </h3>
 
         {/* Map Legend */}
