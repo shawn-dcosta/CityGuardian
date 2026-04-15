@@ -40,7 +40,6 @@ const Navbar: React.FC<NavbarProps> = ({ }) => {
   };
 
   const navLinks = [
-    { name: 'Home', path: '/', icon: Home },
     { name: 'Report Issue', path: '/report', icon: FileText, hidden: !isAuthenticated || user?.role === 'admin' },
     { name: 'Dashboard', path: '/dashboard', icon: User, hidden: !isAuthenticated || user?.role === 'admin' },
     { name: 'Admin Console', path: '/admin', icon: LayoutDashboard, hidden: !isAuthenticated || user?.role !== 'admin' },

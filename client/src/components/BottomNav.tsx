@@ -14,19 +14,19 @@ const BottomNav: React.FC = () => {
   }
 
   const getAllLinks = () => {
-    const links = [{ name: 'Home', path: '/', icon: Home }];
+    const links = [];
 
     if (isAuthenticated) {
       if (user?.role === 'admin') {
         // Admins only see Home and Admin Dashboard
         links.push({ name: 'Admin', path: '/admin', icon: LayoutDashboard });
       } else {
-        // Citizens see Home, Report, and User Dashboard
+        // Citizens see Report, and User Dashboard
         links.push({ name: 'Report', path: '/report', icon: FileText });
         links.push({ name: 'Dashboard', path: '/dashboard', icon: User });
       }
     } else {
-      // Guests see Home, Report, and Sign In
+      // Guests see Report, and Sign In
       links.push({ name: 'Report', path: '/report', icon: FileText });
       links.push({ name: 'Sign In', path: '/login', icon: LogIn });
     }

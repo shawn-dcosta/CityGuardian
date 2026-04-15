@@ -18,7 +18,7 @@ const ReportingPage: React.FC<ReportingPageProps> = ({ isDarkMode, addToast }) =
     };
 
     return (
-        <div className="min-h-screen relative font-sans pt-8 pb-16 bg-city-surface-light dark:bg-city-black overflow-hidden selection:bg-city-red/30 selection:text-city-red">
+        <div className="min-h-screen relative font-sans pt-8 pb-16 bg-slate-100 dark:bg-[#0B0F15] overflow-hidden selection:bg-city-red/30 selection:text-city-red">
             {/* Cinematic Ambient Elements */}
             <div className="absolute top-[-10%] right-[-5%] w-[800px] h-[800px] bg-city-blue/5 dark:bg-city-blue/10 blur-[150px] rounded-full pointer-events-none z-0 animate-pulse duration-[5000ms]" />
             <div className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-city-red/5 dark:bg-city-red/10 blur-[150px] rounded-full pointer-events-none z-0" style={{ animation: "pulse 7s cubic-bezier(0.4, 0, 0.6, 1) infinite" }} />

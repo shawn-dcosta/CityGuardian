@@ -89,7 +89,7 @@ const Dashboard: React.FC<DashboardProps> = ({ isDarkMode }) => {
 
   if (loading && data.length === 0) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-city-surface-light dark:bg-city-black relative font-sans">
+      <div className="min-h-screen flex items-center justify-center bg-slate-100 dark:bg-[#0B0F15] relative font-sans">
         <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.1] mix-blend-overlay"></div>
         <div className="text-center relative z-10 p-8 bg-white/50 dark:bg-city-surface/50 backdrop-blur-xl border border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl">
           <div className="h-1.5 w-48 bg-gray-200 dark:bg-white/10 mx-auto mb-6 relative overflow-hidden rounded-full">
@@ -102,7 +102,7 @@ const Dashboard: React.FC<DashboardProps> = ({ isDarkMode }) => {
   }
 
   return (
-    <div className="min-h-screen bg-city-surface-light dark:bg-city-black relative overflow-x-hidden pt-12 pb-16 font-sans">
+    <div className="min-h-screen bg-slate-100 dark:bg-[#0B0F15] relative overflow-x-hidden pt-12 pb-16 font-sans">
       {/* Cinematic Ambient Elements */}
       <div className="absolute top-[-10%] right-[-5%] w-[800px] h-[800px] bg-city-blue/5 dark:bg-city-blue/10 blur-[150px] rounded-full pointer-events-none -z-10 animate-pulse duration-[5000ms]" />
       <div className="absolute top-[40%] left-[-10%] w-[600px] h-[600px] bg-city-red/5 dark:bg-city-red/10 blur-[150px] rounded-full pointer-events-none -z-10" style={{ animation: "pulse 7s cubic-bezier(0.4, 0, 0.6, 1) infinite" }} />
