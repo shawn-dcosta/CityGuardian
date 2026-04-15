@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
-import { Plus, Activity, CheckCircle, Clock, MapPin, AlertTriangle, ArrowRight, X, Target } from 'lucide-react';
+import { Activity, CheckCircle, Clock, MapPin, AlertTriangle, ArrowRight, X, Target } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { fetchReportsData } from '../services/dataService';
 
@@ -86,18 +86,18 @@ const UserDashboard: React.FC<UserDashboardProps> = () => {
             {/* Cinematic Ambient Elements */}
             <div className="absolute top-[-10%] right-[-5%] w-[800px] h-[800px] bg-city-blue/5 dark:bg-city-blue/10 blur-[150px] rounded-full pointer-events-none -z-10 animate-pulse duration-[5000ms]" />
             <div className="absolute top-[40%] left-[-10%] w-[600px] h-[600px] bg-city-red/5 dark:bg-city-red/10 blur-[150px] rounded-full pointer-events-none -z-10" style={{ animation: "pulse 7s cubic-bezier(0.4, 0, 0.6, 1) infinite" }} />
-            
+
             {/* Command Center Header */}
             <div className="flex flex-col md:flex-row justify-between md:items-end mb-14 gap-6 relative z-10 border-b border-gray-200/50 dark:border-white/10 pb-8 backdrop-blur-sm">
-                <motion.div 
+                <motion.div
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.6, ease: "easeOut" }}
                 >
                     <div className="inline-flex items-center gap-2 px-3 py-1 bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-full mb-4 shadow-inner">
                         <span className="relative flex h-2 w-2">
-                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-city-green opacity-75"></span>
-                          <span className="relative inline-flex rounded-full h-2 w-2 bg-city-green"></span>
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-city-green opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-2 w-2 bg-city-green"></span>
                         </span>
                         <p className="text-[10px] font-bold tracking-widest text-gray-500 dark:text-gray-400 uppercase">
                             Operative: <span className="text-city-blue">{user?.name || 'Unknown'}</span> // Clearance: Citizen
@@ -204,7 +204,7 @@ const UserDashboard: React.FC<UserDashboardProps> = () => {
                         ))}
                     </div>
                 ) : reports.length === 0 ? (
-                    <motion.div 
+                    <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         className="text-center py-24 bg-white/40 dark:bg-city-surface/40 backdrop-blur-md rounded-3xl border border-dashed border-gray-300 dark:border-white/20"
@@ -221,93 +221,93 @@ const UserDashboard: React.FC<UserDashboardProps> = () => {
                     </motion.div>
                 ) : (
                     <div className="grid gap-6">
-                    {reports.map((report, index) => {
-                        const currentStep = getStatusStep(report.Status || 'pending');
-                        const isHighPriority = report.Urgency?.toLowerCase() === 'high';
-                        const isResolved = currentStep === 4;
+                        {reports.map((report, index) => {
+                            const currentStep = getStatusStep(report.Status || 'pending');
+                            const isHighPriority = report.Urgency?.toLowerCase() === 'high';
+                            const isResolved = currentStep === 4;
 
-                        // Calculate status color
-                        let statusColor = 'bg-city-blue/90';
-                        let borderColor = 'border-l-city-blue/50 focus:border-l-city-blue';
-                        let badgeBg = 'bg-city-blue/10 dark:bg-city-blue/20 text-city-blue border-city-blue/20';
-                        
-                        if (isResolved) {
-                            statusColor = 'bg-city-green/90';
-                            borderColor = 'border-l-city-green/50 focus:border-l-city-green';
-                            badgeBg = 'bg-city-green/10 dark:bg-city-green/20 text-city-green border-city-green/20';
-                        } else if (isHighPriority) {
-                            statusColor = 'bg-city-red/90';
-                            borderColor = 'border-l-city-red/50 focus:border-l-city-red text-city-red';
-                            badgeBg = 'bg-city-red border-city-red text-white'; // High priority gets stark colors
-                        } else if (report.Urgency?.toLowerCase() === 'medium') {
-                            badgeBg = 'bg-city-orange/10 dark:bg-city-orange/20 text-city-orange border-city-orange/20';
-                        }
+                            // Calculate status color
+                            let statusColor = 'bg-city-blue/90';
+                            let borderColor = 'border-l-city-blue/50 focus:border-l-city-blue';
+                            let badgeBg = 'bg-city-blue/10 dark:bg-city-blue/20 text-city-blue border-city-blue/20';
 
-                        return (
-                            <motion.div
-                                key={report.ID || index}
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: index * 0.05 + 0.3 }}
-                                className={`bg-white/80 dark:bg-city-surface/80 backdrop-blur-md rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm hover:shadow-lg dark:shadow-none group cursor-pointer transition-all duration-300 border-l-[6px] ${borderColor} hover:-translate-y-1`}
-                                onClick={() => setSelectedReport(report)}
-                            >
-                                <div className="p-6 md:p-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-8 relative overflow-hidden">
-                                    <div className="absolute top-0 right-0 w-32 h-full bg-gradient-to-l from-black/5 dark:from-white/5 to-transparent skew-x-12 translate-x-20 group-hover:translate-x-10 transition-transform duration-700 opacity-0 group-hover:opacity-100" />
-                                    
-                                    <div className="w-full md:w-[45%] relative z-10">
-                                        <div className="flex flex-wrap items-center gap-3 mb-4">
-                                            <span className="px-2.5 py-1 bg-gray-100 dark:bg-white/5 rounded-md border border-gray-200 dark:border-white/10 text-xs font-bold text-gray-500 tracking-widest shadow-inner">
-                                                ID:{report.ID}
-                                            </span>
-                                            <span className={`px-2.5 py-1 rounded-md border text-[10px] font-black uppercase tracking-widest shadow-inner ${badgeBg}`}>
-                                                {report.Urgency} PRTY
-                                            </span>
-                                        </div>
-                                        <h3 className="font-heading text-2xl font-black text-city-black dark:text-white uppercase tracking-tight mb-2 drop-shadow-sm">
-                                            {report.Category || 'ANOMALY'}
-                                        </h3>
-                                        <p className="text-sm text-gray-600 dark:text-gray-400 font-medium truncate w-full decoration-gray-300 dark:decoration-gray-600 underline-offset-4 group-hover:underline">
-                                            {report.issue || report.Issue || 'Awaiting classification...'}
-                                        </p>
-                                    </div>
+                            if (isResolved) {
+                                statusColor = 'bg-city-green/90';
+                                borderColor = 'border-l-city-green/50 focus:border-l-city-green';
+                                badgeBg = 'bg-city-green/10 dark:bg-city-green/20 text-city-green border-city-green/20';
+                            } else if (isHighPriority) {
+                                statusColor = 'bg-city-red/90';
+                                borderColor = 'border-l-city-red/50 focus:border-l-city-red text-city-red';
+                                badgeBg = 'bg-city-red border-city-red text-white'; // High priority gets stark colors
+                            } else if (report.Urgency?.toLowerCase() === 'medium') {
+                                badgeBg = 'bg-city-orange/10 dark:bg-city-orange/20 text-city-orange border-city-orange/20';
+                            }
 
-                                    <div className="w-full md:w-[50%] mt-2 md:mt-0 relative z-10">
-                                        <div className="flex justify-between items-center text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3 px-1">
-                                            <span className={currentStep >= 1 ? 'text-city-black dark:text-white drop-shadow-sm' : ''}>Logged</span>
-                                            <span className={currentStep >= 2 ? 'text-city-black dark:text-white drop-shadow-sm' : ''}>Verified</span>
-                                            <span className={currentStep >= 3 ? 'text-city-black dark:text-white drop-shadow-sm' : ''}>Active</span>
-                                            <span className={currentStep >= 4 ? 'text-city-green drop-shadow-[0_0_8px_rgba(0,230,118,0.5)]' : ''}>Neutral</span>
+                            return (
+                                <motion.div
+                                    key={report.ID || index}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: index * 0.05 + 0.3 }}
+                                    className={`bg-white/80 dark:bg-city-surface/80 backdrop-blur-md rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm hover:shadow-lg dark:shadow-none group cursor-pointer transition-all duration-300 border-l-[6px] ${borderColor} hover:-translate-y-1`}
+                                    onClick={() => setSelectedReport(report)}
+                                >
+                                    <div className="p-6 md:p-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-8 relative overflow-hidden">
+                                        <div className="absolute top-0 right-0 w-32 h-full bg-gradient-to-l from-black/5 dark:from-white/5 to-transparent skew-x-12 translate-x-20 group-hover:translate-x-10 transition-transform duration-700 opacity-0 group-hover:opacity-100" />
+
+                                        <div className="w-full md:w-[45%] relative z-10">
+                                            <div className="flex flex-wrap items-center gap-3 mb-4">
+                                                <span className="px-2.5 py-1 bg-gray-100 dark:bg-white/5 rounded-md border border-gray-200 dark:border-white/10 text-xs font-bold text-gray-500 tracking-widest shadow-inner">
+                                                    ID:{report.ID}
+                                                </span>
+                                                <span className={`px-2.5 py-1 rounded-md border text-[10px] font-black uppercase tracking-widest shadow-inner ${badgeBg}`}>
+                                                    {report.Urgency} PRTY
+                                                </span>
+                                            </div>
+                                            <h3 className="font-heading text-2xl font-black text-city-black dark:text-white uppercase tracking-tight mb-2 drop-shadow-sm">
+                                                {report.Category || 'ANOMALY'}
+                                            </h3>
+                                            <p className="text-sm text-gray-600 dark:text-gray-400 font-medium truncate w-full decoration-gray-300 dark:decoration-gray-600 underline-offset-4 group-hover:underline">
+                                                {report.issue || report.Issue || 'Awaiting classification...'}
+                                            </p>
                                         </div>
-                                        <div className="w-full bg-gray-100 dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/5 h-3 rounded-full relative overflow-hidden shadow-inner">
-                                            {/* Stepped progress indicators */}
-                                            <div className="absolute top-0 bottom-0 left-1/3 w-px bg-gray-200 dark:bg-white/10 z-10" />
-                                            <div className="absolute top-0 bottom-0 left-2/3 w-px bg-gray-200 dark:bg-white/10 z-10" />
-                                            
-                                            <motion.div 
-                                                initial={{ width: 0 }}
-                                                animate={{ width: `${((currentStep - 1) / 3) * 100}%` }}
-                                                transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
-                                                className={`absolute inset-y-0 left-0 rounded-full ${statusColor} backdrop-blur-sm`}
-                                            />
-                                            {/* Glow effect on progress bar */}
-                                            <motion.div 
-                                                initial={{ width: 0 }}
-                                                animate={{ width: `${((currentStep - 1) / 3) * 100}%` }}
-                                                transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
-                                                className={`absolute top-0 bottom-0 left-0 bg-white/30 blur-[4px]`}
-                                            />
+
+                                        <div className="w-full md:w-[50%] mt-2 md:mt-0 relative z-10">
+                                            <div className="flex justify-between items-center text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3 px-1">
+                                                <span className={currentStep >= 1 ? 'text-city-black dark:text-white drop-shadow-sm' : ''}>Logged</span>
+                                                <span className={currentStep >= 2 ? 'text-city-black dark:text-white drop-shadow-sm' : ''}>Verified</span>
+                                                <span className={currentStep >= 3 ? 'text-city-black dark:text-white drop-shadow-sm' : ''}>Active</span>
+                                                <span className={currentStep >= 4 ? 'text-city-green drop-shadow-[0_0_8px_rgba(0,230,118,0.5)]' : ''}>Neutral</span>
+                                            </div>
+                                            <div className="w-full bg-gray-100 dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/5 h-3 rounded-full relative overflow-hidden shadow-inner">
+                                                {/* Stepped progress indicators */}
+                                                <div className="absolute top-0 bottom-0 left-1/3 w-px bg-gray-200 dark:bg-white/10 z-10" />
+                                                <div className="absolute top-0 bottom-0 left-2/3 w-px bg-gray-200 dark:bg-white/10 z-10" />
+
+                                                <motion.div
+                                                    initial={{ width: 0 }}
+                                                    animate={{ width: `${((currentStep - 1) / 3) * 100}%` }}
+                                                    transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
+                                                    className={`absolute inset-y-0 left-0 rounded-full ${statusColor} backdrop-blur-sm`}
+                                                />
+                                                {/* Glow effect on progress bar */}
+                                                <motion.div
+                                                    initial={{ width: 0 }}
+                                                    animate={{ width: `${((currentStep - 1) / 3) * 100}%` }}
+                                                    transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
+                                                    className={`absolute top-0 bottom-0 left-0 bg-white/30 blur-[4px]`}
+                                                />
+                                            </div>
+                                        </div>
+
+                                        {/* Action Indicator */}
+                                        <div className="hidden md:flex items-center justify-center w-10 h-10 rounded-full bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 group-hover:bg-city-blue group-hover:border-city-blue group-hover:shadow-[0_0_20px_rgba(37,99,235,0.4)] transition-all duration-300 relative z-10">
+                                            <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-white group-hover:translate-x-0.5 transition-all" />
                                         </div>
                                     </div>
-                                    
-                                    {/* Action Indicator */}
-                                    <div className="hidden md:flex items-center justify-center w-10 h-10 rounded-full bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 group-hover:bg-city-blue group-hover:border-city-blue group-hover:shadow-[0_0_20px_rgba(37,99,235,0.4)] transition-all duration-300 relative z-10">
-                                        <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-white group-hover:translate-x-0.5 transition-all" />
-                                    </div>
-                                </div>
-                            </motion.div>
-                        );
-                    })}
+                                </motion.div>
+                            );
+                        })}
                     </div>
                 )}
             </div>
@@ -315,12 +315,12 @@ const UserDashboard: React.FC<UserDashboardProps> = () => {
             {/* Immersive Modal View */}
             <AnimatePresence>
                 {selectedReport && (
-                    <motion.div 
+                    <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.3 }}
-                        className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-6 bg-city-surface-light/80 dark:bg-[#050505]/90 backdrop-blur-xl font-sans" 
+                        className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-6 bg-city-surface-light/80 dark:bg-[#050505]/90 backdrop-blur-xl font-sans"
                         onClick={() => setSelectedReport(null)}
                     >
                         {/* Film grain inside modal */}
@@ -335,15 +335,14 @@ const UserDashboard: React.FC<UserDashboardProps> = () => {
                             onClick={(e) => e.stopPropagation()}
                         >
                             {/* Decorative Top Bar reflecting status */}
-                            <div className={`absolute top-0 left-0 right-0 h-1.5 ${
-                                getStatusStep(selectedReport.Status) === 4 ? 'bg-city-green shadow-[0_0_20px_rgba(0,230,118,0.6)]' : 
-                                selectedReport.Urgency?.toLowerCase() === 'high' ? 'bg-city-red shadow-[0_0_20px_rgba(211,18,18,0.6)]' : 'bg-city-blue shadow-[0_0_20px_rgba(37,99,235,0.6)]'
-                            }`} />
+                            <div className={`absolute top-0 left-0 right-0 h-1.5 ${getStatusStep(selectedReport.Status) === 4 ? 'bg-city-green shadow-[0_0_20px_rgba(0,230,118,0.6)]' :
+                                    selectedReport.Urgency?.toLowerCase() === 'high' ? 'bg-city-red shadow-[0_0_20px_rgba(211,18,18,0.6)]' : 'bg-city-blue shadow-[0_0_20px_rgba(37,99,235,0.6)]'
+                                }`} />
 
                             {/* Cinematic Light Accents */}
                             <div className="absolute top-0 right-0 w-64 h-64 bg-city-blue/5 dark:bg-city-blue/10 blur-[80px] rounded-full pointer-events-none" />
                             <div className="absolute bottom-0 left-0 w-64 h-64 bg-city-blue/5 dark:bg-city-blue/10 blur-[80px] rounded-full pointer-events-none" />
-                            
+
                             <div className="p-8 md:p-12 relative z-10">
                                 <button
                                     onClick={() => setSelectedReport(null)}
@@ -360,19 +359,18 @@ const UserDashboard: React.FC<UserDashboardProps> = () => {
                                             </span>
                                             <span className={`w-2 h-2 rounded-full ${getStatusStep(selectedReport.Status) === 4 ? 'bg-city-green animate-pulse' : 'bg-city-red animate-pulse'}`} />
                                         </div>
-                                        <span className={`px-2.5 py-1 rounded-md border text-[10px] font-black uppercase tracking-widest shadow-inner ${
-                                            selectedReport.Urgency?.toLowerCase() === 'high' ? 'bg-city-red border-city-red text-white' :
-                                            selectedReport.Urgency?.toLowerCase() === 'medium' ? 'bg-city-orange/10 dark:bg-city-orange/20 border-city-orange/20 text-city-orange' :
-                                            'bg-city-blue/10 dark:bg-city-blue/20 border-city-blue/20 text-city-blue'
-                                        }`}>
+                                        <span className={`px-2.5 py-1 rounded-md border text-[10px] font-black uppercase tracking-widest shadow-inner ${selectedReport.Urgency?.toLowerCase() === 'high' ? 'bg-city-red border-city-red text-white' :
+                                                selectedReport.Urgency?.toLowerCase() === 'medium' ? 'bg-city-orange/10 dark:bg-city-orange/20 border-city-orange/20 text-city-orange' :
+                                                    'bg-city-blue/10 dark:bg-city-blue/20 border-city-blue/20 text-city-blue'
+                                            }`}>
                                             {selectedReport.Urgency || 'STD'} PRTY
                                         </span>
                                     </div>
-                                    
+
                                     <h2 className="font-heading text-4xl md:text-5xl font-black text-city-black dark:text-white uppercase tracking-tighter mb-5 leading-[0.9] drop-shadow-sm">
                                         {selectedReport.Category || 'Anomaly Detected'}
                                     </h2>
-                                    
+
                                     <p className="text-lg text-gray-700 dark:text-gray-300 font-medium leading-relaxed bg-gray-50 dark:bg-white/5 p-6 rounded-2xl border border-gray-100 dark:border-white/5 relative shadow-inner">
                                         <span className="absolute top-4 left-4 text-4xl text-gray-200 dark:text-white/10 font-heading">"</span>
                                         <span className="relative z-10 pl-6 block text-gray-600 dark:text-gray-300">
@@ -391,7 +389,7 @@ const UserDashboard: React.FC<UserDashboardProps> = () => {
                                             {selectedReport.Urgency?.toLowerCase() === 'high' ? 'IMMEDIATE // 24H' : 'STANDARD // 3-7D'}
                                         </span>
                                     </div>
-                                    
+
                                     <div className="bg-gray-50 dark:bg-[#0e0e0e] p-6 rounded-2xl border border-gray-200/60 dark:border-white/5 shadow-sm">
                                         <div className="flex items-center gap-3 mb-2">
                                             <Activity className="w-4 h-4 text-gray-400" />
@@ -401,7 +399,7 @@ const UserDashboard: React.FC<UserDashboardProps> = () => {
                                             {selectedReport.Category || 'MUNICIPAL CORE'}
                                         </span>
                                     </div>
-                                    
+
                                     <div className="md:col-span-2 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-[#0e0e0e] dark:to-[#141414] p-6 rounded-2xl border border-gray-200/60 dark:border-white/5 shadow-inner">
                                         <div className="flex items-center gap-3 mb-3">
                                             <div className="p-1.5 bg-city-red/10 rounded-md">

@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { AlertTriangle, Activity } from 'lucide-react';
+import { Activity } from 'lucide-react';
 
 interface UrgencyTrendsChartProps {
   data: {

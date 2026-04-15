@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import { AlertCircle, LayoutDashboard, FileText, LogIn, LogOut, User, Menu, X, Target } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { LayoutDashboard, FileText, LogIn, LogOut, User, Target } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 interface NavbarProps {
@@ -13,7 +13,6 @@ const Navbar: React.FC<NavbarProps> = ({ }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, logout, isAuthenticated } = useAuth();
-  const [isOpen, setIsOpen] = useState(false);
   const isDashboard = location.pathname === '/dashboard';
 
   const handleLogout = () => {

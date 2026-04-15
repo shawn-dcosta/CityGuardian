@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle, AlertCircle, Info, XCircle, X, ShieldAlert } from 'lucide-react';
+import { CheckCircle, AlertCircle, Info, XCircle, X } from 'lucide-react';
 
 interface ToastProps {
   message: string;

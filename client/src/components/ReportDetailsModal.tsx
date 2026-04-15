@@ -40,21 +40,15 @@ const ReportDetailsModal: React.FC<ReportDetailsModalProps> = ({ report, isOpen,
 
     let themeColor = 'city-blue';
     let themeBg = 'bg-city-blue';
-    let themeBorder = 'border-city-blue';
-    let themeText = 'text-city-blue';
     let themeShadow = 'shadow-[0_0_30px_rgba(37,99,235,0.3)]';
     
     if (isResolved) {
         themeColor = 'city-green';
         themeBg = 'bg-city-green';
-        themeBorder = 'border-city-green';
-        themeText = 'text-city-green';
         themeShadow = 'shadow-[0_0_30px_rgba(0,230,118,0.3)]';
     } else if (isHighPriority) {
         themeColor = 'city-red';
         themeBg = 'bg-city-red';
-        themeBorder = 'border-city-red';
-        themeText = 'text-city-red';
         themeShadow = 'shadow-[0_0_30px_rgba(211,18,18,0.3)]';
     }
 

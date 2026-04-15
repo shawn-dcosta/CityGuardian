@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { MapPin, Calendar, ArrowRight, Target } from 'lucide-react';
+import { Calendar, ArrowRight, Target } from 'lucide-react';
 
 interface ReportCardProps {
     report: any;
