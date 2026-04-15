@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { motion } from 'framer-motion';
 import Navbar from './components/Navbar';
+import BottomNav from './components/BottomNav';
 import ToastContainer, { type ToastItem } from './components/ToastContainer';
 import Dashboard from './pages/Dashboard';
 import LoginPage from './pages/LoginPage';
@@ -50,7 +51,7 @@ function App() {
     <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
       <AuthProvider>
         <Router>
-          <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-gray-100 dark:from-midnight-900 dark:via-midnight-800 dark:to-midnight-900 transition-colors duration-300">
+          <div className="min-h-screen pb-24 md:pb-0 bg-city-surface-light dark:bg-city-black text-city-black dark:text-city-white transition-colors duration-300 overflow-x-hidden relative w-full flex flex-col">
             <Navbar isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
 
             <Routes>
@@ -95,6 +96,9 @@ function App() {
                 }
               />
             </Routes>
+
+            {/* PWA Mobile Navigation */}
+            <BottomNav />
 
             {/* Toast Notifications */}
             <ToastContainer toasts={toasts} removeToast={removeToast} />

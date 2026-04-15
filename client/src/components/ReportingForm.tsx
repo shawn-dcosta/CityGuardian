@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mic, Upload, Send, Loader, Image as ImageIcon } from 'lucide-react';
+import { Mic, Upload, Send, Loader, Image as ImageIcon, FileText } from 'lucide-react';
 import { useSpeechRecognition } from '../hooks/useSpeechRecognition';
 import axios from 'axios';
 import { generatePDF } from '../utils/helpers';
@@ -259,27 +259,38 @@ const ReportingForm: React.FC<ReportingFormProps> = ({ location, addToast, onRep
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="glass-card rounded-2xl p-6 shadow-2xl"
+        className="bg-white/40 dark:bg-city-surface/40 backdrop-blur-2xl rounded-[2rem] border border-gray-200/50 dark:border-white/10 p-6 md:p-8 relative overflow-hidden shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] font-sans"
       >
-        <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-100">
-          Report a Civic Issue
-        </h2>
+        <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-transparent dark:from-white/5 dark:to-transparent pointer-events-none -z-10"></div>
+        <div className="absolute top-0 right-0 w-64 h-64 bg-city-blue/10 blur-[80px] rounded-full pointer-events-none -z-10 translate-x-1/3 -translate-y-1/3"></div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="flex items-center gap-3 mb-8 pb-4 border-b border-gray-200/50 dark:border-white/10 relative z-10">
+          <div className="p-2 rounded-xl bg-city-blue/10 border border-city-blue/20 shadow-inner">
+              <FileText className="w-5 h-5 text-city-blue" />
+          </div>
+          <div>
+              <h2 className="font-heading text-2xl font-black uppercase tracking-tighter text-city-black dark:text-white drop-shadow-sm leading-none">
+                Report a Civic Issue
+              </h2>
+              <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mt-1">Submit visual or text evidence</p>
+          </div>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-5 relative z-10">
           {/* Name Input */}
           <motion.div
             initial={{ x: -20, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             transition={{ delay: 0.1 }}
           >
+            <label className="block text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-1 ml-1 group-focus-within:text-city-blue transition-colors">Citizen Name</label>
             <input
               type="text"
               name="name"
               value={formData.name}
               onChange={handleInputChange}
-              placeholder="Your Name"
-              required
-              className="w-full px-4 py-3 glass-input rounded-xl text-gray-800 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus-ring"
+              placeholder="Your Name (Optional if Signed In)"
+              className="w-full px-4 py-3.5 bg-white/50 dark:bg-[#0a0a0a]/50 rounded-xl border border-gray-200/50 dark:border-white/10 shadow-inner text-sm font-bold uppercase tracking-widest text-gray-800 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none focus:border-city-blue focus:ring-1 focus:ring-city-blue transition-all"
             />
           </motion.div>
 
@@ -289,14 +300,14 @@ const ReportingForm: React.FC<ReportingFormProps> = ({ location, addToast, onRep
             animate={{ x: 0, opacity: 1 }}
             transition={{ delay: 0.2 }}
           >
+             <label className="block text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-1 ml-1 group-focus-within:text-city-blue transition-colors">Citizen Email</label>
             <input
               type="email"
               name="email"
               value={formData.email}
               onChange={handleInputChange}
-              placeholder="Your Email"
-              required
-              className="w-full px-4 py-3 glass-input rounded-xl text-gray-800 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus-ring"
+              placeholder="Your Email (Optional if Signed In)"
+              className="w-full px-4 py-3.5 bg-white/50 dark:bg-[#0a0a0a]/50 rounded-xl border border-gray-200/50 dark:border-white/10 shadow-inner text-sm font-bold uppercase tracking-widest text-gray-800 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none focus:border-city-blue focus:ring-1 focus:ring-city-blue transition-all"
             />
           </motion.div>
 
@@ -306,13 +317,14 @@ const ReportingForm: React.FC<ReportingFormProps> = ({ location, addToast, onRep
             animate={{ x: 0, opacity: 1 }}
             transition={{ delay: 0.3 }}
           >
+             <label className="block text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-1 ml-1 group-focus-within:text-city-blue transition-colors">Vector Description</label>
             <textarea
               name="complaint"
               value={formData.complaint}
               onChange={handleInputChange}
               rows={4}
               placeholder="Describe the issue (e.g., Pothole, broken light...)"
-              className="w-full px-4 py-3 glass-input rounded-xl text-gray-800 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus-ring resize-none"
+              className="w-full px-4 py-3.5 bg-white/50 dark:bg-[#0a0a0a]/50 rounded-xl border border-gray-200/50 dark:border-white/10 shadow-inner text-sm font-bold uppercase tracking-widest text-gray-800 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none focus:border-city-blue focus:ring-1 focus:ring-city-blue transition-all resize-none"
             />
           </motion.div>
 
@@ -321,24 +333,23 @@ const ReportingForm: React.FC<ReportingFormProps> = ({ location, addToast, onRep
             initial={{ x: -20, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             transition={{ delay: 0.4 }}
-            className="grid grid-cols-2 gap-3"
+            className="grid grid-cols-2 gap-3 pt-2"
           >
             <motion.button
               type="button"
               onClick={handleVoiceInput}
               disabled={!isSupported || isListening}
-              whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className={`flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-medium transition-all focus-ring ${isListening
-                ? 'bg-red-500 text-white'
-                : 'glass-input text-gray-700 dark:text-gray-300 hover:bg-gray-200/50 dark:hover:bg-gray-700/50'
+              className={`flex items-center justify-center gap-2 px-4 py-3.5 rounded-xl text-[10px] sm:text-xs font-black uppercase tracking-widest focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-[#050505] transition-all shadow-sm ${isListening
+                ? 'bg-city-red text-white shadow-[0_0_15px_rgba(239,68,68,0.5)] border border-city-red'
+                : 'bg-white/50 dark:bg-white/5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 border border-gray-200/50 dark:border-white/10'
                 } ${!isSupported ? 'opacity-50 cursor-not-allowed' : ''}`}
             >
-              <Mic className={`w-5 h-5 ${isListening ? 'animate-pulse' : ''}`} />
-              {isListening ? 'Recording...' : isSupported ? 'Voice Input' : 'Not Supported'}
+              <Mic className={`w-4 h-4 ${isListening ? 'animate-pulse' : ''}`} />
+              <span className="truncate">{isListening ? 'Recording...' : isSupported ? 'Voice Input' : 'N/A'}</span>
             </motion.button>
 
-            <label className="relative cursor-pointer">
+            <label className="relative cursor-pointer h-full">
               <input
                 type="file"
                 accept="image/*"
@@ -346,12 +357,11 @@ const ReportingForm: React.FC<ReportingFormProps> = ({ location, addToast, onRep
                 className="hidden"
               />
               <motion.div
-                whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="flex items-center justify-center gap-2 px-4 py-3 glass-input rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-200/50 dark:hover:bg-gray-700/50 transition-all focus-ring h-full"
+                className="flex items-center justify-center gap-2 px-4 py-3.5 h-full rounded-xl text-[10px] sm:text-xs font-black uppercase tracking-widest bg-white/50 dark:bg-white/5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 border border-gray-200/50 dark:border-white/10 focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-[#050505] transition-all shadow-sm"
               >
-                <Upload className="w-5 h-5" />
-                <span className="font-medium">Upload Image</span>
+                <Upload className="w-4 h-4 text-city-blue" />
+                <span className="truncate">Upload Image</span>
               </motion.div>
             </label>
           </motion.div>
@@ -361,32 +371,33 @@ const ReportingForm: React.FC<ReportingFormProps> = ({ location, addToast, onRep
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5 }}
-            className="text-xs text-gray-500 dark:text-gray-400 -mt-2"
+            className="text-[9px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest text-center px-4"
           >
-            💡 Upload photos of: potholes, broken lights, water leaks, garbage, damaged roads, etc.
+             Upload photos of potholes, broken lights, leakages, or damage.
           </motion.p>
 
           {/* Image Preview */}
           <AnimatePresence>
             {imagePreview && (
               <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                className="relative rounded-xl overflow-hidden shadow-lg"
+                initial={{ opacity: 0, scale: 0.9, height: 0 }}
+                animate={{ opacity: 1, scale: 1, height: 'auto' }}
+                exit={{ opacity: 0, scale: 0.9, height: 0 }}
+                className="relative rounded-2xl overflow-hidden shadow-[0_10px_30px_-10px_rgba(0,0,0,0.3)] border border-gray-200/50 dark:border-white/10"
               >
                 <img
                   src={imagePreview}
                   alt="Preview"
-                  className="w-full max-h-48 object-cover"
+                  className="w-full max-h-56 object-cover"
                 />
 
                 {/* AI Scanning Overlay */}
                 {isAnalyzing && (
-                  <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center">
-                    <div className="relative w-full h-1 bg-blue-500/50 absolute top-0 animate-[scan_2s_ease-in-out_infinite]" />
-                    <Loader className="w-8 h-8 text-electric-blue-400 animate-spin mb-2" />
-                    <p className="text-white font-bold text-sm tracking-wider animate-pulse">AI ANALYZING...</p>
+                  <div className="absolute inset-0 bg-city-black/80 backdrop-blur-sm flex flex-col items-center justify-center">
+                    <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay pointer-events-none"></div>
+                    <div className="relative w-full h-1.5 bg-city-blue/30 absolute top-0 animate-[scan_2s_ease-in-out_infinite] shadow-[0_0_15px_rgba(37,99,235,0.8)]" />
+                    <Loader className="w-8 h-8 text-city-blue animate-spin mb-3 drop-shadow-[0_0_10px_rgba(37,99,235,0.8)]" />
+                    <p className="text-white font-black text-xs uppercase tracking-[0.2em] animate-pulse">Scanning Visual Data...</p>
                   </div>
                 )}
 
@@ -395,9 +406,10 @@ const ReportingForm: React.FC<ReportingFormProps> = ({ location, addToast, onRep
                   <motion.div
                     initial={{ y: -20, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
-                    className="absolute top-2 left-2 bg-electric-blue-600/90 backdrop-blur-sm text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg border border-white/20"
+                    className="absolute top-3 left-3 bg-white/90 dark:bg-city-black/90 backdrop-blur-md text-city-black dark:text-white px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest shadow-lg border border-gray-200/50 dark:border-white/10 flex items-center gap-2"
                   >
-                    🤖 {aiSuggestion}
+                    <span className="w-1.5 h-1.5 rounded-full bg-city-blue animate-pulse -ml-1"></span>
+                    {aiSuggestion}
                   </motion.div>
                 )}
 
@@ -410,7 +422,7 @@ const ReportingForm: React.FC<ReportingFormProps> = ({ location, addToast, onRep
                   }}
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
-                  className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-2 shadow-lg hover:bg-red-600 transition-colors"
+                  className="absolute top-3 right-3 bg-white/90 dark:bg-city-black/90 backdrop-blur-md text-gray-500 hover:text-city-red rounded-lg p-2 shadow-lg border border-gray-200/50 dark:border-white/10 transition-colors"
                 >
                   <ImageIcon className="w-4 h-4" />
                 </motion.button>
@@ -422,26 +434,28 @@ const ReportingForm: React.FC<ReportingFormProps> = ({ location, addToast, onRep
           <motion.button
             type="submit"
             disabled={isSubmitting}
-            whileHover={{ scale: isSubmitting ? 1 : 1.02 }}
             whileTap={{ scale: isSubmitting ? 1 : 0.98 }}
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.5 }}
-            className={`w-full py-4 rounded-xl font-bold text-white transition-all shadow-lg focus-ring ${isSubmitting
-              ? 'bg-gray-400 cursor-not-allowed'
-              : 'bg-gradient-to-r from-electric-blue-500 to-electric-blue-700 hover:from-electric-blue-600 hover:to-electric-blue-800'
+            className={`w-full py-4 mt-6 rounded-xl text-sm font-black uppercase tracking-widest text-white transition-all shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-[#050505] relative overflow-hidden group ${isSubmitting
+              ? 'bg-gray-400 dark:bg-gray-600 cursor-not-allowed'
+              : 'bg-city-blue hover:bg-blue-600 shadow-[0_5px_20px_rgba(37,99,235,0.3)] hover:shadow-[0_5px_25px_rgba(37,99,235,0.4)]'
               }`}
           >
-            <span className="flex items-center justify-center gap-2">
+             {/* Hover glare effect */}
+            {!isSubmitting && <div className="absolute top-0 -left-[100%] w-1/2 h-full bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-[45deg] group-hover:left-[200%] transition-all duration-700 ease-in-out pointer-events-none"></div>}
+
+            <span className="flex items-center justify-center gap-3 relative z-10">
               {isSubmitting ? (
                 <>
                   <Loader className="w-5 h-5 animate-spin" />
-                  Processing...
+                  Transmitting...
                 </>
               ) : (
                 <>
                   <Send className="w-5 h-5" />
-                  Submit Report
+                  Initiate Upload Report
                 </>
               )}
             </span>

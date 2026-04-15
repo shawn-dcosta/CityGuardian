@@ -5,19 +5,23 @@
 @layer base {
   html {
     font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Inter', sans-serif;
+    letter-spacing: -0.02em;
+    font-weight: 700;
   }
 }
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  @apply w-2;
+  @apply w-[6px];
 }
 
 ::-webkit-scrollbar-track {
-  @apply bg-gray-100 dark:bg-midnight-950;
+  @apply bg-city-surface-light dark:bg-city-black;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -29,22 +33,35 @@
 }
 
 /* Glassmorphic Base */
-/* Premium Glassmorphism Base */
+/* Premium Glassmorphism Base - Tactile & Sharp */
 .glass-card {
-  @apply backdrop-blur-[60px] bg-white/60 dark:bg-slate-900/50 border border-white/50 dark:border-white/10 rounded-2xl md:rounded-3xl;
-  box-shadow: 0 10px 40px -10px rgba(0,0,0,0.08), inset 0 1px 0 0 rgba(255,255,255,0.4);
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  @apply backdrop-blur-xl bg-white/70 dark:bg-city-surface/80 border border-gray-200 dark:border-white/5 rounded-xl;
+  box-shadow: 0 4px 24px -8px rgba(0,0,0,0.05);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .glass-card:hover {
-  box-shadow: 0 20px 40px -10px rgba(0,0,0,0.12), inset 0 1px 0 0 rgba(255,255,255,0.5);
-  transform: translateY(-2px);
+  @apply border-gray-300 dark:border-white/10;
+  box-shadow: 0 12px 32px -8px rgba(0,0,0,0.08);
+  transform: translateY(-1px);
 }
 
 .dark .glass-card {
-  box-shadow: 0 10px 40px -10px rgba(0,0,0,0.5), inset 0 1px 0 0 rgba(255,255,255,0.05);
+  box-shadow: 0 8px 32px -8px rgba(0,0,0,0.4);
 }
 .dark .glass-card:hover {
-  box-shadow: 0 20px 40px -10px rgba(0,0,0,0.7), inset 0 1px 0 0 rgba(255,255,255,0.1);
+  box-shadow: 0 16px 40px -8px rgba(0,0,0,0.6);
+}
+
+/* Tactile Premium Button */
+.btn-premium {
+  @apply relative overflow-hidden transition-all duration-300 font-medium active:scale-[0.98];
+}
+.btn-premium::after {
+  content: '';
+  @apply absolute inset-0 bg-white opacity-0 transition-opacity duration-300 pointer-events-none;
+}
+.btn-premium:hover::after {
+  @apply opacity-10;
 }
 
 .glass-input {
@@ -71,17 +88,11 @@
 
 /* Base Body Transitions */
 body {
-  @apply transition-colors duration-500 bg-[#FAFAFA] text-slate-800 font-sans overflow-x-hidden;
-  background-image: 
-    radial-gradient(circle at 0% 0%, rgba(59, 130, 246, 0.06), transparent 40%), 
-    radial-gradient(circle at 100% 100%, rgba(139, 92, 246, 0.06), transparent 40%);
+  @apply transition-colors duration-500 bg-city-surface-light text-city-black font-sans overflow-x-hidden antialiased;
 }
 
 .dark body {
-  @apply bg-[#0b0f19] text-gray-100;
-  background-image: 
-    radial-gradient(circle at 0% 0%, rgba(59, 130, 246, 0.1), transparent 40%), 
-    radial-gradient(circle at 100% 100%, rgba(139, 92, 246, 0.1), transparent 40%);
+  @apply bg-city-black text-city-white;
 }
 
 /* Floating Animation */

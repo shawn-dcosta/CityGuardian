@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { MapContainer, TileLayer, Marker, Popup, useMap, useMapEvents, ZoomControl } from 'react-leaflet';
+import { Target } from 'lucide-react';
 import 'leaflet/dist/leaflet.css';
 
 // HeatMap layer component
@@ -8,7 +9,6 @@ const HeatMapLayer = ({ data }: { data: any[]; isDarkMode: boolean }) => {
   const map = useMap();
 
   useEffect(() => {
-    // Dynamically load heatmap plugin
     // @ts-ignore
     if (window.L && window.L.heatLayer) {
       const heatData = data.map(point => [point.lat, point.lon, point.count / 10]);
@@ -21,7 +21,7 @@ const HeatMapLayer = ({ data }: { data: any[]; isDarkMode: boolean }) => {
         max: 1.0,
         gradient: {
           0.0: '#3b82f6',
-          0.5: '#eab308',
+          0.5: '#f97316',
           1.0: '#ef4444'
         }
       });
@@ -63,7 +63,6 @@ const InteractiveMarker = ({ point, icon, isLocked, onLock }: any) => {
       }
     },
     click: (e: any) => {
-      // Stop propagation to prevent map click from clearing immediately
       e.originalEvent.stopPropagation();
       onLock();
       if (markerRef.current) {
@@ -72,7 +71,6 @@ const InteractiveMarker = ({ point, icon, isLocked, onLock }: any) => {
     },
   };
 
-  // Sync popup state with lock
   useEffect(() => {
     if (markerRef.current) {
       if (isLocked) {
@@ -93,17 +91,20 @@ const InteractiveMarker = ({ point, icon, isLocked, onLock }: any) => {
       ref={markerRef}
     >
       <Popup className="custom-popup" closeButton={false} autoPan={false}>
-        <div className="p-2 min-w-[180px]">
-          <div className="flex justify-between items-start mb-2">
-            <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${point.Urgency === 'high' ? 'bg-red-100 text-red-700' :
-                point.Urgency === 'medium' ? 'bg-yellow-100 text-yellow-700' : 'bg-blue-100 text-blue-700'
+        <div className="p-4 min-w-[200px] border border-gray-200/50 dark:border-white/10 bg-white/95 dark:bg-city-black/95 backdrop-blur-xl rounded-xl shadow-2xl relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-city-blue/10 blur-[30px] rounded-full pointer-events-none -z-10 translate-x-1/2 -translate-y-1/2"></div>
+          
+          <div className="flex justify-between items-start mb-3 border-b border-gray-200/50 dark:border-white/10 pb-2 relative z-10">
+            <span className={`text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded shadow-sm border ${
+                point.Urgency === 'high' ? 'bg-city-red/10 border-city-red/30 text-city-red' :
+                point.Urgency === 'medium' ? 'bg-city-orange/10 border-city-orange/30 text-city-orange' : 'bg-city-blue/10 border-city-blue/30 text-city-blue'
               }`}>
-              {point.Urgency} Priority
+              {point.Urgency} PRTY
             </span>
-            <span className="text-[10px] text-gray-400">{point.Date}</span>
+            <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">{point.Date}</span>
           </div>
-          <h4 className="font-bold text-gray-900 text-sm mb-1">{point.Category || 'Issue Report'}</h4>
-          <p className="text-gray-600 text-xs line-clamp-2 leading-relaxed">{point.issue || point.Issue || 'No description.'}</p>
+          <h4 className="font-heading font-black text-city-black dark:text-white uppercase text-[13px] mb-1 leading-tight relative z-10 line-clamp-2 drop-shadow-sm">{point.Category || 'Anomaly'}</h4>
+          <p className="text-gray-500 dark:text-gray-400 text-[11px] line-clamp-2 font-medium tracking-wide relative z-10">{point.issue || point.Issue || 'No trace description.'}</p>
         </div>
       </Popup>
     </Marker>
@@ -112,7 +113,7 @@ const InteractiveMarker = ({ point, icon, isLocked, onLock }: any) => {
 
 interface HeatMapProps {
   data: any[];
-  isDarkMode: boolean;
+  isDarkMode: boolean; // Keeping prop to avoid breaking types
   showHeatmap?: boolean;
 }
 
@@ -120,16 +121,15 @@ const HeatMap: React.FC<HeatMapProps> = ({ data, isDarkMode, showHeatmap = true 
   const [lockedId, setLockedId] = useState<number | null>(null);
 
   const urgencyColors: Record<string, string> = {
-    high: '#ef4444',
-    medium: '#eab308',
-    low: '#3b82f6'
+    high: '#ef4444',     // city-red
+    medium: '#f97316',   // city-orange
+    low: '#3b82f6'       // city-blue
   };
 
   const center: [number, number] = data.length > 0
     ? [data[0].lat, data[0].lon]
-    : [19.0760, 72.8777]; // Default to Mumbai
+    : [19.0760, 72.8777];
 
-  // Custom pulse marker icon
   const createPulseIcon = (urgency: string) => {
     // @ts-ignore
     if (!window.L) return null;
@@ -137,7 +137,7 @@ const HeatMap: React.FC<HeatMapProps> = ({ data, isDarkMode, showHeatmap = true 
     // @ts-ignore
     return window.L.divIcon({
       className: 'custom-pulse-marker',
-      html: `<div class="w-3 h-3 rounded-full relative" style="background-color: ${urgencyColors[urgency] || urgencyColors.medium}">
+      html: `<div class="w-3 h-3 relative rounded-full border border-white/50 shadow-[0_0_8px_rgba(0,0,0,0.5)]" style="background-color: ${urgencyColors[urgency] || urgencyColors.medium}">
               <div class="absolute -inset-1 rounded-full animate-ping opacity-75" style="background-color: ${urgencyColors[urgency] || urgencyColors.medium}"></div>
             </div>`,
       iconSize: [12, 12],
@@ -149,36 +149,47 @@ const HeatMap: React.FC<HeatMapProps> = ({ data, isDarkMode, showHeatmap = true 
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="glass-card rounded-2xl p-6 h-full flex flex-col"
+      className="bg-white/40 dark:bg-city-surface/40 backdrop-blur-2xl rounded-3xl border border-gray-200/50 dark:border-white/10 p-6 h-full flex flex-col shadow-2xl relative overflow-hidden group"
     >
-      <div className="flex items-center justify-between mb-4 px-1">
-        <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100 flex items-center gap-2">
-          🗺️ Live Issue Map
+      <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.05] mix-blend-overlay pointer-events-none z-0"></div>
+      
+      <div className="flex items-center justify-between mb-5 pb-4 border-b border-gray-200/50 dark:border-white/10 relative z-10">
+        <h3 className="text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em] flex items-center gap-2">
+          <Target className="w-4 h-4 text-city-blue animate-pulse" />
+          Geospatial Impact Matrix
         </h3>
 
-        {/* Map Legend - Top Right */}
-        <div className="flex items-center gap-3 text-xs bg-gray-100 dark:bg-midnight-900 px-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-800 shadow-sm">
-          <div className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
-            <span className="text-gray-600 dark:text-gray-400 font-medium">Critical</span>
+        {/* Map Legend */}
+        <div className="flex items-center gap-4 text-[9px] font-black uppercase tracking-widest text-gray-500">
+          <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 shadow-inner">
+            <span className="w-2 h-2 rounded-full bg-city-red animate-pulse shadow-[0_0_5px_rgba(239,68,68,0.8)]"></span>
+            <span>Critical</span>
           </div>
-          <div className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-yellow-500"></span>
-            <span className="text-gray-600 dark:text-gray-400 font-medium">Moderate</span>
+          <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 shadow-inner">
+            <span className="w-2 h-2 rounded-full bg-city-orange shadow-[0_0_5px_rgba(249,115,22,0.8)]"></span>
+            <span>Moderate</span>
           </div>
-          <div className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-blue-500"></span>
-            <span className="text-gray-600 dark:text-gray-400 font-medium">Low</span>
+          <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 shadow-inner">
+            <span className="w-2 h-2 rounded-full bg-city-blue shadow-[0_0_5px_rgba(59,130,246,0.8)]"></span>
+            <span>Low</span>
           </div>
         </div>
       </div>
 
-      <div className="flex-1 rounded-xl overflow-hidden shadow-2xl border border-gray-200 dark:border-gray-700 min-h-[400px] relative z-0">
+      <div className="flex-1 w-full rounded-2xl border border-gray-200/50 dark:border-white/10 min-h-[400px] relative z-10 overflow-hidden shadow-inner isolate">
+        
+        {/* HUD Elements */}
+        <div className="absolute top-3 left-3 z-[400] pointer-events-none bg-city-black/40 dark:bg-black/60 backdrop-blur-md rounded-lg px-3 py-1.5 border border-white/10">
+            <span className="text-[9px] font-black text-white uppercase tracking-widest font-mono">SYS.MAP.TRACKING</span>
+            {data.length > 0 && <span className="text-[9px] text-city-blue font-bold ml-2 animate-pulse">LIVE</span>}
+        </div>
+        <div className="absolute inset-0 ring-1 ring-inset ring-city-blue/10 pointer-events-none z-[400] rounded-2xl"></div>
+
         {data.length > 0 ? (
           <MapContainer
             center={center}
             zoom={12}
-            style={{ height: '100%', width: '100%' }}
+            style={{ height: '100%', width: '100%', backgroundColor: isDarkMode ? '#1a1a1a' : '#f9fafb' }}
             scrollWheelZoom={true}
             zoomControl={false}
             className="z-0"
@@ -187,22 +198,25 @@ const HeatMap: React.FC<HeatMapProps> = ({ data, isDarkMode, showHeatmap = true 
             <MapClickHandler onMapClick={() => setLockedId(null)} />
 
             <TileLayer
-              className={isDarkMode ? 'map-tiles-dark' : ''}
-              url={
-                isDarkMode
-                  ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
-                  : 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png'
-              }
+              className={isDarkMode ? 'map-tiles-dark opacity-80' : 'map-tiles-standard opacity-[0.85]'}
+              url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
               attribution='&copy; <a href="https://carto.com/attributions">CARTO</a>'
             />
 
             <style>{`
-              .map-tiles-dark {
-                filter: brightness(0.8) contrast(1.2) hue-rotate(200deg) saturate(0.5) !important;
-              }
               .leaflet-popup-content-wrapper {
-                 border-radius: 12px;
-                 overflow: hidden;
+                 border-radius: 0px !important;
+                 background: transparent;
+                 border: none;
+                 box-shadow: none;
+                 padding: 0;
+                 overflow: visible;
+              }
+              .leaflet-popup-content {
+                 margin: 0;
+              }
+              .leaflet-popup-tip {
+                 display: none;
               }
             `}</style>
 
@@ -224,11 +238,12 @@ const HeatMap: React.FC<HeatMapProps> = ({ data, isDarkMode, showHeatmap = true 
             })}
           </MapContainer>
         ) : (
-          <div className="h-full flex flex-col items-center justify-center bg-gray-50 dark:bg-midnight-900 text-gray-400 dark:text-gray-600">
-            <div className="p-4 rounded-full bg-gray-100 dark:bg-midnight-800 mb-2">
-              <span className="text-2xl">🗺️</span>
+          <div className="h-full flex flex-col items-center justify-center bg-gray-50/50 dark:bg-[#0a0a0a]/50 text-gray-400">
+            <div className="relative mb-4">
+              <div className="absolute inset-0 bg-city-blue/20 blur-xl rounded-full"></div>
+              <Target className="w-10 h-10 text-gray-300 dark:text-gray-600 relative z-10 animate-pulse" />
             </div>
-            <p className="text-sm font-medium">No active reports on the map</p>
+            <p className="text-[10px] uppercase font-bold tracking-[0.2em]">Awaiting sector activity</p>
           </div>
         )}
       </div>

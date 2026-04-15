@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { AlertCircle, LayoutDashboard, FileText, LogIn, LogOut, User, Menu, X } from 'lucide-react';
+import { AlertCircle, LayoutDashboard, FileText, LogIn, LogOut, User, Menu, X, Target } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 interface NavbarProps {
@@ -22,37 +22,42 @@ const Navbar: React.FC<NavbarProps> = ({ }) => {
   };
 
   return (
-    <div className="w-full sticky top-4 z-50 px-4 flex justify-center pb-4">
+    <div className="w-full sticky top-4 z-50 px-4 flex justify-center pb-4 font-sans">
       <motion.nav
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.5 }}
-        className="glass-card rounded-2xl md:rounded-full w-full max-w-6xl z-50 transition-all duration-300"
+        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+        className="w-full max-w-6xl z-50 rounded-2xl md:rounded-full transition-all duration-300 bg-white/60 dark:bg-city-surface/70 backdrop-blur-xl border border-gray-200/50 dark:border-white/10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)]"
       >
-        <div className="px-6 py-3">
-          <div className="flex justify-between items-center">
+        <div className="px-6 py-3 relative overflow-hidden rounded-2xl md:rounded-full">
+          {/* Subtle inner glow */}
+          <div className="absolute inset-0 bg-gradient-to-r from-city-blue/5 via-transparent to-transparent opacity-50"></div>
+          
+          <div className="flex justify-between items-center relative z-10">
             <Link to="/">
               <motion.div
-                className="flex items-center gap-2 cursor-pointer"
+                className="flex items-center gap-3 cursor-pointer group"
                 whileHover={{ scale: 1.02 }}
               >
-                <AlertCircle className="text-electric-blue-500 w-7 h-7" />
-                <span className="text-xl font-bold bg-gradient-to-r from-electric-blue-500 to-electric-blue-700 bg-clip-text text-transparent">
-                  CityGuardian
+                <div className="relative">
+                  <div className="absolute inset-0 bg-city-blue/30 blur-md rounded-full group-hover:bg-city-blue/50 transition-colors"></div>
+                  <Target className="text-city-blue w-7 h-7 relative z-10 group-hover:rotate-90 transition-transform duration-700" />
+                </div>
+                <span className="text-xl font-heading font-black bg-gradient-to-r from-city-black to-gray-500 dark:from-white dark:to-gray-400 bg-clip-text text-transparent uppercase tracking-tight">
+                  City<span className="text-city-blue">Guardian</span>
                 </span>
               </motion.div>
             </Link>
 
             <div className="flex items-center gap-4">
               {/* Navigation Links */}
-              <div className="hidden md:flex items-center gap-2">
+              <div className="hidden md:flex items-center gap-3">
                 <Link to="/report">
                   <motion.button
-                    whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className={`px-4 py-2 rounded-full hover:-translate-y-[1px] font-medium transition-all flex items-center gap-2 ${location.pathname === '/report'
-                      ? 'bg-electric-blue-500 text-white'
-                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                    className={`px-5 py-2.5 rounded-full flex items-center gap-2 text-sm font-bold uppercase tracking-widest transition-all ${location.pathname === '/report'
+                      ? 'bg-city-blue text-white shadow-[0_0_20px_rgba(37,99,235,0.4)]'
+                      : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 border border-transparent hover:border-gray-200 dark:hover:border-white/10'
                       }`}
                   >
                     <FileText className="w-4 h-4" />
@@ -63,11 +68,10 @@ const Navbar: React.FC<NavbarProps> = ({ }) => {
                 {isAuthenticated && user?.role === 'admin' && (
                   <Link to="/admin">
                     <motion.button
-                      whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className={`px-4 py-2 rounded-full hover:-translate-y-[1px] font-medium transition-all flex items-center gap-2 ${location.pathname === '/admin'
-                        ? 'bg-electric-blue-500 text-white'
-                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                      className={`px-5 py-2.5 rounded-full flex items-center gap-2 text-sm font-bold uppercase tracking-widest transition-all ${location.pathname === '/admin'
+                        ? 'bg-city-blue text-white shadow-[0_0_20px_rgba(37,99,235,0.4)]'
+                        : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 border border-transparent hover:border-gray-200 dark:hover:border-white/10'
                         }`}
                     >
                       <LayoutDashboard className="w-4 h-4" />
@@ -79,129 +83,49 @@ const Navbar: React.FC<NavbarProps> = ({ }) => {
                 {isAuthenticated && (
                   <Link to="/dashboard">
                     <motion.button
-                      whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className={`px-4 py-2 rounded-full hover:-translate-y-[1px] font-medium transition-all flex items-center gap-2 ${isDashboard && location.pathname !== '/admin'
-                        ? 'bg-electric-blue-500 text-white'
-                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                      className={`px-5 py-2.5 rounded-full flex items-center gap-2 text-sm font-bold uppercase tracking-widest transition-all ${isDashboard && location.pathname !== '/admin'
+                        ? 'bg-city-blue text-white shadow-[0_0_20px_rgba(37,99,235,0.4)]'
+                        : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 border border-transparent hover:border-gray-200 dark:hover:border-white/10'
                         }`}
                     >
                       <User className="w-4 h-4" />
-                      My Dashboard
+                      Manifest
                     </motion.button>
                   </Link>
                 )}
 
                 {isAuthenticated ? (
-                  <div className="flex items-center gap-3 ml-2">
-                    <div className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-                      <User className="w-4 h-4" />
-                      <span>{user?.name}</span>
+                  <div className="flex items-center gap-4 ml-4 pl-4 border-l border-gray-200 dark:border-white/10">
+                    <div className="flex items-center gap-2 px-3 py-1.5 bg-gray-100 dark:bg-white/5 rounded-full border border-gray-200 dark:border-white/10">
+                      <div className="w-5 h-5 rounded-full bg-city-blue/20 flex items-center justify-center">
+                         <User className="w-3 h-3 text-city-blue" />
+                      </div>
+                      <span className="text-[10px] font-black uppercase tracking-widest text-city-black dark:text-white">{user?.name}</span>
                     </div>
                     <motion.button
-                      whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={handleLogout}
-                      className="px-3 py-2 rounded-full hover:-translate-y-[1px] font-medium bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-900/50 transition-colors flex items-center gap-2"
+                      className="px-4 py-2.5 rounded-full border border-city-red/30 bg-city-red/10 text-city-red hover:bg-city-red hover:text-white transition-all flex items-center gap-2 text-xs font-bold uppercase tracking-widest group"
                     >
-                      <LogOut className="w-4 h-4" />
-                      Logout
+                      <LogOut className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+                      Abort
                     </motion.button>
                   </div>
                 ) : (
-                  <Link to="/login">
+                  <Link to="/login" className="ml-2">
                     <motion.button
-                      whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className="px-4 py-2 rounded-full hover:-translate-y-[1px] font-medium bg-white dark:bg-midnight-700 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-midnight-600 transition-all flex items-center gap-2"
+                      className="px-6 py-2.5 rounded-full bg-city-black dark:bg-white text-white dark:text-city-black border border-gray-200 dark:border-white/10 hover:shadow-[0_0_20px_rgba(0,0,0,0.2)] dark:hover:shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:-translate-y-0.5 transition-all flex items-center gap-2 text-xs font-black uppercase tracking-widest"
                     >
                       <LogIn className="w-4 h-4" />
-                      Sign In
+                      Auth
                     </motion.button>
                   </Link>
                 )}
               </div>
-
-
-              {/* Mobile Menu Hamburger */}
-              <button
-                onClick={() => setIsOpen(!isOpen)}
-                className="md:hidden p-2 rounded-full hover:-translate-y-[1px] text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-midnight-800 transition-colors focus-ring"
-              >
-                {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-              </button>
             </div>
           </div>
-
-          {/* Mobile Navigation */}
-          <AnimatePresence>
-            {isOpen && (
-              <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: 'auto', opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                className="md:hidden overflow-hidden"
-              >
-                <div className="flex flex-col gap-2 mt-4 pt-4 border-t border-gray-200 dark:border-gray-800">
-                  <div className="flex gap-2">
-                    <Link to="/report" className="flex-1" onClick={() => setIsOpen(false)}>
-                      <motion.button
-                        whileTap={{ scale: 0.95 }}
-                        className="w-full px-4 py-2 rounded-full hover:-translate-y-[1px] font-medium bg-electric-blue-500 text-white flex items-center justify-center gap-2"
-                      >
-                        <FileText className="w-4 h-4" />
-                        Report
-                      </motion.button>
-                    </Link>
-
-                    {isAuthenticated && user?.role === 'admin' && (
-                      <Link to="/admin" className="flex-1" onClick={() => setIsOpen(false)}>
-                        <motion.button
-                          whileTap={{ scale: 0.95 }}
-                          className="w-full px-4 py-2 rounded-full hover:-translate-y-[1px] font-medium bg-gray-100 dark:bg-midnight-800 text-gray-700 dark:text-gray-300 flex items-center justify-center gap-2"
-                        >
-                          <LayoutDashboard className="w-4 h-4" />
-                          Admin
-                        </motion.button>
-                      </Link>
-                    )}
-                  </div>
-
-                  {isAuthenticated ? (
-                    <>
-                      <Link to="/dashboard" onClick={() => setIsOpen(false)}>
-                        <motion.button
-                          whileTap={{ scale: 0.95 }}
-                          className="w-full px-4 py-2 rounded-full hover:-translate-y-[1px] font-medium bg-gray-100 dark:bg-midnight-800 text-gray-700 dark:text-gray-300 flex items-center justify-center gap-2"
-                        >
-                          <User className="w-4 h-4" />
-                          Dashboard
-                        </motion.button>
-                      </Link>
-                      <motion.button
-                        whileTap={{ scale: 0.95 }}
-                        onClick={() => { setIsOpen(false); handleLogout(); }}
-                        className="w-full px-4 py-2 rounded-full hover:-translate-y-[1px] font-medium bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 flex items-center justify-center gap-2"
-                      >
-                        <LogOut className="w-4 h-4" />
-                        Logout ({user?.name})
-                      </motion.button>
-                    </>
-                  ) : (
-                    <Link to="/login" onClick={() => setIsOpen(false)}>
-                      <motion.button
-                        whileTap={{ scale: 0.95 }}
-                        className="w-full px-4 py-2 rounded-full hover:-translate-y-[1px] font-medium bg-white dark:bg-midnight-700 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600 flex items-center justify-center gap-2"
-                      >
-                        <LogIn className="w-4 h-4" />
-                        Sign In
-                      </motion.button>
-                    </Link>
-                  )}
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
         </div>
       </motion.nav>
     </div>

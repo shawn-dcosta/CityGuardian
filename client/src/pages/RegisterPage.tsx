@@ -5,11 +5,12 @@ import axios from 'axios';
 import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { AUTH_API_URL } from '../config';
-import { UserPlus } from 'lucide-react';
+import { UserPlus, Shield, Mail, KeyRound, User } from 'lucide-react';
 
 const RegisterPage: React.FC = () => {
     const [formData, setFormData] = useState({ name: '', email: '', password: '', confirmPassword: '' });
     const [error, setError] = useState('');
+    const [isHovering, setIsHovering] = useState(false);
     const { login } = useAuth();
     const navigate = useNavigate();
 
@@ -20,8 +21,9 @@ const RegisterPage: React.FC = () => {
 
     const onSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setError('');
         if (password !== confirmPassword) {
-            setError('Passwords do not match');
+            setError('Security clearance keys do not match.');
             return;
         }
 
@@ -30,7 +32,7 @@ const RegisterPage: React.FC = () => {
             login(res.data.token, res.data.user);
             navigate('/');
         } catch (err: any) {
-            setError(err.response?.data?.msg || 'Registration failed');
+            setError(err.response?.data?.msg || 'Clearance creation failed. Connection rejected.');
         }
     };
 
@@ -42,113 +44,159 @@ const RegisterPage: React.FC = () => {
             login(res.data.token, res.data.user);
             navigate('/');
         } catch (err: any) {
-            setError(err.response?.data?.msg || 'Google Login failed');
+            setError(err.response?.data?.msg || 'Google Authentication verification failed. Access denied.');
         }
     };
 
     return (
-        <div className="min-h-screen pt-20 flex items-center justify-center px-4">
+        <div className="min-h-screen flex items-center justify-center px-4 relative overflow-hidden bg-city-surface-light dark:bg-city-black font-sans selection:bg-city-blue/30 selection:text-city-blue">
+            {/* Cinematic Background Accents */}
+            <div className="absolute top-1/4 -left-20 w-[600px] h-[600px] bg-city-blue/10 dark:bg-city-blue/20 blur-[150px] rounded-full pointer-events-none animate-pulse duration-[4000ms]" />
+            <div className="absolute bottom-1/4 -right-20 w-[500px] h-[500px] bg-city-orange/5 dark:bg-city-orange/15 blur-[130px] rounded-full pointer-events-none" style={{ animation: "pulse 5s cubic-bezier(0.4, 0, 0.6, 1) infinite" }} />
+            
+            {/* Texture Overlays */}
+            <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.15] pointer-events-none mix-blend-overlay"></div>
+            <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] dark:bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:3rem_3rem] [mask-image:radial-gradient(ellipse_70%_50%_at_50%_50%,#000_70%,transparent_100%)] pointer-events-none" />
+
             <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="max-w-md w-full glass-card p-8 rounded-2xl"
+                initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                className="max-w-md w-full relative z-10 bg-white/80 dark:bg-city-surface/70 backdrop-blur-2xl p-10 mt-10 rounded-3xl border border-gray-200/50 dark:border-white/10 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] dark:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.5)]"
             >
-                <div className="text-center mb-8">
-                    <div className="inline-flex p-3 rounded-xl bg-electric-blue-100 dark:bg-electric-blue-900/30 text-electric-blue-600 mb-4">
-                        <UserPlus className="w-6 h-6" />
-                    </div>
-                    <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">Create Account</h2>
-                    <p className="text-gray-500 dark:text-gray-400">Join CityGuardian today</p>
+                <div className="text-center mb-10 relative">
+                    <motion.div 
+                        initial={{ scale: 0.8, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ delay: 0.2, duration: 0.5 }}
+                        className="inline-flex p-4 rounded-xl bg-gradient-to-br from-gray-50 to-gray-100 dark:from-white/10 dark:to-white/5 border border-gray-200 dark:border-white/10 text-city-black dark:text-white mb-6 relative overflow-hidden group shadow-inner"
+                    >
+                        <Shield className="w-10 h-10 relative z-10 text-city-blue drop-shadow-md" />
+                        <div className="absolute inset-0 bg-city-blue/10 scale-0 group-hover:scale-100 transition-transform duration-300 rounded-xl" />
+                    </motion.div>
+                    <h2 className="font-heading text-4xl font-black text-city-black dark:text-white tracking-tighter drop-shadow-md">Join The Grid</h2>
+                    <p className="text-xs font-bold text-city-blue uppercase tracking-[0.25em] mt-3 opacity-80">Create Clearance</p>
                 </div>
 
                 {error && (
-                    <div className="mb-4 p-3 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 rounded-lg text-sm">
-                        {error}
-                    </div>
+                    <motion.div 
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        className="mb-8 p-4 rounded-xl border border-city-red/30 bg-city-red/5 flex items-center gap-3 backdrop-blur-sm"
+                    >
+                        <div className="w-2 h-2 rounded-full bg-city-red animate-pulse" />
+                        <p className="text-city-red text-xs font-bold uppercase tracking-widest leading-relaxed flex-1">
+                            {error}
+                        </p>
+                    </motion.div>
                 )}
 
-                <form onSubmit={onSubmit} className="space-y-4">
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Full Name</label>
+                <form onSubmit={onSubmit} className="space-y-5 flex flex-col">
+                    <div className="group relative">
+                        <div className="absolute left-0 top-1/2 -translate-y-1/2 w-10 flex justify-center text-gray-400 group-focus-within:text-city-blue transition-colors">
+                            <User className="w-5 h-5" />
+                        </div>
                         <input
                             type="text"
                             name="name"
                             value={name}
                             onChange={onChange}
+                            placeholder="Full Name / Designation"
                             required
-                            className="w-full px-4 py-2 rounded-xl bg-white/50 dark:bg-midnight-800/50 border border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-electric-blue-500 outline-none transition-all"
+                            className="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-city-black/50 border border-gray-200 dark:border-white/10 focus:border-city-blue dark:focus:border-city-blue rounded-xl text-city-black dark:text-white placeholder-gray-400 dark:placeholder-gray-500 outline-none transition-all focus:ring-4 focus:ring-city-blue/10 dark:focus:ring-city-blue/20 font-medium shadow-sm"
                         />
                     </div>
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email Address</label>
+                    
+                    <div className="group relative">
+                        <div className="absolute left-0 top-1/2 -translate-y-1/2 w-10 flex justify-center text-gray-400 group-focus-within:text-city-blue transition-colors">
+                            <Mail className="w-5 h-5" />
+                        </div>
                         <input
                             type="email"
                             name="email"
                             value={email}
                             onChange={onChange}
+                            placeholder="Email Coordinates"
                             required
-                            className="w-full px-4 py-2 rounded-xl bg-white/50 dark:bg-midnight-800/50 border border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-electric-blue-500 outline-none transition-all"
+                            className="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-city-black/50 border border-gray-200 dark:border-white/10 focus:border-city-blue dark:focus:border-city-blue rounded-xl text-city-black dark:text-white placeholder-gray-400 dark:placeholder-gray-500 outline-none transition-all focus:ring-4 focus:ring-city-blue/10 dark:focus:ring-city-blue/20 font-medium shadow-sm"
                         />
                     </div>
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Password</label>
+                    
+                    <div className="group relative">
+                        <div className="absolute left-0 top-1/2 -translate-y-1/2 w-10 flex justify-center text-gray-400 group-focus-within:text-city-blue transition-colors">
+                            <KeyRound className="w-5 h-5" />
+                        </div>
                         <input
                             type="password"
                             name="password"
                             value={password}
                             onChange={onChange}
+                            placeholder="Security Clearance Key"
                             required
                             minLength={6}
-                            className="w-full px-4 py-2 rounded-xl bg-white/50 dark:bg-midnight-800/50 border border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-electric-blue-500 outline-none transition-all"
+                            className="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-city-black/50 border border-gray-200 dark:border-white/10 focus:border-city-blue dark:focus:border-city-blue rounded-xl text-city-black dark:text-white placeholder-gray-400 dark:placeholder-gray-500 outline-none transition-all focus:ring-4 focus:ring-city-blue/10 dark:focus:ring-city-blue/20 font-medium shadow-sm"
                         />
                     </div>
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Confirm Password</label>
+                    
+                    <div className="group relative">
+                        <div className="absolute left-0 top-1/2 -translate-y-1/2 w-10 flex justify-center text-gray-400 group-focus-within:text-city-blue transition-colors">
+                            <KeyRound className="w-5 h-5" />
+                        </div>
                         <input
                             type="password"
                             name="confirmPassword"
                             value={confirmPassword}
                             onChange={onChange}
+                            placeholder="Confirm Clearance Key"
                             required
                             minLength={6}
-                            className="w-full px-4 py-2 rounded-xl bg-white/50 dark:bg-midnight-800/50 border border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-electric-blue-500 outline-none transition-all"
+                            className="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-city-black/50 border border-gray-200 dark:border-white/10 focus:border-city-blue dark:focus:border-city-blue rounded-xl text-city-black dark:text-white placeholder-gray-400 dark:placeholder-gray-500 outline-none transition-all focus:ring-4 focus:ring-city-blue/10 dark:focus:ring-city-blue/20 font-medium shadow-sm"
                         />
                     </div>
 
                     <button
                         type="submit"
-                        className="w-full py-3 bg-gradient-to-r from-electric-blue-600 to-electric-blue-700 hover:from-electric-blue-500 hover:to-electric-blue-600 text-white rounded-xl font-medium shadow-lg shadow-electric-blue-500/30 transition-all mt-2"
+                        onMouseEnter={() => setIsHovering(true)}
+                        onMouseLeave={() => setIsHovering(false)}
+                        className="relative w-full py-4 mt-4 bg-city-black dark:bg-white text-white dark:text-city-black rounded-xl font-black uppercase tracking-widest overflow-hidden transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,0,0,0.15)] dark:hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] active:scale-[0.98]"
                     >
-                        Sign Up
+                        <span className="relative z-10 flex items-center justify-center gap-2">
+                            Initialize Link
+                            <UserPlus className={`w-5 h-5 transition-transform duration-300 ${isHovering ? 'scale-110' : ''}`} />
+                        </span>
+                        <div className="absolute inset-0 bg-gradient-to-r from-city-blue/80 to-blue-600 dark:from-gray-200 dark:to-white transform scale-x-0 origin-left transition-transform duration-300 ease-out z-0" style={{ transform: isHovering ? 'scaleX(1)' : 'scaleX(0)' }} />
                     </button>
                 </form>
 
-                <div className="mt-6">
+                <div className="mt-8 relative z-20">
                     <div className="relative">
                         <div className="absolute inset-0 flex items-center">
-                            <div className="w-full border-t border-gray-200 dark:border-gray-700"></div>
+                            <div className="w-full border-t border-gray-200 dark:border-white/10"></div>
                         </div>
-                        <div className="relative flex justify-center text-sm">
-                            <span className="px-2 bg-white dark:bg-midnight-800 text-gray-500">Or continue with</span>
+                        <div className="relative flex justify-center text-xs font-bold uppercase tracking-widest text-city-surface">
+                            <span className="px-4 bg-white/80 dark:bg-[#1f1f1f]/80 backdrop-blur-md text-gray-500 rounded-full">Secure SSO Provider</span>
                         </div>
                     </div>
 
-                    <div className="mt-6 flex justify-center">
+                    <div className="mt-6 flex justify-center scale-105 hover:scale-110 transition-transform duration-300 origin-center drop-shadow-sm hover:drop-shadow-lg">
                         <GoogleLogin
                             onSuccess={onGoogleSuccess}
-                            onError={() => setError('Google Login Failed')}
-                            theme="filled_blue"
-                            shape="circle"
+                            onError={() => setError('Google Authentication Failed. Communication error.')}
+                            theme="filled_black"
+                            shape="pill"
+                            text="signup_with"
                         />
                     </div>
                 </div>
 
-                <p className="mt-8 text-center text-sm text-gray-600 dark:text-gray-400">
-                    Already have an account?{' '}
-                    <Link to="/login" className="font-medium text-electric-blue-600 hover:text-electric-blue-500">
-                        Sign in
-                    </Link>
-                </p>
+                <div className="mt-8 pt-6 border-t border-gray-100 dark:border-white/5 text-center">
+                    <p className="text-xs font-bold uppercase tracking-widest text-gray-500">
+                        Already authorized?{' '}
+                        <Link to="/login" className="text-city-blue hover:text-blue-600 dark:text-city-blue dark:hover:text-blue-400 hover:underline underline-offset-4 transition-colors">
+                            Sign In
+                        </Link>
+                    </p>
+                </div>
             </motion.div>
         </div>
     );

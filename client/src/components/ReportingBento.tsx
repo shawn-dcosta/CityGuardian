@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Camera, Upload, Loader2, CheckCircle, AlertTriangle } from 'lucide-react';
+import { Camera, Upload, Loader2, CheckCircle, AlertTriangle, Target, Zap } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 import LocationMap from './LocationMap';
@@ -164,7 +164,10 @@ const ReportingBento: React.FC<ReportingBentoProps> = ({ isDarkMode, location, a
     };
 
     return (
-        <div className="w-full max-w-5xl mx-auto min-h-[600px] p-4 md:p-6">
+        <div className="w-full max-w-5xl mx-auto min-h-[600px] p-4 md:p-6 font-sans relative">
+            {/* Ambient Background Blur for the whole bento */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] bg-city-blue/5 dark:bg-city-blue/10 blur-[150px] rounded-full pointer-events-none -z-10 animate-pulse duration-[5000ms]"></div>
+            
             <AnimatePresence mode="wait">
 
                 {/* STEP 1: CAPTURE */}
@@ -173,9 +176,13 @@ const ReportingBento: React.FC<ReportingBentoProps> = ({ isDarkMode, location, a
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.95 }}
-                        className="flex flex-col items-center justify-center h-[500px] glass-card rounded-3xl border-2 border-dashed border-gray-300 dark:border-gray-700 hover:border-electric-blue-500 transition-all group shadow-2xl relative overflow-hidden"
+                        transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                        className="flex flex-col items-center justify-center min-h-[500px] bg-white/40 dark:bg-city-surface/40 backdrop-blur-2xl rounded-[2rem] border border-dashed border-gray-300 dark:border-white/10 hover:border-city-blue dark:hover:border-city-blue transition-all group shadow-2xl relative overflow-hidden p-8"
                     >
-                        <div className="absolute inset-0 bg-gradient-to-tr from-electric-blue-500/5 to-purple-500/5 group-hover:opacity-100 transition-opacity" />
+                        {/* Cinematic overlay grid */}
+                        <div className="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.02)_1px,transparent_1px)] dark:bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:3rem_3rem] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_70%,transparent_100%)] pointer-events-none"></div>
+
+                        <div className="absolute inset-0 bg-gradient-to-tr from-city-blue/5 dark:from-city-blue/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
 
                         <input
                             type="file"
@@ -192,27 +199,33 @@ const ReportingBento: React.FC<ReportingBentoProps> = ({ isDarkMode, location, a
                             capture="environment"
                             className="hidden"
                         />
-                        <div className="w-28 h-28 rounded-full bg-electric-blue-100 dark:bg-electric-blue-900/30 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform shadow-lg shadow-blue-500/20">
-                            <Camera className="w-12 h-12 text-electric-blue-600" />
+                        
+                        <div className="w-28 h-28 rounded-full bg-white dark:bg-city-black border border-gray-200 dark:border-white/10 shadow-[0_0_40px_rgba(37,99,235,0.1)] flex items-center justify-center mb-8 group-hover:scale-110 group-hover:shadow-[0_0_60px_rgba(37,99,235,0.2)] transition-all duration-500 relative z-10">
+                            <Camera className="w-12 h-12 text-city-blue transition-colors group-hover:rotate-12 duration-500" />
                         </div>
-                        <h2 className="text-4xl font-bold text-gray-800 dark:text-white mb-3">Snap & Fix</h2>
-                        <p className="text-gray-500 dark:text-gray-400 text-lg mb-8 max-w-md text-center px-4">
-                            Take a photo of any civic issue. Our AI will analyze the context and location instantly.
+                        
+                        <h2 className="font-heading text-4xl md:text-5xl font-black text-city-black dark:text-white uppercase tracking-tighter mb-4 text-center drop-shadow-sm relative z-10">
+                            Snap <span className="text-transparent bg-clip-text bg-gradient-to-br from-city-blue to-blue-400">&&</span> Fix
+                        </h2>
+                        
+                        <p className="text-gray-500 dark:text-gray-400 font-bold uppercase tracking-[0.2em] text-xs mb-10 max-w-sm text-center px-4 relative z-10">
+                            Log a visual anomaly. Core AI will parse coordinates and context automatically.
                         </p>
-                        <div className="flex flex-col sm:flex-row gap-4 relative z-10 w-full px-8 max-w-md">
+                        
+                        <div className="flex flex-col sm:flex-row gap-4 relative z-10 w-full px-4 max-w-md">
                             <button 
                                 onClick={() => fileInputRef.current?.click()}
-                                className="flex-1 py-4 bg-white dark:bg-midnight-800 rounded-2xl font-bold shadow-lg border border-gray-100 dark:border-gray-700 text-gray-700 dark:text-gray-200 flex items-center justify-center gap-3 hover:bg-gray-50 dark:hover:bg-midnight-700 transition-colors"
+                                className="flex-1 py-4 bg-white dark:bg-city-surface border border-gray-200 dark:border-white/10 text-city-black dark:text-white font-black uppercase tracking-widest text-sm hover:shadow-lg rounded-2xl transition-all flex items-center justify-center gap-2 hover:-translate-y-1"
                             >
-                                <Upload className="w-5 h-5" />
-                                Gallery
+                                <Upload className="w-4 h-4" />
+                                Archive
                             </button>
                             <button 
                                 onClick={() => cameraInputRef.current?.click()}
-                                className="flex-1 py-4 bg-electric-blue-600 text-white rounded-2xl font-bold shadow-lg flex items-center justify-center gap-3 hover:bg-electric-blue-700 transition-colors"
+                                className="flex-1 py-4 bg-city-blue text-white font-black uppercase tracking-[0.2em] text-sm hover:shadow-[0_0_20px_rgba(37,99,235,0.4)] rounded-2xl transition-all flex items-center justify-center gap-2 hover:-translate-y-1"
                             >
-                                <Camera className="w-5 h-5" />
-                                Take Photo
+                                <Camera className="w-4 h-4" />
+                                Capture
                             </button>
                         </div>
                     </motion.div>
@@ -224,24 +237,34 @@ const ReportingBento: React.FC<ReportingBentoProps> = ({ isDarkMode, location, a
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="flex flex-col items-center justify-center h-[500px] text-center"
+                        className="flex flex-col items-center justify-center min-h-[500px] text-center bg-white/40 dark:bg-city-surface/40 backdrop-blur-2xl rounded-[2rem] border border-gray-200/50 dark:border-white/10 shadow-2xl relative overflow-hidden"
                     >
-                        <div className="relative w-80 h-64 md:w-[28rem] md:h-80 mb-8 rounded-2xl overflow-hidden shadow-2xl">
+                        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.05] mix-blend-overlay pointer-events-none"></div>
+
+                        <div className="relative w-72 h-72 md:w-[22rem] md:h-[22rem] mb-10 overflow-hidden shadow-2xl border-4 border-white dark:border-[#1a1a1a] rounded-full bg-city-black">
                             <motion.div
-                                className="absolute inset-0 border-b-4 border-electric-blue-500 z-10 bg-electric-blue-500/10"
-                                animate={{ top: ["0%", "100%", "0%"] }}
-                                transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                                className="absolute inset-0 border-b-[8px] border-city-blue z-10 bg-city-blue/20 blur-[2px]"
+                                animate={{ top: ["-10%", "110%", "-10%"] }}
+                                transition={{ duration: 2.5, repeat: Infinity, ease: "linear" }}
                             />
-                            <img src={imagePreview!} alt="Analyzing" className="w-full h-full object-cover" />
+                            {/* HUD Overlays */}
+                            <div className="absolute inset-0 border-[20px] border-city-black/20 rounded-full z-20 pointer-events-none" />
+                            <div className="absolute top-1/2 left-0 w-full h-[1px] bg-city-blue/30 z-20 pointer-events-none" />
+                            <div className="absolute top-0 left-1/2 w-[1px] h-full bg-city-blue/30 z-20 pointer-events-none" />
+                            <Target className="absolute inset-0 m-auto w-12 h-12 text-city-blue/40 z-20 animate-pulse pointer-events-none" />
+
+                            <img src={imagePreview!} alt="Analyzing" className="w-[120%] h-[120%] -mt-[10%] -ml-[10%] object-cover mix-blend-screen opacity-70 filter contrast-125 brightness-125" />
                         </div>
 
-                        <h2 className="text-3xl font-bold text-gray-800 dark:text-white mb-3">
-                            AI is Analyzing Context...
+                        <h2 className="font-heading text-3xl md:text-4xl font-black text-city-black dark:text-white uppercase tracking-tighter mb-4 drop-shadow-sm">
+                            Executing Trace
                         </h2>
-                        <p className="text-gray-500 dark:text-gray-400 text-lg flex items-center gap-2">
-                            <Loader2 className="w-5 h-5 animate-spin text-electric-blue-500" />
-                            Identifying location, category, and urgency.
-                        </p>
+                        <div className="px-6 py-2 bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-full shadow-inner flex items-center justify-center gap-3">
+                            <Loader2 className="w-4 h-4 animate-spin text-city-blue" />
+                            <p className="text-gray-500 dark:text-gray-400 font-bold uppercase tracking-[0.2em] text-[10px]">
+                                Extracting coordinate and contextual vectors
+                            </p>
+                        </div>
                     </motion.div>
                 )}
 
@@ -250,74 +273,101 @@ const ReportingBento: React.FC<ReportingBentoProps> = ({ isDarkMode, location, a
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-full items-center"
+                        className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-full items-stretch"
                     >
                         {/* LEFT: Contextual Validation */}
-                        <div className="space-y-6">
-                            <div className="relative h-64 rounded-2xl overflow-hidden shadow-lg group">
-                                <img src={imagePreview!} alt="Report" className="w-full h-full object-cover transition-transform group-hover:scale-105" />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                                <div className="absolute bottom-4 left-4 text-white">
-                                    <p className="text-xs font-bold uppercase tracking-wider opacity-80">Detected Urgency</p>
-                                    <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-bold mt-1 ${urgency === 'high' ? 'bg-red-500' : 'bg-yellow-500'
-                                        }`}>
-                                        <AlertTriangle className="w-3 h-3" /> {urgency.toUpperCase()}
+                        <div className="space-y-6 flex flex-col h-full bg-white/40 dark:bg-city-surface/40 backdrop-blur-2xl rounded-[2rem] border border-gray-200/50 dark:border-white/10 p-6 shadow-2xl relative overflow-hidden">
+                             <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.05] mix-blend-overlay pointer-events-none -z-10"></div>
+                            
+                            <div className="relative h-[250px] overflow-hidden rounded-2xl shadow-inner border border-gray-200 dark:border-white/10 group">
+                                <img src={imagePreview!} alt="Report" className="w-full h-full object-cover filter contrast-125 group-hover:scale-105 transition-transform duration-700" />
+                                <div className="absolute inset-0 bg-gradient-to-t from-city-black/90 via-city-black/20 to-transparent" />
+                                <div className="absolute bottom-4 left-4 text-white z-10 flex flex-col items-start">
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <AlertTriangle className="w-4 h-4 text-city-orange animate-pulse" />
+                                        <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-300">Threat Level</p>
                                     </div>
+                                    <span className={`inline-flex px-3 py-1 text-xs font-black uppercase tracking-widest rounded-lg shadow-[0_0_15px_rgba(0,0,0,0.5)] border ${
+                                        urgency === 'high' ? 'bg-city-red/90 border-city-red text-white' : 'bg-city-orange/90 border-city-orange text-white'
+                                    }`}>
+                                        {urgency} PRTY
+                                    </span>
                                 </div>
                             </div>
 
                             {/* Integrated Map Verification */}
-                            <div className="bg-white dark:bg-midnight-800 rounded-2xl p-1 shadow-sm border border-gray-100 dark:border-gray-700 h-[400px] lg:h-[450px] relative overflow-hidden">
+                            <div className="flex-1 min-h-[300px] border border-gray-200 dark:border-white/10 rounded-2xl relative overflow-hidden bg-white dark:bg-[#0a0a0a] shadow-inner p-1">
                                 <LocationMap location={location} isDarkMode={isDarkMode} />
+                                <div className="absolute top-4 right-4 bg-white/90 dark:bg-city-black/90 backdrop-blur px-3 py-1.5 border border-gray-200 dark:border-white/10 rounded-lg shadow-sm">
+                                    <span className="text-[9px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-2">
+                                       <span className="w-1.5 h-1.5 rounded-full bg-city-green animate-pulse" />
+                                       GPS Locked
+                                    </span>
+                                </div>
                             </div>
                         </div>
 
                         {/* RIGHT: Form Data */}
-                        <div className="bg-white dark:bg-midnight-800 rounded-3xl p-6 md:p-8 shadow-xl border border-gray-100 dark:border-gray-700 flex flex-col h-fit">
-                            <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-white flex items-center gap-2">
-                                <CheckCircle className="w-6 h-6 text-green-500" />
-                                Verify Details
-                            </h2>
-
-                            <div className="space-y-6 flex-1">
+                        <div className="bg-white/60 dark:bg-city-surface/60 backdrop-blur-2xl p-8 rounded-[2rem] border border-gray-200/50 dark:border-white/10 shadow-2xl flex flex-col h-full min-h-[624px] relative overflow-hidden">
+                            <div className="absolute inset-0 bg-gradient-to-b from-white/40 to-white/10 dark:from-white/5 dark:to-transparent pointer-events-none -z-10"></div>
+                            
+                            <div className="flex items-center gap-3 mb-8 border-b border-gray-200 dark:border-white/10 pb-6 relative z-10">
+                                <div className="w-10 h-10 rounded-xl bg-city-green/10 border border-city-green/20 flex items-center justify-center">
+                                    <CheckCircle className="w-5 h-5 text-city-green" />
+                                </div>
                                 <div>
-                                    <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Issue Category</label>
+                                    <h2 className="font-heading text-3xl font-black uppercase tracking-tighter text-city-black dark:text-white leading-none">
+                                        Verify Metrics
+                                    </h2>
+                                    <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mt-1">Cross-check AI analysis</p>
+                                </div>
+                            </div>
+
+                            <div className="space-y-8 flex-1 relative z-10">
+                                <div className="group">
+                                    <label className="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] mb-2 flex items-center gap-2">
+                                        <Zap className="w-3 h-3 text-city-blue" />
+                                        Issue Vector
+                                    </label>
                                     <input
                                         value={category}
                                         onChange={(e) => setCategory(e.target.value)}
-                                        className="w-full px-4 py-3 bg-gray-50 dark:bg-midnight-900 border border-gray-200 dark:border-gray-700 rounded-xl font-bold text-gray-800 dark:text-white focus:ring-2 focus:ring-electric-blue-500 outline-none"
+                                        className="w-full px-4 py-3 bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-xl font-bold uppercase tracking-wide text-sm text-city-black dark:text-white focus:border-city-blue focus:ring-2 focus:ring-city-blue/20 outline-none transition-all shadow-inner"
                                     />
                                 </div>
 
-                                <div>
-                                    <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Description</label>
+                                <div className="group">
+                                    <label className="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] mb-2 flex items-center gap-2">
+                                        <Target className="w-3 h-3 text-city-blue" />
+                                        Contextual Data
+                                    </label>
                                     <textarea
                                         value={description}
                                         onChange={(e) => setDescription(e.target.value)}
-                                        className="w-full px-4 py-3 bg-gray-50 dark:bg-midnight-900 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-800 dark:text-white focus:ring-2 focus:ring-electric-blue-500 outline-none min-h-[120px] resize-none"
+                                        className="w-full px-4 py-3 bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-xl font-medium text-sm text-city-black dark:text-white focus:border-city-blue focus:ring-2 focus:ring-city-blue/20 outline-none min-h-[160px] resize-none transition-all shadow-inner"
                                     />
                                 </div>
 
-                                <div className="mt-auto pt-4">
+                                <div className="mt-auto pt-8 flex gap-4 flex-col sm:flex-row">
+                                    <button
+                                        onClick={() => { setStep('capture'); setImage(null); }}
+                                        className="py-4 px-6 rounded-2xl bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 text-xs font-bold uppercase tracking-widest text-city-black dark:text-white hover:bg-gray-100 dark:hover:bg-white/5 transition-all shadow-sm hover:shadow-md"
+                                    >
+                                        Abort
+                                    </button>
                                     <button
                                         onClick={handleSubmit}
                                         disabled={loading}
-                                        className="w-full py-4 bg-gradient-to-r from-electric-blue-600 to-electric-blue-700 hover:from-electric-blue-500 hover:to-electric-blue-600 text-white rounded-xl font-bold text-lg shadow-xl shadow-blue-500/20 transition-all disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                                        className="flex-1 py-4 rounded-2xl bg-city-blue text-white uppercase font-black tracking-widest transition-all hover:bg-city-blue/90 hover:shadow-[0_0_20px_rgba(37,99,235,0.4)] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                                     >
                                         {loading ? (
                                             <>
                                                 <Loader2 className="w-5 h-5 animate-spin" />
-                                                Processing Report...
+                                                Transmitting...
                                             </>
                                         ) : (
-                                            'Confirm & Submit'
+                                            'Commit Secure Log'
                                         )}
-                                    </button>
-                                    <button
-                                        onClick={() => { setStep('capture'); setImage(null); }}
-                                        className="w-full mt-3 py-3 text-gray-500 dark:text-gray-400 font-semibold hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
-                                    >
-                                        Cancel & Retake
                                     </button>
                                 </div>
                             </div>
@@ -330,21 +380,25 @@ const ReportingBento: React.FC<ReportingBentoProps> = ({ isDarkMode, location, a
                     <motion.div
                         initial={{ scale: 0.9, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
-                        className="flex flex-col items-center justify-center h-[500px] text-center glass-card rounded-3xl"
+                        className="flex flex-col items-center justify-center min-h-[500px] text-center bg-city-green/5 dark:bg-city-green/10 backdrop-blur-2xl rounded-[2rem] border border-city-green/30 shadow-[0_0_40px_rgba(0,230,118,0.1)] p-8 relative overflow-hidden"
                     >
-                        <div className="w-24 h-24 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mb-6">
-                            <CheckCircle className="w-12 h-12 text-green-600 dark:text-green-400" />
+                         {/* Ambient glow */}
+                         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-city-green/20 blur-[100px] rounded-full pointer-events-none -z-10"></div>
+                         <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.05] mix-blend-overlay pointer-events-none z-0"></div>
+
+                        <div className="w-24 h-24 rounded-full bg-city-green/20 border border-city-green/40 flex items-center justify-center mb-8 shadow-[0_0_30px_rgba(0,230,118,0.3)] relative z-10">
+                            <CheckCircle className="w-12 h-12 text-city-green" />
                         </div>
-                        <h2 className="text-4xl font-bold text-gray-800 dark:text-white mb-4">Report Submitted!</h2>
-                        <p className="text-gray-500 dark:text-gray-400 mb-8 max-w-md">
-                            Your report has been successfully logged. You can track its live status in your dashboard.
+                        <h2 className="font-heading text-4xl md:text-5xl font-black text-city-black dark:text-white uppercase tracking-tighter mb-4 drop-shadow-sm relative z-10">System Logged</h2>
+                        <p className="text-sm font-bold text-gray-500 uppercase tracking-[0.2em] mb-10 text-center max-w-sm relative z-10">
+                            Operations command has received the designated payload package.
                         </p>
-                        <div className="flex gap-4">
+                        <div className="flex flex-col sm:flex-row gap-4 relative z-10 w-full sm:w-auto">
                             <button
                                 onClick={() => window.location.href = '/dashboard'}
-                                className="px-8 py-3 bg-gray-100 dark:bg-midnight-800 text-gray-700 dark:text-white rounded-xl font-bold hover:bg-gray-200 dark:hover:bg-midnight-700 transition-colors"
+                                className="px-8 py-4 bg-white dark:bg-city-surface border border-gray-200 dark:border-white/10 text-city-black dark:text-white font-bold uppercase tracking-widest text-sm hover:shadow-lg rounded-2xl transition-all shadow-sm"
                             >
-                                View Dashboard
+                                Track Manifest
                             </button>
                             <button
                                 onClick={() => {
@@ -352,9 +406,9 @@ const ReportingBento: React.FC<ReportingBentoProps> = ({ isDarkMode, location, a
                                     setImage(null);
                                     setImagePreview(null);
                                 }}
-                                className="px-8 py-3 bg-electric-blue-600 text-white rounded-xl font-bold hover:bg-electric-blue-700 transition-colors shadow-lg"
+                                className="px-8 py-4 bg-city-green text-white font-bold uppercase tracking-widest text-sm hover:shadow-[0_0_20px_rgba(0,230,118,0.4)] hover:-translate-y-1 rounded-2xl transition-all"
                             >
-                                Submit Another
+                                Dispatch Next
                             </button>
                         </div>
                     </motion.div>

@@ -1,159 +1,182 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { Camera, MapPin, CheckCircle, ArrowRight } from 'lucide-react';
+import { Camera, MapPin, CheckCircle, ArrowRight, Shield, Zap } from 'lucide-react';
 
 const LandingPage: React.FC = () => {
     const navigate = useNavigate();
 
     const features = [
         {
-            icon: <Camera className="w-8 h-8 text-electric-blue-500" />,
-            title: "Snap & Report",
-            description: "Take a photo of any civic issue. Our AI automatically analyzes and categorizes it."
+            icon: <Camera className="w-8 h-8 text-city-blue" />,
+            title: "SNAPPING",
+            description: "Capture civic issues instantly. AI analyzes and categorizes them on the spot, deploying context to authorities."
         },
         {
-            icon: <MapPin className="w-8 h-8 text-purple-500" />,
-            title: "Pinpoint Location",
-            description: "Precise GPS tagging ensures verified repair crews know exactly where to go."
+            icon: <MapPin className="w-8 h-8 text-city-orange" />,
+            title: "TRACKING",
+            description: "Precise GPS locators ensure verified city maintenance crews know exactly where to strike."
         },
         {
-            icon: <CheckCircle className="w-8 h-8 text-green-500" />,
-            title: "Track & Resolve",
-            description: "Watch your report move from 'Submitted' to 'Fixed' in real-time."
+            icon: <CheckCircle className="w-8 h-8 text-city-green" />,
+            title: "RESOLVING",
+            description: "Watch your city heal in real-time as reports rapidly transition from active emergencies to solved cases."
         }
     ];
 
     const stats = [
-        { label: "Reports Solved", value: "12,405" },
-        { label: "Active Citizens", value: "8,320" },
-        { label: "Avg. Fix Time", value: "48 Hrs" }
+        { label: "ISSUES RESOLVED", value: "12,405" },
+        { label: "ACTIVE CITIZENS", value: "8,320" },
+        { label: "AVG. FIX TIME", value: "48H" }
     ];
 
     return (
-        <div className="min-h-screen bg-white dark:bg-midnight-900 overflow-x-hidden">
-            {/* Hero Section */}
-            <section className="relative pt-32 pb-40 overflow-visible">
-                {/* Majestic Premium Orb */}
-                <div className="absolute top-[-10%] left-1/2 transform -translate-x-1/2 w-[800px] h-[500px] bg-gradient-to-r from-electric-blue-500/20 to-purple-500/20 blur-[100px] rounded-full -z-10 animate-float pointer-events-none" />
+        <div className="min-h-screen bg-city-surface-light dark:bg-city-black overflow-x-hidden selection:bg-city-red/20 selection:text-city-red font-sans">
+            {/* Cinematic Hero */}
+            <section className="relative min-h-[95vh] flex flex-col justify-center pt-24 pb-12 overflow-hidden">
+                {/* Dynamic Ambient Background Elements */}
+                <div className="absolute top-0 right-0 w-1/3 h-1/3 bg-city-blue/10 dark:bg-city-blue/20 blur-[130px] rounded-full pointer-events-none animate-pulse duration-1000" />
+                <div className="absolute bottom-0 left-0 w-1/4 h-1/4 bg-city-red/10 dark:bg-city-red/20 blur-[120px] rounded-full pointer-events-none" style={{ animation: "pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite" }} />
                 
-                <div className="container mx-auto px-6 relative z-10">
-                    <div className="flex flex-col md:flex-row items-center gap-12">
-                        <motion.div
-                            initial={{ opacity: 0, y: 30 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.8, ease: "easeOut" }}
-                            className="md:w-1/2 text-center md:text-left"
-                        >
-                            <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/60 dark:bg-slate-800/60 backdrop-blur-md border border-gray-200/50 dark:border-white/10 text-electric-blue-600 dark:text-blue-300 text-sm font-medium mb-8 shadow-sm">
-                                <span className="relative flex h-2.5 w-2.5">
-                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-electric-blue-400 opacity-75"></span>
-                                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-electric-blue-500"></span>
-                                </span>
-                                Next-Gen Civic Platform
-                            </div>
-                            <h1 className="text-6xl md:text-[5.5rem] font-extrabold tracking-tight leading-[1.05] mb-8 text-slate-900 dark:text-white">
-                                Empower Your <br />
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-electric-blue-600 to-indigo-500 dark:from-electric-blue-400 dark:to-purple-400">
-                                    Community.
-                                </span>
-                            </h1>
-                            <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
-                                Join the movement creating smarter, safer neighborhoods. Use AI to report potholes, streetlights, and more instantly.
-                            </p>
-                            <div className="flex flex-col sm:flex-row items-center gap-4 justify-center md:justify-start">
-                                <button
-                                    onClick={() => navigate('/login')}
-                                    className="px-8 py-4 bg-electric-blue-600 text-white rounded-full font-semibold text-lg shadow-[0_8px_20px_-6px_rgba(37,99,235,0.5)] hover:shadow-[0_14px_24px_-6px_rgba(37,99,235,0.6)] hover:-translate-y-1 transition-all duration-300 flex items-center gap-2"
-                                >
-                                    Get Started
-                                    <ArrowRight className="w-5 h-5 opacity-90" />
-                                </button>
-                                <button
-                                    onClick={() => navigate('/register')}
-                                    className="px-8 py-4 bg-white/70 dark:bg-slate-800/50 backdrop-blur-md text-slate-800 dark:text-gray-200 rounded-full font-semibold text-lg border border-gray-200/50 dark:border-white/10 hover:bg-white dark:hover:bg-slate-700 transition-all duration-300 shadow-sm"
-                                >
-                                    Learn More
-                                </button>
-                            </div>
-                        </motion.div>
+                {/* Grid Overlay */}
+                <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 pointer-events-none mix-blend-overlay"></div>
+                <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] dark:bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] pointer-events-none" />
 
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                            animate={{ opacity: 1, scale: 1, y: 0 }}
-                            transition={{ duration: 0.6, delay: 0.2 }}
-                            className="md:w-1/2 relative"
+                <div className="container mx-auto px-6 relative z-10 flex flex-col items-center text-center">
+                    <motion.div
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.8, ease: "easeOut" }}
+                        className="w-full max-w-5xl"
+                    >
+                        <motion.div 
+                            initial={{ scale: 0.9, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            transition={{ delay: 0.2, duration: 0.5 }}
+                            className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-city-black/10 dark:border-white/10 bg-white/50 dark:bg-white/5 backdrop-blur-md text-city-black dark:text-white text-xs font-bold uppercase tracking-widest mb-8 shadow-sm"
                         >
-                            <div className="relative z-10 p-6 glass-card rounded-2xl shadow-2xl border border-gray-100 dark:border-gray-700">
-                                <img
-                                    src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=800&q=80"
-                                    alt="City Guardian App Interface"
-                                    className="rounded-xl w-full shadow-lg"
-                                />
-                                {/* Floating Badge */}
-                                <motion.div
-                                    initial={{ y: 20, opacity: 0 }}
-                                    animate={{ y: 0, opacity: 1 }}
-                                    transition={{ delay: 0.8 }}
-                                    className="absolute -bottom-6 -left-6 bg-white dark:bg-gray-800 p-4 rounded-xl shadow-xl flex items-center gap-3 border border-gray-100 dark:border-gray-700"
-                                >
-                                    <div className="bg-green-100 dark:bg-green-900/30 p-2 rounded-full">
-                                        <CheckCircle className="w-6 h-6 text-green-600 dark:text-green-400" />
-                                    </div>
-                                    <div>
-                                        <p className="text-xs text-gray-500 dark:text-gray-400">Status Update</p>
-                                        <p className="font-bold text-gray-800 dark:text-white">Pothole Fixed!</p>
-                                    </div>
-                                </motion.div>
-                            </div>
-                            {/* Decorative blobs */}
-                            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full h-full bg-gradient-to-r from-blue-400/20 to-purple-400/20 blur-3xl rounded-full -z-10" />
+                            <span className="relative flex h-2 w-2">
+                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-city-red opacity-75"></span>
+                              <span className="relative inline-flex rounded-full h-2 w-2 bg-city-red"></span>
+                            </span>
+                            Next-Gen Civic Platform
                         </motion.div>
-                    </div>
+                        
+                        <h1 className="font-heading text-[11vw] md:text-[7.5rem] font-black tracking-tighter leading-[0.9] text-city-black dark:text-white uppercase mb-6 drop-shadow-2xl">
+                            Empower <br/>
+                            <span className="relative inline-block mt-2">
+                                <span className="absolute -inset-1 blur-xl bg-gradient-to-r from-city-blue to-city-red opacity-30 dark:opacity-40 animate-pulse"></span>
+                                <span className="relative text-transparent bg-clip-text bg-gradient-to-r from-city-blue via-purple-500 to-city-red">
+                                    Reality.
+                                </span>
+                            </span>
+                        </h1>
+                        
+                        <motion.p 
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.4, duration: 0.8 }}
+                            className="text-lg md:text-2xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-12 font-medium tracking-tight"
+                        >
+                            Join the movement creating smarter, safer neighborhoods. Use AI to report and eliminate urban degradation instantly.
+                        </motion.p>
+                        
+                        <motion.div 
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.6, duration: 0.5 }}
+                            className="flex flex-col sm:flex-row items-center gap-6 justify-center"
+                        >
+                            <button
+                                onClick={() => navigate('/login')}
+                                className="group relative px-10 py-5 bg-city-black dark:bg-white text-white dark:text-city-black rounded-xl font-bold uppercase tracking-widest overflow-hidden transition-all hover:shadow-[0_0_40px_rgba(37,99,235,0.3)] dark:hover:shadow-[0_0_40px_rgba(255,255,255,0.2)] active:scale-95"
+                            >
+                                <span className="relative z-10 flex items-center gap-3">
+                                    Take Action
+                                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1.5 transition-transform duration-300" />
+                                </span>
+                                <div className="absolute inset-0 bg-gradient-to-r from-city-blue to-blue-700 dark:from-gray-200 dark:to-white transform scale-x-0 origin-left group-hover:scale-x-100 transition-transform duration-300 ease-out" />
+                            </button>
+                            <button
+                                onClick={() => navigate('/register')}
+                                className="px-10 py-5 bg-white/10 dark:bg-transparent backdrop-blur-sm text-city-black dark:text-white border border-city-black/20 dark:border-white/20 hover:border-city-black dark:hover:border-white hover:bg-city-black/5 dark:hover:bg-white/5 rounded-xl font-bold uppercase tracking-widest transition-all active:scale-95"
+                            >
+                                Learn More
+                            </button>
+                        </motion.div>
+                    </motion.div>
                 </div>
+
+                {/* Scroll Indicator */}
+                <motion.div 
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 1, duration: 1 }}
+                    className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+                >
+                    <span className="text-[10px] uppercase tracking-[0.2em] text-gray-400 font-bold">Scroll</span>
+                    <div className="w-[1px] h-12 bg-gradient-to-b from-gray-400 to-transparent"></div>
+                </motion.div>
             </section>
 
-            {/* Stats Bar */}
-            <section className="py-10 bg-white dark:bg-gray-800 border-y border-gray-100 dark:border-gray-700">
-                <div className="container mx-auto px-6">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Stark Stats Strip */}
+            <section className="relative z-20 border-y border-city-black/10 dark:border-white/10 bg-white/50 dark:bg-city-surface/50 backdrop-blur-xl">
+                <div className="container mx-auto">
+                    <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-city-black/10 dark:divide-white/10">
                         {stats.map((stat, index) => (
-                            <div key={index} className="flex flex-col items-center text-center">
-                                <h3 className="text-4xl font-bold text-gray-900 dark:text-white mb-1">{stat.value}</h3>
-                                <p className="text-gray-500 dark:text-gray-400 font-medium">{stat.label}</p>
-                            </div>
+                            <motion.div 
+                                initial={{ opacity: 0, y: 20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ delay: index * 0.1 }}
+                                key={index} 
+                                className="flex flex-col items-center justify-center py-16 px-6 relative group overflow-hidden"
+                            >
+                                <div className="absolute inset-0 bg-gradient-to-b from-city-blue/5 to-transparent dark:from-white/5 dark:to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-out" />
+                                <h3 className="font-heading text-6xl md:text-7xl font-black text-city-black dark:text-white mb-2 relative z-10 drop-shadow-md">{stat.value}</h3>
+                                <p className="text-sm font-bold text-city-blue dark:text-gray-400 tracking-widest uppercase relative z-10">{stat.label}</p>
+                            </motion.div>
                         ))}
                     </div>
                 </div>
             </section>
 
-            {/* Features Grid */}
-            <section className="py-24 bg-gray-50 dark:bg-midnight-900">
-                <div className="container mx-auto px-6">
-                    <div className="text-center max-w-2xl mx-auto mb-16">
-                        <h2 className="text-3xl md:text-5xl font-bold mb-6 text-gray-900 dark:text-white">
-                            How It <span className="text-electric-blue-600">Works</span>
-                        </h2>
-                        <p className="text-lg text-gray-600 dark:text-gray-300">
-                            Empowering citizens with technology. Reporting issues has never been this simple or effective.
+            {/* Monolithic Features */}
+            <section className="py-32 bg-city-surface-light dark:bg-city-black relative overflow-hidden">
+                {/* Decorative background elements */}
+                <div className="absolute top-1/2 left-0 w-96 h-96 bg-city-blue/5 dark:bg-city-blue/10 blur-[100px] rounded-full point-events-none -translate-x-1/2 -translate-y-1/2" />
+                <div className="absolute bottom-0 right-0 w-96 h-96 bg-city-orange/5 dark:bg-city-orange/10 blur-[100px] rounded-full point-events-none translate-x-1/3 translate-y-1/3" />
+
+                <div className="container mx-auto px-6 relative z-10">
+                    <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-8">
+                        <div>
+                            <h2 className="font-heading text-5xl md:text-7xl font-black text-city-black dark:text-white uppercase tracking-tighter leading-[0.9]">
+                                How It <br/> <span className="text-transparent bg-clip-text bg-gradient-to-r from-gray-700 to-black dark:from-gray-300 dark:to-white">Works.</span>
+                            </h2>
+                        </div>
+                        <p className="text-xl text-gray-600 dark:text-gray-400 max-w-sm font-medium border-l-2 border-city-blue/30 pl-4">
+                            Reporting urban degradation has never been this simple, or this visually striking.
                         </p>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                         {features.map((feature, index) => (
                             <motion.div
                                 key={index}
-                                initial={{ opacity: 0, y: 20 }}
+                                initial={{ opacity: 0, y: 50 }}
                                 whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true }}
-                                transition={{ delay: index * 0.1 }}
-                                className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 border border-gray-100 dark:border-gray-700"
+                                transition={{ delay: index * 0.15, duration: 0.6 }}
+                                className="group relative bg-white/80 dark:bg-city-surface/80 backdrop-blur-lg border border-gray-200/50 dark:border-white/10 p-10 rounded-2xl hover:border-city-blue/30 dark:hover:border-city-blue/50 transition-all duration-500 hover:shadow-2xl hover:shadow-city-blue/5 dark:hover:shadow-city-blue/10"
                             >
-                                <div className="bg-gray-50 dark:bg-gray-700/50 w-16 h-16 rounded-xl flex items-center justify-center mb-6">
+                                <div className="absolute top-0 right-0 p-8 opacity-5 dark:opacity-10 pointer-events-none group-hover:scale-110 group-hover:opacity-10 dark:group-hover:opacity-20 transition-all duration-500">
+                                    {React.cloneElement(feature.icon as React.ReactElement<any>, { className: "w-32 h-32" })}
+                                </div>
+                                <div className="mb-10 inline-flex p-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 shadow-inner group-hover:-translate-y-2 group-hover:shadow-lg transition-all duration-300 relative z-10">
                                     {feature.icon}
                                 </div>
-                                <h3 className="text-xl font-bold mb-3 text-gray-900 dark:text-white">{feature.title}</h3>
-                                <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+                                <h3 className="font-heading text-3xl font-black mb-4 text-city-black dark:text-white uppercase tracking-tight relative z-10">{feature.title}</h3>
+                                <p className="text-gray-600 dark:text-gray-400 font-medium leading-relaxed relative z-10">
                                     {feature.description}
                                 </p>
                             </motion.div>
@@ -161,30 +184,38 @@ const LandingPage: React.FC = () => {
                     </div>
                 </div>
             </section>
-
-            {/* Trust Section */}
-            <section className="py-24 bg-white dark:bg-midnight-800">
-                <div className="container mx-auto px-6">
-                    <div className="bg-gradient-to-r from-electric-blue-600 to-indigo-600 rounded-3xl p-12 md:p-20 text-center relative overflow-hidden">
-                        <div className="relative z-10">
-                            <h2 className="text-3xl md:text-5xl font-bold text-white mb-8">
-                                Ready to Make an Impact?
-                            </h2>
-                            <p className="text-blue-100 text-lg md:text-xl max-w-2xl mx-auto mb-10">
-                                Join thousands of citizens who are already transforming their neighborhoods one report at a time.
-                            </p>
-                            <button
-                                onClick={() => navigate('/register')}
-                                className="px-10 py-5 bg-white text-electric-blue-600 rounded-xl font-bold text-lg shadow-xl hover:shadow-2xl hover:scale-105 transition-all"
-                            >
-                                Get Started Now
-                            </button>
-                        </div>
-                        {/* Abstract shapes */}
-                        <div className="absolute top-0 left-0 w-64 h-64 bg-white opacity-5 rounded-full -translate-x-1/2 -translate-y-1/2" />
-                        <div className="absolute bottom-0 right-0 w-96 h-96 bg-white opacity-5 rounded-full translate-x-1/3 translate-y-1/3" />
+            
+            {/* The Final Push */}
+            <section className="relative py-40 bg-city-black dark:bg-city-surface overflow-hidden flex flex-col items-center justify-center text-center px-6">
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent to-city-red/10 dark:to-city-red/5" />
+                <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-10 pointer-events-none mix-blend-overlay"></div>
+                
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.8 }}
+                    className="relative z-10"
+                >
+                    <div className="inline-flex items-center justify-center mb-8">
+                        <Shield className="w-16 h-16 text-city-red object-contain mb-4" />
                     </div>
-                </div>
+                    <h2 className="font-heading text-5xl md:text-8xl font-black text-white uppercase tracking-tighter mb-8 drop-shadow-xl">
+                        Make It <span className="text-city-red">Right.</span>
+                    </h2>
+                    <p className="text-gray-400 max-w-xl mx-auto mb-12 text-xl">The city needs guardians. Time to step up.</p>
+                    <button
+                        onClick={() => navigate('/register')}
+                        className="group relative px-14 py-6 bg-city-red text-white rounded-xl font-black uppercase tracking-widest text-xl overflow-hidden shadow-[0_0_40px_rgba(211,18,18,0.4)] hover:shadow-[0_0_60px_rgba(211,18,18,0.6)] transition-all duration-300"
+                    >
+                        <span className="relative z-10 flex items-center gap-2">
+                            <Zap className="w-6 h-6 group-hover:scale-110 transition-transform" />
+                            Start Now
+                            <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform" />
+                        </span>
+                        <div className="absolute inset-0 bg-white/20 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
+                    </button>
+                </motion.div>
             </section>
         </div>
     );
