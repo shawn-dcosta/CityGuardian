@@ -82,7 +82,7 @@ const UserDashboard: React.FC<UserDashboardProps> = () => {
     };
 
     return (
-        <div className="min-h-screen relative font-sans">
+        <div className="min-h-screen bg-slate-100 dark:bg-[#0B0F15] relative font-sans">
             <div className="container mx-auto px-4 pt-10 pb-20 max-w-7xl relative z-10">
             {/* Cinematic Ambient Elements */}
             <div className="absolute top-[-10%] right-[-5%] w-[800px] h-[800px] bg-city-blue/5 dark:bg-city-blue/10 blur-[150px] rounded-full pointer-events-none -z-10 animate-pulse duration-[5000ms]" />
