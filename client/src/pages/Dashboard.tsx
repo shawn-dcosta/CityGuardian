@@ -116,7 +116,7 @@ const Dashboard: React.FC<DashboardProps> = ({ isDarkMode }) => {
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-gray-200/50 dark:border-white/10 pb-8 backdrop-blur-sm"
+          className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-gray-300/80 dark:border-white/20 pb-5 backdrop-blur-sm"
         >
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-full mb-4 shadow-inner">
@@ -129,11 +129,8 @@ const Dashboard: React.FC<DashboardProps> = ({ isDarkMode }) => {
                 </p>
             </div>
             <h1 className="font-heading text-5xl md:text-6xl font-black text-city-black dark:text-white uppercase tracking-tighter mb-2 drop-shadow-md">
-              Ops <span className="text-transparent bg-clip-text bg-gradient-to-br from-city-blue to-blue-400 dark:from-city-blue dark:to-blue-200">Command</span>
+              City <span className="text-transparent bg-clip-text bg-gradient-to-br from-city-blue to-blue-400 dark:from-city-blue dark:to-blue-200">Oversight</span>
             </h1>
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-gray-500 mt-2">
-              Executive Overview Matrix
-            </p>
           </div>
 
           <div className="flex items-center gap-6 bg-white/60 dark:bg-city-surface/60 backdrop-blur-md p-4 rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm">
