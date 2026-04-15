@@ -344,6 +344,8 @@ const UserDashboard: React.FC<UserDashboardProps> = () => {
             </div>
 
             {/* Immersive Modal View */}
+            </div>
+            {/* Detailed Report View - Moved outside the z-10 container to fix stacking context issues */}
             <AnimatePresence>
                 {selectedReport && (
                     <motion.div
@@ -351,7 +353,7 @@ const UserDashboard: React.FC<UserDashboardProps> = () => {
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.3 }}
-                        className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-6 bg-city-surface-light/80 dark:bg-[#050505]/90 backdrop-blur-xl font-sans"
+                        className="fixed inset-0 z-[9999] flex items-center justify-center p-4 md:p-6 bg-city-surface-light/80 dark:bg-[#050505]/90 backdrop-blur-xl font-sans"
                         onClick={() => setSelectedReport(null)}
                     >
                         {/* Film grain inside modal */}
@@ -365,105 +367,127 @@ const UserDashboard: React.FC<UserDashboardProps> = () => {
                             className="bg-white/95 dark:bg-city-surface/95 backdrop-blur-2xl border border-gray-200/50 dark:border-white/10 w-full max-w-3xl relative overflow-hidden rounded-3xl shadow-[0_40px_80px_-20px_rgba(0,0,0,0.3)] dark:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.8)]"
                             onClick={(e) => e.stopPropagation()}
                         >
-                            {/* Decorative Top Bar reflecting status */}
-                            <div className={`absolute top-0 left-0 right-0 h-1.5 ${getStatusStep(selectedReport.Status) === 4 ? 'bg-city-green shadow-[0_0_20px_rgba(0,230,118,0.6)]' :
-                                    selectedReport.Urgency?.toLowerCase() === 'high' ? 'bg-city-red shadow-[0_0_20px_rgba(211,18,18,0.6)]' : 'bg-city-blue shadow-[0_0_20px_rgba(37,99,235,0.6)]'
-                                }`} />
+                            {/* Color mapping for detailed view */}
+                            {(() => {
+                                const isRes = getStatusStep(selectedReport.Status) === 4;
+                                const urg = selectedReport.Urgency?.toLowerCase();
+                                let themeColor = 'city-blue';
+                                let glowColor = 'rgba(37,99,235,0.6)';
+                                
+                                if (isRes) {
+                                    themeColor = 'city-green';
+                                    glowColor = 'rgba(5,150,105,0.6)';
+                                } else if (urg === 'high') {
+                                    themeColor = 'city-red';
+                                    glowColor = 'rgba(211,18,18,0.6)';
+                                } else if (urg === 'medium') {
+                                    themeColor = 'city-orange';
+                                    glowColor = 'rgba(255,145,0,0.6)';
+                                }
 
-                            {/* Cinematic Light Accents */}
-                            <div className="absolute top-0 right-0 w-64 h-64 bg-city-blue/5 dark:bg-city-blue/10 blur-[80px] rounded-full pointer-events-none" />
-                            <div className="absolute bottom-0 left-0 w-64 h-64 bg-city-blue/5 dark:bg-city-blue/10 blur-[80px] rounded-full pointer-events-none" />
+                                return (
+                                    <>
+                                        {/* Decorative Top Bar reflecting status */}
+                                        <div className={`absolute top-0 left-0 right-0 h-1.5 bg-${themeColor} shadow-[0_0_20px_${glowColor}]`} />
 
-                            <div className="p-8 md:p-12 relative z-10">
-                                <button
-                                    onClick={() => setSelectedReport(null)}
-                                    className="absolute top-6 right-6 w-11 h-11 bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 flex items-center justify-center rounded-xl hover:bg-gray-200 dark:hover:bg-white/10 hover:scale-105 active:scale-95 transition-all text-gray-500 dark:text-gray-400 group"
-                                >
-                                    <X className="w-5 h-5 group-hover:text-city-black dark:group-hover:text-white transition-colors" />
-                                </button>
+                                        {/* Cinematic Light Accents - Now themed */}
+                                        <div className={`absolute top-0 right-0 w-64 h-64 bg-${themeColor}/5 dark:bg-${themeColor}/10 blur-[80px] rounded-full pointer-events-none`} />
+                                        <div className={`absolute bottom-0 left-0 w-64 h-64 bg-${themeColor}/5 dark:bg-${themeColor}/10 blur-[80px] rounded-full pointer-events-none`} />
 
-                                <div className="mb-10 pr-12">
-                                    <div className="flex items-center gap-4 mb-5">
-                                        <div className="px-3 py-1 bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-lg flex items-center gap-3">
-                                            <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">
-                                                Log ID: {selectedReport.ID}
-                                            </span>
-                                            <span className={`w-2 h-2 rounded-full ${getStatusStep(selectedReport.Status) === 4 ? 'bg-city-green animate-pulse' : 'bg-city-red animate-pulse'}`} />
-                                        </div>
-                                        <span className={`px-2.5 py-1 rounded-md border text-[10px] font-black uppercase tracking-widest shadow-inner ${selectedReport.Urgency?.toLowerCase() === 'high' ? 'bg-city-red border-city-red text-white' :
-                                                selectedReport.Urgency?.toLowerCase() === 'medium' ? 'bg-city-orange/10 dark:bg-city-orange/20 border-city-orange/20 text-city-orange' :
-                                                    'bg-city-blue/10 dark:bg-city-blue/20 border-city-blue/20 text-city-blue'
-                                            }`}>
-                                            {selectedReport.Urgency || 'STD'}
-                                        </span>
-                                    </div>
-
-                                    <h2 className="font-heading text-4xl md:text-5xl font-black text-city-black dark:text-white uppercase tracking-tighter mb-5 leading-[0.9] drop-shadow-sm">
-                                        {selectedReport.Category || 'Anomaly Detected'}
-                                    </h2>
-
-                                    <p className="text-lg text-gray-700 dark:text-gray-300 font-medium leading-relaxed bg-gray-50 dark:bg-white/5 p-6 rounded-2xl border border-gray-100 dark:border-white/5 relative shadow-inner">
-                                        <span className="absolute top-4 left-4 text-4xl text-gray-200 dark:text-white/10 font-heading">"</span>
-                                        <span className="relative z-10 pl-6 block text-gray-600 dark:text-gray-300">
-                                            {selectedReport.issue || selectedReport.Issue || 'Trace context unavailable. Awaiting further analysis.'}
-                                        </span>
-                                    </p>
-                                </div>
-
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
-                                    <div className="bg-gray-50 dark:bg-[#0e0e0e] p-6 rounded-2xl border border-gray-200/60 dark:border-white/5 shadow-sm">
-                                        <div className="flex items-center gap-3 mb-2">
-                                            <Clock className="w-4 h-4 text-gray-400" />
-                                            <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Timeframe Est.</h4>
-                                        </div>
-                                        <div className="flex flex-col">
-                                            <span className="text-sm font-black text-city-black dark:text-white uppercase tracking-wider block mt-1">
-                                                {selectedReport.Urgency?.toLowerCase() === 'high' ? 'IMMEDIATE' : 'STANDARD'}
-                                            </span>
-                                            <span className="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest">
-                                                {selectedReport.Urgency?.toLowerCase() === 'high' ? '24H' : '3-7D'}
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                    <div className="bg-gray-50 dark:bg-[#0e0e0e] p-6 rounded-2xl border border-gray-200/60 dark:border-white/5 shadow-sm">
-                                        <div className="flex items-center gap-3 mb-2">
-                                            <Activity className="w-4 h-4 text-gray-400" />
-                                            <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Sector Focus</h4>
-                                        </div>
-                                        <span className="text-sm font-black text-city-black dark:text-white uppercase tracking-wider block mt-1">
-                                            {selectedReport.Category || 'MUNICIPAL CORE'}
-                                        </span>
-                                    </div>
-
-                                    <div className="md:col-span-2 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-[#0e0e0e] dark:to-[#141414] p-6 rounded-2xl border border-gray-200/60 dark:border-white/5 shadow-inner">
-                                        <div className="flex items-center gap-3 mb-3">
-                                            <div className="p-1.5 bg-city-red/10 rounded-md">
-                                                <MapPin className="w-4 h-4 text-city-red" />
-                                            </div>
-                                            <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Target Coordinates</h4>
-                                        </div>
-                                        <div className="bg-white dark:bg-black/40 border border-gray-200 dark:border-white/10 p-4 rounded-xl flex items-center justify-between group/link shadow-sm">
-                                            <span className="text-sm font-medium text-gray-800 dark:text-gray-300 truncate max-w-[80%]">
-                                                {selectedReport.Location || 'Scan Coordinates pending...'}
-                                            </span>
-                                            <a
-                                                href={`https://www.google.com/maps?q=${selectedReport.Location}`}
-                                                target="_blank"
-                                                rel="noreferrer"
-                                                className="px-4 py-2 bg-city-blue/10 dark:bg-city-blue/20 text-city-blue hover:bg-city-blue hover:text-white transition-colors rounded-lg text-xs font-bold uppercase tracking-widest flex items-center gap-2"
+                                        <div className="p-8 md:p-12 relative z-10">
+                                            <button
+                                                onClick={() => setSelectedReport(null)}
+                                                className="absolute top-6 right-6 w-11 h-11 bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 flex items-center justify-center rounded-xl hover:bg-gray-200 dark:hover:bg-white/10 hover:scale-105 active:scale-95 transition-all text-gray-500 dark:text-gray-400 group"
                                             >
-                                                Open Maps <ArrowRight className="w-3 h-3 group-hover/link:translate-x-1 transition-transform" />
-                                            </a>
+                                                <X className="w-5 h-5 group-hover:text-city-black dark:group-hover:text-white transition-colors" />
+                                            </button>
+
+                                            <div className="mb-10 pr-12">
+                                                <div className="flex items-center gap-4 mb-5">
+                                                    <div className="px-3 py-1 bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-lg flex items-center gap-3">
+                                                        <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">
+                                                            Log ID: {selectedReport.ID}
+                                                        </span>
+                                                        <span className={`w-2 h-2 rounded-full bg-${themeColor} animate-pulse shadow-[0_0_8px_${glowColor}]`} />
+                                                    </div>
+                                                    <span className={`px-2.5 py-1 rounded-md border text-[10px] font-black uppercase tracking-widest shadow-inner ${
+                                                        urg === 'high' ? 'bg-city-red border-city-red text-white' :
+                                                        urg === 'medium' ? 'bg-city-orange/10 dark:bg-city-orange/20 border-city-orange/20 text-city-orange' :
+                                                        isRes ? 'bg-city-green/10 dark:bg-city-green/20 border-city-green/20 text-city-green' :
+                                                        'bg-city-blue/10 dark:bg-city-blue/20 border-city-blue/20 text-city-blue'
+                                                    }`}>
+                                                        {selectedReport.Urgency || 'STD'}
+                                                    </span>
+                                                </div>
+
+                                                <h2 className="font-heading text-4xl md:text-5xl font-black text-city-black dark:text-white uppercase tracking-tighter mb-5 leading-[0.9] drop-shadow-sm">
+                                                    {selectedReport.Category || 'Anomaly Detected'}
+                                                </h2>
+
+                                                <p className="text-lg text-gray-700 dark:text-gray-300 font-medium leading-relaxed bg-gray-50 dark:bg-white/5 p-6 rounded-2xl border border-gray-100 dark:border-white/5 relative shadow-inner">
+                                                    <span className="absolute top-4 left-4 text-4xl text-gray-200 dark:text-white/10 font-heading">"</span>
+                                                    <span className="relative z-10 pl-6 block text-gray-600 dark:text-gray-300">
+                                                        {selectedReport.issue || selectedReport.Issue || 'Trace context unavailable. Awaiting further analysis.'}
+                                                    </span>
+                                                </p>
+                                            </div>
+
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
+                                                <div className="bg-gray-50 dark:bg-[#0e0e0e] p-6 rounded-2xl border border-gray-200/60 dark:border-white/5 shadow-sm">
+                                                    <div className="flex items-center gap-3 mb-2">
+                                                        <Clock className="w-4 h-4 text-gray-400" />
+                                                        <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Timeframe Est.</h4>
+                                                    </div>
+                                                    <div className="flex flex-col">
+                                                        <span className="text-sm font-black text-city-black dark:text-white uppercase tracking-wider block mt-1">
+                                                            {urg === 'high' ? 'IMMEDIATE' : 'STANDARD'}
+                                                        </span>
+                                                        <span className="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest">
+                                                            {urg === 'high' ? '24H' : '3-7D'}
+                                                        </span>
+                                                    </div>
+                                                </div>
+
+                                                <div className="bg-gray-50 dark:bg-[#0e0e0e] p-6 rounded-2xl border border-gray-200/60 dark:border-white/5 shadow-sm">
+                                                    <div className="flex items-center gap-3 mb-2">
+                                                        <Activity className="w-4 h-4 text-gray-400" />
+                                                        <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Sector Focus</h4>
+                                                    </div>
+                                                    <span className="text-sm font-black text-city-black dark:text-white uppercase tracking-wider block mt-1">
+                                                        {selectedReport.Category || 'MUNICIPAL CORE'}
+                                                    </span>
+                                                </div>
+
+                                                <div className="md:col-span-2 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-[#0e0e0e] dark:to-[#141414] p-6 rounded-2xl border border-gray-200/60 dark:border-white/5 shadow-inner">
+                                                    <div className="flex items-center gap-3 mb-3">
+                                                        <div className={`p-1.5 bg-${themeColor}/10 rounded-md`}>
+                                                            <MapPin className={`w-4 h-4 text-${themeColor}`} />
+                                                        </div>
+                                                        <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Target Coordinates</h4>
+                                                    </div>
+                                                    <div className="bg-white dark:bg-black/40 border border-gray-200 dark:border-white/10 p-4 rounded-xl flex items-center justify-between group/link shadow-sm">
+                                                        <span className="text-sm font-medium text-gray-800 dark:text-gray-300 truncate max-w-[80%]">
+                                                            {selectedReport.Location || 'Scan Coordinates pending...'}
+                                                        </span>
+                                                        <a
+                                                            href={`https://www.google.com/maps?q=${selectedReport.Location}`}
+                                                            target="_blank"
+                                                            rel="noreferrer"
+                                                            className={`px-4 py-2 bg-${themeColor}/10 dark:bg-${themeColor}/20 text-${themeColor} hover:bg-${themeColor} hover:text-white transition-colors rounded-lg text-xs font-bold uppercase tracking-widest flex items-center gap-2`}
+                                                        >
+                                                            Open Maps <ArrowRight className="w-3 h-3 group-hover/link:translate-x-1 transition-transform" />
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                </div>
-                            </div>
+                                    </>
+                                );
+                            })()}
                         </motion.div>
                     </motion.div>
                 )}
             </AnimatePresence>
-            </div>
         </div>
     );
 };
