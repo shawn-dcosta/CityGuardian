@@ -96,7 +96,7 @@ const LoginPage: React.FC = () => {
                             name="email"
                             value={email}
                             onChange={onChange}
-                            placeholder="Email Coordinates"
+                            placeholder="Email"
                             required
                             className="w-full pl-12 pr-4 py-4 bg-gray-50 dark:bg-city-black/50 border border-gray-200 dark:border-white/10 focus:border-city-blue dark:focus:border-city-blue rounded-xl text-city-black dark:text-white placeholder-gray-400 dark:placeholder-gray-500 outline-none transition-all focus:ring-4 focus:ring-city-blue/10 dark:focus:ring-city-blue/20 font-medium shadow-sm"
                         />
@@ -111,7 +111,7 @@ const LoginPage: React.FC = () => {
                             name="password"
                             value={password}
                             onChange={onChange}
-                            placeholder="Security Clearance Key"
+                            placeholder="Password"
                             required
                             className="w-full pl-12 pr-4 py-4 bg-gray-50 dark:bg-city-black/50 border border-gray-200 dark:border-white/10 focus:border-city-blue dark:focus:border-city-blue rounded-xl text-city-black dark:text-white placeholder-gray-400 dark:placeholder-gray-500 outline-none transition-all focus:ring-4 focus:ring-city-blue/10 dark:focus:ring-city-blue/20 font-medium shadow-sm"
                         />
@@ -124,7 +124,7 @@ const LoginPage: React.FC = () => {
                         className="relative w-full py-4 mt-2 bg-city-black dark:bg-white text-white dark:text-city-black rounded-xl font-black uppercase tracking-widest overflow-hidden transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,0,0,0.15)] dark:hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] active:scale-[0.98]"
                     >
                         <span className="relative z-10 flex items-center justify-center gap-2">
-                            Initialize Link
+                            LOGIN
                             <LogIn className={`w-5 h-5 transition-transform duration-300 ${isHovering ? 'translate-x-1' : ''}`} />
                         </span>
                         <div className="absolute inset-0 bg-gradient-to-r from-city-blue/80 to-blue-600 dark:from-gray-200 dark:to-white transform scale-x-0 origin-left transition-transform duration-300 ease-out z-0" style={{ transform: isHovering ? 'scaleX(1)' : 'scaleX(0)' }} />
