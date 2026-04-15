@@ -23,7 +23,7 @@ const RegisterPage: React.FC = () => {
         e.preventDefault();
         setError('');
         if (password !== confirmPassword) {
-            setError('Security clearance keys do not match.');
+            setError('Passwords do not match.');
             return;
         }
 
@@ -32,7 +32,7 @@ const RegisterPage: React.FC = () => {
             login(res.data.token, res.data.user);
             navigate('/');
         } catch (err: any) {
-            setError(err.response?.data?.msg || 'Clearance creation failed. Connection rejected.');
+            setError(err.response?.data?.msg || 'Registration failed. Connection rejected.');
         }
     };
 
@@ -101,7 +101,7 @@ const RegisterPage: React.FC = () => {
                             name="name"
                             value={name}
                             onChange={onChange}
-                            placeholder="Full Name / Designation"
+                            placeholder="Full Name"
                             required
                             className="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-city-black/50 border border-gray-200 dark:border-white/10 focus:border-city-blue dark:focus:border-city-blue rounded-xl text-city-black dark:text-white placeholder-gray-400 dark:placeholder-gray-500 outline-none transition-all focus:ring-4 focus:ring-city-blue/10 dark:focus:ring-city-blue/20 font-medium shadow-sm"
                         />
@@ -116,7 +116,7 @@ const RegisterPage: React.FC = () => {
                             name="email"
                             value={email}
                             onChange={onChange}
-                            placeholder="Email Coordinates"
+                            placeholder="Email"
                             required
                             className="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-city-black/50 border border-gray-200 dark:border-white/10 focus:border-city-blue dark:focus:border-city-blue rounded-xl text-city-black dark:text-white placeholder-gray-400 dark:placeholder-gray-500 outline-none transition-all focus:ring-4 focus:ring-city-blue/10 dark:focus:ring-city-blue/20 font-medium shadow-sm"
                         />
@@ -131,7 +131,7 @@ const RegisterPage: React.FC = () => {
                             name="password"
                             value={password}
                             onChange={onChange}
-                            placeholder="Security Clearance Key"
+                            placeholder="Password"
                             required
                             minLength={6}
                             className="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-city-black/50 border border-gray-200 dark:border-white/10 focus:border-city-blue dark:focus:border-city-blue rounded-xl text-city-black dark:text-white placeholder-gray-400 dark:placeholder-gray-500 outline-none transition-all focus:ring-4 focus:ring-city-blue/10 dark:focus:ring-city-blue/20 font-medium shadow-sm"
@@ -147,7 +147,7 @@ const RegisterPage: React.FC = () => {
                             name="confirmPassword"
                             value={confirmPassword}
                             onChange={onChange}
-                            placeholder="Confirm Clearance Key"
+                            placeholder="Confirm Password"
                             required
                             minLength={6}
                             className="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-city-black/50 border border-gray-200 dark:border-white/10 focus:border-city-blue dark:focus:border-city-blue rounded-xl text-city-black dark:text-white placeholder-gray-400 dark:placeholder-gray-500 outline-none transition-all focus:ring-4 focus:ring-city-blue/10 dark:focus:ring-city-blue/20 font-medium shadow-sm"
@@ -161,7 +161,7 @@ const RegisterPage: React.FC = () => {
                         className="relative w-full py-4 mt-4 bg-city-black dark:bg-white text-white dark:text-city-black rounded-xl font-black uppercase tracking-widest overflow-hidden transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,0,0,0.15)] dark:hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] active:scale-[0.98]"
                     >
                         <span className="relative z-10 flex items-center justify-center gap-2">
-                            Initialize Link
+                            REGISTER
                             <UserPlus className={`w-5 h-5 transition-transform duration-300 ${isHovering ? 'scale-110' : ''}`} />
                         </span>
                         <div className="absolute inset-0 bg-gradient-to-r from-city-blue/80 to-blue-600 dark:from-gray-200 dark:to-white transform scale-x-0 origin-left transition-transform duration-300 ease-out z-0" style={{ transform: isHovering ? 'scaleX(1)' : 'scaleX(0)' }} />
@@ -193,7 +193,7 @@ const RegisterPage: React.FC = () => {
                     <p className="text-xs font-bold uppercase tracking-widest text-gray-500">
                         Already authorized?{' '}
                         <Link to="/login" className="text-city-blue hover:text-blue-600 dark:text-city-blue dark:hover:text-blue-400 hover:underline underline-offset-4 transition-colors">
-                            Sign In
+                            LOGIN
                         </Link>
                     </p>
                 </div>
