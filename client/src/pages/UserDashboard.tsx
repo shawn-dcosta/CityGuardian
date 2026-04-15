@@ -89,7 +89,7 @@ const UserDashboard: React.FC<UserDashboardProps> = () => {
             <div className="absolute top-[40%] left-[-10%] w-[600px] h-[600px] bg-city-red/5 dark:bg-city-red/10 blur-[150px] rounded-full pointer-events-none -z-10" style={{ animation: "pulse 7s cubic-bezier(0.4, 0, 0.6, 1) infinite" }} />
 
             {/* Command Center Header */}
-            <div className="flex flex-col md:flex-row justify-between md:items-end mb-14 gap-6 relative z-10 border-b border-gray-200/50 dark:border-white/10 pb-8 backdrop-blur-sm">
+            <div className="flex flex-col md:flex-row justify-between md:items-end mb-10 gap-6 relative z-10 border-b border-gray-300 dark:border-white/20 pb-5 backdrop-blur-sm">
                 <motion.div
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
@@ -179,7 +179,7 @@ const UserDashboard: React.FC<UserDashboardProps> = () => {
 
             {/* Main Manifest grid */}
             <div className="space-y-6 relative z-10">
-                <div className="flex items-center justify-between border-b border-gray-200/50 dark:border-white/10 pb-4 mb-8">
+                <div className="flex items-center justify-between border-b border-gray-300 dark:border-white/20 pb-3 mb-8">
                     <h2 className="text-sm font-bold text-city-black dark:text-gray-300 uppercase tracking-[0.2em] flex items-center gap-3">
                         <div className="p-1.5 bg-city-red/10 rounded-md">
                             <MapPin className="w-4 h-4 text-city-red" />
