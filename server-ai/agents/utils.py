@@ -34,7 +34,7 @@ def clean_gemini_json(text):
     clean = re.sub(r"```json\s?|\s?```", "", text).strip()
     return clean
 
-async def generate_content_async(contents, model=None, retries=3):
+async def generate_content_async(contents, model=None, retries=5):
     """Wrapper to run blocking GenAI calls in a thread with automatic retries for 503 errors."""
     if model is None:
         model = GEMINI_MODEL
@@ -51,7 +51,7 @@ async def generate_content_async(contents, model=None, retries=3):
             error_str = str(e)
             # If 503 High Demand, wait and retry
             if "503" in error_str and attempt < retries - 1:
-                wait_time = 2 ** attempt  # 1s, 2s Backoff
+                wait_time = 2 ** attempt + 1  # 2s, 3s, 5s, 9s Backoff
                 logger.warning(f"Gemini API 503 High Demand. Retrying in {wait_time}s... (Attempt {attempt + 1}/{retries})")
                 await asyncio.sleep(wait_time)
                 continue
