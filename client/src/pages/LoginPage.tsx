@@ -25,7 +25,7 @@ const LoginPage: React.FC = () => {
         try {
             const res = await axios.post(`${AUTH_API_URL}/auth/login`, formData);
             login(res.data.token, res.data.user);
-            navigate(res.data.user.role === 'admin' ? '/dashboard' : '/');
+            navigate(res.data.user.role === 'admin' ? '/admin' : '/dashboard');
         } catch (err: any) {
             setError(err.response?.data?.msg || 'Authentication verification failed. Access denied.');
         }
@@ -37,7 +37,7 @@ const LoginPage: React.FC = () => {
                 token: credentialResponse.credential
             });
             login(res.data.token, res.data.user);
-            navigate(res.data.user.role === 'admin' ? '/dashboard' : '/');
+            navigate(res.data.user.role === 'admin' ? '/admin' : '/dashboard');
         } catch (err: any) {
             setError(err.response?.data?.msg || 'Google Authentication verification failed. Access denied.');
         }

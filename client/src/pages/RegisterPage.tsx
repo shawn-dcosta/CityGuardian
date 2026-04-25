@@ -30,7 +30,7 @@ const RegisterPage: React.FC = () => {
         try {
             const res = await axios.post(`${AUTH_API_URL}/auth/register`, { name, email, password });
             login(res.data.token, res.data.user);
-            navigate('/');
+            navigate(res.data.user.role === 'admin' ? '/admin' : '/dashboard');
         } catch (err: any) {
             setError(err.response?.data?.msg || 'Registration failed. Connection rejected.');
         }
@@ -42,7 +42,7 @@ const RegisterPage: React.FC = () => {
                 token: credentialResponse.credential
             });
             login(res.data.token, res.data.user);
-            navigate('/');
+            navigate(res.data.user.role === 'admin' ? '/admin' : '/dashboard');
         } catch (err: any) {
             setError(err.response?.data?.msg || 'Google Authentication verification failed. Access denied.');
         }
