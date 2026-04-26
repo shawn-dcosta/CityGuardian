@@ -60,8 +60,8 @@ SHEET_ID = os.getenv('SHEET_ID', '1Z2pkSi3AP_Ts8KvaaW26zTcEYvPX2mztg8Cxy_CtMaM')
 OFFICERS = [
     {"name": "Water Dept", "email": "shivamkillarikar007@gmail.com", "keywords": ["water", "leak", "pipe", "burst"]},
     {"name": "Sewage Dept", "email": "shivamkillarikar22@gmail.com", "keywords": ["sewage", "drain", "gutter", "overflow"]},
-    {"name": "Roads Dept", "email": "aishanidolan@gmail.com", "keywords": ["road", "pothole", "pavement"]},
-    {"name": "Electric Dept", "email": "adityakillarikar@gmail.com", "keywords": ["light", "wire", "pole", "shock", "power"]},
+    {"name": "Roads Dept", "email": "dcostashawn@gmail.com", "keywords": ["road", "pothole", "pavement"]},
+    {"name": "Electric Dept", "email": "dcostashawn@gmail.com", "keywords": ["light", "wire", "pole", "shock", "power"]},
     {"name": "Emergency Dept", "email": "dcostashawn@gmail.com", "keywords": ["assistance", "doctor", "ambulance", "medical", "accident"]},
 ]
 
